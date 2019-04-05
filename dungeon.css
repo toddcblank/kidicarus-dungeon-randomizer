@@ -1,0 +1,87 @@
+.room {
+    height: 128px;
+    width: 128px;
+ display: inline-block;
+ 
+ 
+ border-color: red;
+ border-width: 2px;
+ border-style: solid;
+}
+
+.row {
+    display: block;
+}
+
+.open-1 {
+    border-top-color: white;
+}
+
+.open-2 {
+    border-bottom-color: white;
+}
+
+.open-3 {
+    border-top-color: white;
+    border-bottom-color: white;
+}
+
+.open-4 {
+    border-right-color: white;
+}
+.open-5 {
+    border-top-color: white;
+    border-right-color: white;
+}
+.open-6 {
+    border-bottom-color: white;
+    border-right-color: white;
+}
+
+.open-7 {
+    border-top-color: white;
+    border-right-color: white;
+    border-bottom-color: white;
+}
+
+.open-8 {
+    border-left-color: white;
+}
+.open-9 {
+    border-top-color: white;
+    border-left-color: white;
+}
+.open-10 {
+    border-left-color: white;
+    border-bottom-color: white;
+}
+.open-11 {
+    border-left-color: white;
+    border-top-color: white;
+    border-bottom-color: white;
+}
+.open-12 {
+    border-left-color: white;
+    border-right-color: white;
+}
+.open-13 {
+    border-left-color: white;
+    border-top-color: white;
+    border-right-color: white;
+}
+.open-14 {
+    border-left-color: white;
+    border-bottom-color: white;
+    border-right-color: white;
+}
+.open-15 {
+    border-left-color: white;
+    border-bottom-color: white;
+    border-right-color: white;
+    border-top-color: white;
+}
+
+.roomImage {
+    height: 128px;
+    width: 128px
+}
