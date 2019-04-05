@@ -90,7 +90,7 @@ function propogate(maze, startx, starty) {
     //for now just make it all the same rooms.    
     // startingRoom.roomId = 0x0D;
     startingRoom.roomId = Math.floor(Math.random() * 0x29)
-    while (startingRoom.roomId == 10 || startingRoom.roomId == 0) {
+    while (startingRoom.roomId == 0x10 || startingRoom.roomId == 0) {
         startingRoom.roomId = Math.floor(Math.random() * 0x29)
     }
     let room = rooms[startingRoom.roomId]
