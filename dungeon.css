@@ -15,70 +15,98 @@
 
 .open-1 {
     border-top-color: white;
+    border-bottom-color: red;
+    border-right-color: red;
+    border-left-color: red;
 }
 
 .open-2 {
-    border-bottom-color: white;
+    border-top-color: red;
+    border-right-color: white;
+    border-bottom-color: red;
+    border-left-color: red;
 }
 
 .open-3 {
     border-top-color: white;
-    border-bottom-color: white;
+    border-right-color: white;
+    border-bottom-color: red;
+    border-left-color: red;
 }
 
 .open-4 {
-    border-right-color: white;
+    border-top-color: red;
+    border-right-color: red;
+    border-bottom-color: white;
+    border-left-color: red;
 }
 .open-5 {
     border-top-color: white;
-    border-right-color: white;
+    border-right-color: red;
+    border-bottom-color: white;
+    border-left-color: red;
 }
 .open-6 {
-    border-bottom-color: white;
+    border-top-color: red;
     border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: red;
 }
 
 .open-7 {
     border-top-color: white;
     border-right-color: white;
     border-bottom-color: white;
+    border-left-color: red;
 }
 
 .open-8 {
+    border-top-color: red;
+    border-right-color: red;
+    border-bottom-color: red;
     border-left-color: white;
 }
 .open-9 {
     border-top-color: white;
+    border-right-color: red;
+    border-bottom-color: red;
     border-left-color: white;
 }
 .open-10 {
+    border-top-color: red;
+    border-right-color: white;
+    border-bottom-color: red;
     border-left-color: white;
-    border-bottom-color: white;
 }
 .open-11 {
-    border-left-color: white;
     border-top-color: white;
-    border-bottom-color: white;
+    border-right-color: white;
+    border-bottom-color: red;
+    border-left-color: white;
 }
 .open-12 {
+    border-top-color: red;
+    border-right-color: red;
+    border-bottom-color: white;
     border-left-color: white;
-    border-right-color: white;
 }
 .open-13 {
-    border-left-color: white;
     border-top-color: white;
-    border-right-color: white;
+    border-right-color: red;
+    border-bottom-color: white;
+    border-left-color: white;
 }
 .open-14 {
-    border-left-color: white;
-    border-bottom-color: white;
+    border-top-color: red;
     border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: white;
 }
 .open-15 {
-    border-left-color: white;
-    border-bottom-color: white;
-    border-right-color: white;
     border-top-color: white;
+    border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: white;
 }
 
 .roomImage {
