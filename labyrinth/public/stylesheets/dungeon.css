@@ -1,0 +1,115 @@
+.room {
+    height: 128px;
+    width: 128px;
+ display: inline-block;
+ 
+ 
+ border-color: red;
+ border-width: 2px;
+ border-style: solid;
+}
+
+.row {
+    display: block;
+}
+
+.open-01 {
+    border-top-color: white;
+    border-bottom-color: red;
+    border-right-color: red;
+    border-left-color: red;
+}
+
+.open-02 {
+    border-top-color: red;
+    border-right-color: white;
+    border-bottom-color: red;
+    border-left-color: red;
+}
+
+.open-03 {
+    border-top-color: white;
+    border-right-color: white;
+    border-bottom-color: red;
+    border-left-color: red;
+}
+
+.open-04 {
+    border-top-color: red;
+    border-right-color: red;
+    border-bottom-color: white;
+    border-left-color: red;
+}
+.open-05 {
+    border-top-color: white;
+    border-right-color: red;
+    border-bottom-color: white;
+    border-left-color: red;
+}
+.open-06 {
+    border-top-color: red;
+    border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: red;
+}
+
+.open-07 {
+    border-top-color: white;
+    border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: red;
+}
+
+.open-08 {
+    border-top-color: red;
+    border-right-color: red;
+    border-bottom-color: red;
+    border-left-color: white;
+}
+.open-09 {
+    border-top-color: white;
+    border-right-color: red;
+    border-bottom-color: red;
+    border-left-color: white;
+}
+.open-0a {
+    border-top-color: red;
+    border-right-color: white;
+    border-bottom-color: red;
+    border-left-color: white;
+}
+.open-0b {
+    border-top-color: white;
+    border-right-color: white;
+    border-bottom-color: red;
+    border-left-color: white;
+}
+.open-0c {
+    border-top-color: red;
+    border-right-color: red;
+    border-bottom-color: white;
+    border-left-color: white;
+}
+.open-0d {
+    border-top-color: white;
+    border-right-color: red;
+    border-bottom-color: white;
+    border-left-color: white;
+}
+.open-0e {
+    border-top-color: red;
+    border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: white;
+}
+.open-0f {
+    border-top-color: white;
+    border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: white;
+}
+
+.roomImage {
+    height: 128px;
+    width: 128px
+}
