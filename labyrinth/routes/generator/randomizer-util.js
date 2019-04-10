@@ -25,9 +25,9 @@ function createNewRandomizedRom() {
     let seed = new Date().getTime();
     let newFilename = 'ki-' + seed;
 
-    let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29);
-    let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b);
-    let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29)
+    let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
+    let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7);
+    let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10)
     
     let dungeon1Patch = {
         data: dungeon1,
