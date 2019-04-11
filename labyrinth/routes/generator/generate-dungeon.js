@@ -1,12 +1,14 @@
-require('./dungeon-rooms')
+let dr = require('./dungeon-rooms')
 
-const UP = 1
-const RIGHT = 2
-const DOWN = 4
-const LEFT = 8
+const UP = dr.UP;
+const RIGHT = dr.RIGHT;
+const DOWN = dr.DOWN;
+const LEFT = dr.LEFT;
+const ALL = dr.ALL;
+const NONE = dr.NONE;
+const DIRECTIONS = dr.DIRECTIONS;
+const DIR_INDEX = dr.DIR_INDEX;
 
-const DIRECTIONS = [UP, RIGHT, DOWN, LEFT]
-const DIR_INDEX = [-1,0,1,-1,2,-1,-1,-1,3]
 const RESERVED_ROOMS = [0x10, 0x00, 0x15, 0x16, 0x01, 0x28, 0x29]
 
 var maze = []
@@ -33,7 +35,7 @@ romPath = './public/generated-seeds/'
 
 
 //Generates a random dungeon and returns the 64 * 3 bytes for the dungeon and enemies for the dungeon
-function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29) {    
+function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29, minimumDistanctToBoss=0) {    
     let xsize = 8;
     let ysize = 8;
     while(true){
@@ -57,16 +59,16 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         let openings = Math.floor(Math.random() * 7 + 1);
 
         startingRoom.openings = openings;
-        if ((openings & UP) == UP) {
-            propogate(startx, starty - 1, DOWN, wallChance, maximumSize)
+        if (openings & UP) {
+            propogate(startx, starty - 1, wallChance, maximumSize)
         }
         
-        if ((openings & DOWN) == DOWN) {
-            propogate(startx, starty + 1, UP, wallChance, maximumSize)
+        if (openings & DOWN) {
+            propogate(startx, starty + 1, wallChance, maximumSize)
         }
 
-        if ((openings & RIGHT) == RIGHT) {
-            propogate(startx + 1, starty, LEFT, wallChance, maximumSize)
+        if (openings & RIGHT) {
+            propogate(startx + 1, starty, wallChance, maximumSize)
         }
 
         //Add Boss Room
@@ -100,6 +102,17 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
             continue;
         }
 
+        var meetsMinimumBossDistance = true;
+        if (startingRoom.distanceFromBoss.forEach((x) => {
+            if (x < minimumDistanctToBoss) {
+                meetsMinimumBossDistance = false;
+            }
+        }))
+
+        if (!meetsMinimumBossDistance) {
+            continue;
+        }
+
         let unvisitableRooms = checkPathFromStart();
         
         if(unvisitableRooms > unvisitableRoomsLimit) {
@@ -107,11 +120,19 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         }
 
         //find another spot for the hospital
-        for (var i = 0; i < numHospital; i++){placeHospital();}
-        for (var i = 0; i < numShops; i++) {placeShop();}
-        for (var i = 0; i < numSpa; i++) {placeSpa();}
-
+        for (var i = 0; i < numHospital; i++){
+            placeRoom(0x15, [roomDefined, roomNotOpensUp, roomVisitable, notBossRoom])
+        }
+        for (var i = 0; i < numShops; i++) {
+            placeRoom(0x16, [roomDefined, roomNotOpensUp, roomVisitable, notBossRoom])
+        }
+        for (var i = 0; i < numSpa; i++) {
+            placeRoom(0x28, [roomDefined, roomNotOpensUp, roomNotOpensDown, roomVisitable, notBossRoom])
+        }
         placeEnemies();
+
+        //Lock Boss Room
+        maze[bossx][bossy].openings = NONE;
 
         let size = getMazeSize();
         if (size > minimumSize){
@@ -142,8 +163,6 @@ function printHex() {
             }
         }
     }
-
-    
     
     let response = (row + enemies).split(" ")
     while (response.length < 128) {
@@ -185,15 +204,43 @@ function placeEnemies() {
     }
 }
 
-//TODO: make this into a more generic function for seaching for a room to place
-function placeRoom(roomId, condition) {
+function notBossRoom(room) {
+    return room.enemyId != 0xF0;
+}
+
+function roomDefined(room) {
+    return room !== undefined
+}
+
+function roomNotOpensUp(room) {
+    return (room.openings & UP) == 0
+}
+
+function roomNotOpensDown(room) {
+    return (room.openings & DOWN) == 0
+}
+
+function roomVisitable(room) {
+    var roomVisitable = false;
+    room.distanceFromStart.forEach((x) => {
+        if (x != -1 && x != 999) {
+            roomVisitable = true;                    
+        }
+    })
+    
+    return roomVisitable;
+}
+
+function placeRoom(roomId, conditions) {
 
     let xPosistions = shuffle([...Array(maze.length).keys()]);
     
-
     var roomPlaced = false;
     xPosistions.forEach((x) => {
         let yPosistions = shuffle([...Array(maze[0].length).keys()]);
+        if (roomPlaced) {
+            return;
+        }
 
         yPosistions.forEach((y) => {
 
@@ -201,190 +248,18 @@ function placeRoom(roomId, condition) {
                 return;
             }
 
-            room = maze[x][y];
-            if (condition(room)) {
+            var room = maze[x][y];
+            var meetsConditions = true;
+            conditions.forEach((condition) => {
+                if (meetsConditions && !condition(room)) {                    
+                    meetsConditions = false;
+                }
+            })
+
+            if (meetsConditions) {
                 room.roomId = roomId
                 roomPlaced = true;
             }
-
-            if (room == undefined) {
-                return;
-            }
-
-            //Don't touch the boss room
-            if (room.enemyId == 0xF0) {
-                return;
-            }
-
-            if ((room.openings & UP) != 0) {
-                return;
-            }
-
-            //make sure we can reach it
-            var roomVisitable = false;
-            room.distanceFromStart.forEach((x) => {
-                if (x != -1 && x != 999) {
-                    roomVisitable = true;                    
-                }
-            })
-            
-            if (!roomVisitable) {
-                return;
-            }
-
-            //should work!
-            room.roomId = 0x15;
-            //console.log("Making room [" + x + "][" + y + "]  into a hospital")
-            roomPlaced = true;
-        })    
-    })
-
-}
-
-function placeHospital() {
-
-    let xPosistions = shuffle([...Array(maze.length).keys()]);
-
-    var hospitalPlaced = false;
-    xPosistions.forEach((x) => {
-        let yPosistions = shuffle([...Array(maze[0].length).keys()]);
-
-        yPosistions.forEach((y) => {
-
-            if(hospitalPlaced) {
-                return;
-            }
-
-            room = maze[x][y];
-            if (room == undefined) {
-                return;
-            }
-
-            //Don't touch the boss room
-            if (RESERVED_ROOMS.indexOf(room.roomId) > -1) {
-                return;
-            }
-
-            if ((room.openings & UP) != 0) {
-                return;
-            }
-
-            //make sure we can reach it
-            var roomVisitable = false;
-            room.distanceFromStart.forEach((x) => {
-                if (x != -1 && x != 999) {
-                    roomVisitable = true;                    
-                }
-            })
-            
-            if (!roomVisitable) {
-                return;
-            }
-
-            //should work!
-            room.roomId = 0x15;
-            //console.log("Making room [" + x + "][" + y + "]  into a hospital")
-            hospitalPlaced = true;
-        })    
-    })
-
-}
-
-function placeSpa() {
-
-    let xPosistions = shuffle([...Array(maze.length).keys()]);
-    
-
-    var spaPlaced = false;
-    xPosistions.forEach((x) => {
-        let yPosistions = shuffle([...Array(maze[0].length).keys()]);
-
-        yPosistions.forEach((y) => {
-
-            if(spaPlaced) {
-                return;
-            }
-
-            room = maze[x][y];
-            if (room == undefined) {
-                return;
-            }
-
-            //Don't touch the boss room or hospital
-            if (RESERVED_ROOMS.indexOf(room.roomId) > -1) {
-                return;
-            }
-
-            if ((room.openings & (UP | DOWN)) != 0) {
-                return;
-            }
-
-            //make sure we can reach it
-            var roomVisitable = false;
-            room.distanceFromStart.forEach((x) => {
-                if (x != -1 && x != 999) {
-                    roomVisitable = true;                    
-                }
-            })
-            
-            if (!roomVisitable) {
-                return;
-            }
-
-            //should work!
-            room.roomId = 0x28;
-            //console.log("Making room [" + x + "][" + y + "]  into a shop")
-            spaPlaced = true;
-        })    
-    })
-
-}
-
-function placeShop() {
-
-    let xPosistions = shuffle([...Array(maze.length).keys()]);
-    
-
-    var shopPlaced = false;
-    xPosistions.forEach((x) => {
-        let yPosistions = shuffle([...Array(maze[0].length).keys()]);
-
-        yPosistions.forEach((y) => {
-
-            if(shopPlaced) {
-                return;
-            }
-
-            room = maze[x][y];
-            if (room == undefined) {
-                return;
-            }
-
-            //Don't touch the boss room or hospital
-            if (RESERVED_ROOMS.indexOf(room.roomId) > -1) {
-                return;
-            }
-
-            if ((room.openings & UP) != 0) {
-                return;
-            }
-
-            //make sure we can reach it
-            var roomVisitable = false;
-            room.distanceFromStart.forEach((x) => {
-                if (x != -1 && x != 999) {
-                    roomVisitable = true;                    
-                }
-            })
-            
-            if (!roomVisitable) {
-                return;
-            }
-
-            //should work!
-            room.roomId = 0x16;
-            //console.log("Making room [" + x + "][" + y + "]  into a shop")
-            shopPlaced = true;
         })    
     })
 
@@ -409,10 +284,9 @@ function shuffle(arra1) {
 
 function checkPathFromStart() {
     let startRoom = maze[3][3];
-    let directions = [UP, DOWN, RIGHT, LEFT]
-    directions.forEach((dir) => {
+    DIRECTIONS.forEach((dir) => {
         
-        if ((startRoom.openings & dir) == dir) {
+        if (startRoom.openings & dir) {
             startRoom.distanceFromStart[DIR_INDEX[dir]] = 0;
             
             traverseMaze(3 + xOffSet[dir], 3 + yOffSet[dir], 0, dir)
@@ -461,9 +335,9 @@ function traverseMaze(x, y, distance, directionFrom) {
             return;
         }
 
-        if ((room.openings & dir) == dir){
+        if (room.openings & dir){
             // console.log(room.openings + " is open in " + dir)
-            if((roomLayout.paths[DIR_INDEX[roomExitDir]] & dir) == dir){ 
+            if(roomLayout.paths[DIR_INDEX[roomExitDir]] & dir){ 
                 room.distanceFromStart[DIR_INDEX[dir]] = distance + 1;
                 traverseMaze(x + xOffSet[dir], y + yOffSet[dir], distance + 1, dir);
             } else {
@@ -475,7 +349,6 @@ function traverseMaze(x, y, distance, directionFrom) {
     })
 
 }
-
 
 function getMazeSize() {
     var size = 0;
@@ -518,76 +391,25 @@ function getBossRoom() {
     }
 }
 
-function getDistanceFromStart() {
-
-}
-
 function getDistanceFromBossRoom(x, y, exit, distance) {
     // console.log("checking [" + x + "][" + y + "] for distance " + distance + " to exit " + exit)
     let room = maze[x][y];
    
-
-    if ((room.openings &  UP) == UP) {
-        if (room.distanceFromBoss[0] > distance + 1) {
-            layout = rooms[room.roomId];
-            if ((layout.paths[0] & exit) == exit) {
-                //valid path, set distance to distance + 1 and recurse
-                room.distanceFromBoss[0] = distance + 1;
-                getDistanceFromBossRoom(x, y-1, DOWN, distance + 1);
+    DIRECTIONS.forEach((dir) => {
+        if (room.openings & dir) {
+            if (room.distanceFromBoss[DIR_INDEX[dir]] > distance + 1) {
+                layout = rooms[room.roomId];
+                if(layout.paths[DIR_INDEX[dir]] & exit) {
+                    room.distanceFromBoss[DIR_INDEX[dir]] = distance + 1;
+                    getDistanceFromBossRoom(x + xOffSet[dir], y + yOffSet[dir], oppositeDir[dir], distance + 1);       
+                }
             }
-        }
-        //that entrance has a faster route already        
-    } else{
-        //no entrance, just set to -1
-        room.distanceFromBoss[0] = -1
-    }
 
-    if ((room.openings & DOWN) == DOWN) {
-        if (room.distanceFromBoss[2] > distance + 1) {
-            layout = rooms[room.roomId];
-            if ((layout.paths[2] & exit) == exit) {
-                //valid path, set distance to distance + 1 and recurse
-                room.distanceFromBoss[2] = distance + 1;
-                getDistanceFromBossRoom(x, y+1, UP, distance + 1);
-            }
+        } else {
+            room.distanceFromBoss[DIR_INDEX[dir]] = -1
         }
-        //that entrance has a faster route already        
-    } else{
-        //no entrance, just set to -1
-        room.distanceFromBoss[2] = -1
-    }
+    })
 
-    if ((room.openings & RIGHT) == RIGHT) {
-        if (room.distanceFromBoss[1] > distance + 1) {
-            layout = rooms[room.roomId];
-            if ((layout.paths[1] & exit) == exit) {
-                //valid path, set distance to distance + 1 and recurse
-                room.distanceFromBoss[1] = distance + 1;
-                getDistanceFromBossRoom(x+1, y, LEFT, distance + 1);
-            }
-        }
-        //that entrance has a faster route already        
-    } else{
-        //no entrance, just set to -1
-        room.distanceFromBoss[1] = -1
-    }
-
-    if ((room.openings & LEFT) == LEFT) {
-        if (room.distanceFromBoss[3] > distance + 1) {
-            layout = rooms[room.roomId];
-            if ((layout.paths[3] & exit) == exit) {
-                //valid path, set distance to distance + 1 and recurse
-                room.distanceFromBoss[3] = distance + 1;
-                getDistanceFromBossRoom(x-1, y, RIGHT, distance + 1);
-            }
-        }
-        //that entrance has a faster route already        
-    } else{
-        //no entrance, just set to -1
-        room.distanceFromBoss[3] = -1
-    }
-
-    
 }
 
 function placeBossRoom(bossRoomId) {
@@ -636,124 +458,115 @@ function placeBossRoom(bossRoomId) {
 }
 
 
-function propogate(startx, starty, comingFrom, wallChance) {
+function propogate(startx, starty, wallChance) {
     //look and see if the surrounding ones are already populated
     //for any not populated determine if we want 
-    startingRoom = maze[startx][starty];
-    if (startingRoom === undefined) {
-        startingRoom = makeRoom();
-        maze[startx][starty] = startingRoom;
+    var currentRoom = maze[startx][starty];
+    if (currentRoom === undefined) {
+        currentRoom = makeRoom();
+        maze[startx][starty] = currentRoom;
     }
 
-    if (startingRoom.visitedInGeneration) {
+    if (currentRoom.visitedInGeneration) {
         return;
     }
 
-    var aboveRoom = belowRoom = leftRoom = rightRoom = undefined;
     var roomOpenings = 0    
 
     //for now just make it all the same rooms.    
     // startingRoom.roomId = 0x0D;
-    startingRoom.roomId = Math.floor(Math.random() * 0x29)
-    while (RESERVED_ROOMS.indexOf(startingRoom.roomId) > -1 ||  (rooms[startingRoom.roomId].validEntrances & comingFrom) != comingFrom) {
-        startingRoom.roomId = Math.floor(Math.random() * 0x29)
-    }
-    let room = rooms[startingRoom.roomId]
+    currentRoom.roomId = Math.floor(Math.random() * 0x29)
+    leftRoomConnected = false;
+    rightRoomConnected = false;
+    upRoomConnected = false;
+    downRoomConnected = false;
+    var neededConnections = 0x0;
 
-    if (starty > 0 && (room.validEntrances & UP) == UP) {
-        aboveRoom = maze[startx][starty-1]
-        if (aboveRoom != undefined && aboveRoom.visitedInGeneration) {
-            //room's already there, lets check if it is connecting down
-            if ((aboveRoom.openings & DOWN) == DOWN) {
-                roomOpenings = roomOpenings | UP;
-            }
-        } else {
-            //randomly decide if we want to connect to UP Let's connect 75% of the time
-            let chance = (Math.random() * 100)
-            if (chance > wallChance) {
-                roomOpenings = roomOpenings | UP;
-            }
+    if (startx > 0) {
+        let leftRoom = maze[startx - 1][starty];
+        if (leftRoom && (leftRoom.openings & RIGHT)) {
+            neededConnections = neededConnections | LEFT;
+        }
+    }  
+
+    if (startx < 7) {
+        let rightRoom = maze[startx + 1][starty];
+        if (rightRoom && (rightRoom.openings & LEFT)) {
+            neededConnections = neededConnections | RIGHT;
         }
     }
 
-    if (starty < maze[0].length - 1 && (room.validEntrances & DOWN) == DOWN) {
-        belowRoom = maze[startx][starty+1]
-        if (belowRoom != undefined && belowRoom.visitedInGeneration) {
-            //room's already there, lets check if it is connecting down
-            if ((belowRoom.openings & UP) == UP) {
-                roomOpenings = roomOpenings | DOWN;
-            }
-        } else {
-            //randomly decide if we want to connect to UP Let's connect 75% of the time
-            let chance = (Math.random() * 100)
-            if (chance > wallChance) {
-                roomOpenings = roomOpenings | DOWN;
-            }
+    if (starty > 0) {
+        let upRoom = maze[startx][starty - 1];
+        if (upRoom && (upRoom.openings & DOWN)) {
+            neededConnections = neededConnections | UP;        
         }
     }
 
-    if (startx > 0 && (room.validEntrances & LEFT) == LEFT) {
-        leftRoom = maze[startx - 1][starty];
-        if (leftRoom != undefined && leftRoom.visitedInGeneration) {
-            //room's already there, lets check if it is connecting down
-            if ((leftRoom.openings & RIGHT) == RIGHT) {
-                roomOpenings = roomOpenings | LEFT;
-            }
-        } else {
-            //randomly decide if we want to connect to UP Let's connect 75% of the time            
-            let chance = (Math.random() * 100)
-            if (chance > wallChance) {
-                roomOpenings = roomOpenings | LEFT;
-            }
-        }
-        
-    }
-
-    if (startx < maze.length - 1 && (room.validEntrances & RIGHT) == RIGHT) {
-        rightRoom = maze[startx + 1][starty];
-        if (rightRoom != undefined && rightRoom.visitedInGeneration) {
-            //room's already there, lets check if it is connecting down
-            if ((rightRoom.openings & LEFT) == LEFT) {
-                roomOpenings = roomOpenings | RIGHT;
-            }
-        } else {
-            //randomly decide if we want to connect to UP Let's connect 75% of the time
-            let chance = (Math.random() * 100)
-            if (chance > wallChance) {
-                roomOpenings = roomOpenings | RIGHT;
-            }
+    if (starty < 7) {
+        let downRoom = maze[startx][starty + 1];
+        if (downRoom && (downRoom.openings & UP)) {
+            neededConnections = neededConnections | DOWN;
         }
     }
-    
-    startingRoom.openings = roomOpenings;    
-    startingRoom.visitedInGeneration = true;
 
-    if ((roomOpenings & UP) == UP) {
-        propogate(startx, starty - 1, DOWN, wallChance)
-    }
-     
-    if ((roomOpenings & DOWN) == DOWN) {
-        propogate(startx, starty + 1, UP, wallChance)
+    currentRoom.roomId = Math.floor(Math.random() * 0x29)
+    while (RESERVED_ROOMS.indexOf(currentRoom.roomId) > -1 ||  (rooms[currentRoom.roomId].validEntrances & neededConnections) != neededConnections) {
+        currentRoom.roomId = Math.floor(Math.random() * 0x29)
     }
 
-    if ((roomOpenings & RIGHT) == RIGHT) {
-        propogate(startx + 1, starty, LEFT, wallChance)
-    }
+    let roomLayout = rooms[currentRoom.roomId]
 
-    if ((roomOpenings & LEFT) == LEFT) {
-        propogate(startx - 1, starty, RIGHT, wallChance)
-    }
+    DIRECTIONS.forEach((dir) => {
+        //ensure there's a valid room that direction
+        let adjacentX = startx + xOffSet[dir]
+        let adjacentY = starty + yOffSet[dir]
+        if (adjacentX > -1 && adjacentX < 8 && adjacentY > -1 && adjacentY < 8 && (roomLayout.validEntrances & dir)) {
+            adjacentRoom = maze[adjacentX][adjacentY]
+            if (adjacentRoom != undefined && adjacentRoom.visitedInGeneration) {
+                if (adjacentRoom.openings & oppositeDir[dir]) {
+                    roomOpenings = roomOpenings | dir;
+                }
+            } else {
+                let chance = (Math.random() * 100)
+                if (chance > wallChance) {
+                    roomOpenings = roomOpenings | dir;
+                }
+            }
+        }
+    })
+   
+    currentRoom.openings = roomOpenings;    
+    currentRoom.visitedInGeneration = true;
+
+    DIRECTIONS.forEach((dir) => {
+        if (roomOpenings & dir) {
+            propogate(startx + xOffSet[dir], starty + yOffSet[dir], wallChance)
+        }
+    })
 }
 
+/**
+ * Creates a default room
+ */
 function makeRoom() {
     var room = {
         //Which doors are open
         openings: 0xf,        
+
+        //Which Room
         roomId: 0x0D,
+
+        //Whether or not we've visited this room while generating the maze, doesn't really belong here but it's convienent
         visitedInGeneration: false,
-        //Diste from boss for each entrance, invalid will be -1 and unchecked entrences will be 999
+
+        //Distance from boss for each entrance, invalid will be -1 and unchecked entrences will be 999
         distanceFromBoss: [999,999,999,999],
+        
+        //Distance from start for each entrance, invalid will be -1 and unchecked entrences will be 999, at least 1 must be > -1 for the room to be reachable
         distanceFromStart: [999,999,999,999],
+        
+        //Which Enemy is in the room.  0 is no enemy, 0xf is always the boss
         enemyId: 0x0,
     }
 

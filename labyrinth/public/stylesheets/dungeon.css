@@ -1,16 +1,41 @@
 .room {
-    height: 128px;
     width: 128px;
- display: inline-block;
- 
- 
- border-color: red;
- border-width: 2px;
- border-style: solid;
+    height: 120px;
+    display: inline-block;
+    
+    
+    border-color: red;
+    border-width: 2px;
+    border-style: solid;
+
+    position: relative;
 }
 
 .row {
     display: block;
+}
+
+.maze {
+    display: grid;
+    grid-template-columns: repeat(8, 132px);
+    grid-template-rows: repeat(8, 124px);
+}
+
+
+.roomImage {
+    width: 128px;
+    z-index:   1;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.opening-img {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 128px;
 }
 
 .open-01 {
@@ -107,9 +132,4 @@
     border-right-color: white;
     border-bottom-color: white;
     border-left-color: white;
-}
-
-.roomImage {
-    height: 128px;
-    width: 128px
 }

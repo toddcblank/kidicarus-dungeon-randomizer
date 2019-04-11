@@ -25,9 +25,9 @@ function createNewRandomizedRom() {
     let seed = new Date().getTime();
     let newFilename = 'ki-' + seed;
 
-    let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29);
-    let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b);
-    let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29)
+    let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
+    let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7);
+    let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10)
     
     let dungeon1Patch = {
         data: dungeon1,
@@ -97,23 +97,33 @@ function printMaze(mazePatch) {
     var line = ""
     for (var index = 0; index < 128; index = index + 2) {
         
-        if (index%16 == 0) {
-            line = '<div class="row">'
-        }
-
         var imgName = mazeBytes[index].toString(16) + ".png"
         if (mazeBytes[index].length < 2) {
             imgName = "0" + imgName;
         }
 
-        line += '<div class="room open-' + mazeBytes[index+1] + '"><img class="roomImage" src="../images/' + imgName + '"/></div>'
-
-        if (index%16 == 14) {
-            line += '</div>';
-            htmlSpoiler += line;
+        let openings = parseInt(mazeBytes[index+1], 16);
+        line += '<div class="room open-' + mazeBytes[index+1] + '">'
+        if ((openings & 0x01) == 1) {
+            line += '<img class="opening-img" src="../images/open-up.png" />';
         }
-    }
 
+        if ((openings & 0x02) == 0x02) {
+            line += '<img class="opening-img" src="../images/open-right.png" />';
+        }
+
+        if ((openings & 0x04) == 0x04) {
+            line += '<img class="opening-img" src="../images/open-down.png" />';
+        }
+
+        if ((openings & 0x08) == 0x08) {
+            line += '<img class="opening-img" src="../images/open-left.png" />';
+        }
+
+        line += '<img class="roomImage" src="../images/' + imgName + '"/></div>'
+
+    }
+    htmlSpoiler += line;
     htmlSpoiler += "<div></body></html>";
     console.log(htmlSpoiler)
     return htmlSpoiler;
