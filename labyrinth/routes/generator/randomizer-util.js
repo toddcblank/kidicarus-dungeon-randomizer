@@ -4,17 +4,17 @@ let romPath = './public/generated-seeds/'
 let fs = require('fs')
 
 let ADD_MAP_PATCH_D14 = {
-    data: ["1b", "88"],
+    data: ["1b", "88", 'FF'],
     offset: 0x1b2c4
 }
 
 let ADD_MAP_PATCH_D24 = {
-    data: ["1b", "88"],
+    data: ["1b", "88", 'FF'],
     offset: 0x1b5b8
 }
 
 let ADD_MAP_PATCH_D34 = {
-    data: ["1b", "88"],
+    data: ["1b", "88", 'FF'],
     offset: 0x1B88C
 }
 

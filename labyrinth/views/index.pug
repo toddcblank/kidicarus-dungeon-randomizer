@@ -2,7 +2,11 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title} Kid Icarus Randomizer.  Click here to get a new seed:
+  h2 Welcome to #{title} Kid Icarus Randomizer.  Click here to get a new seed:
+  p 
     a(href='generate-seed') new seed      
-  p About this
+  h2 Download already generated seeds here:
+  p
+    a(href='existing-seeds') existing seeds 
+  h3 About this
     p Made by Rumbleminze, make sure you save or get a password because you can softlock.  Although all dungeons are completable without wall clipping or other bug abuse

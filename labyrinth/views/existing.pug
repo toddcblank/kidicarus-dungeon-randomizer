@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1= title
+  p Existing Seeds
+  ul
+    each val in items
+      if val.indexOf('.nes') > -1
+        - var seed = val.substring(0, val.indexOf('.nes'))
+        li
+          a(href='generated-seeds/' + seed + '.nes') #{seed} 
+          ul
+            li
+              a(href='generated-seeds/' + seed + '-1-4.html') dungeon 1 spoiler 
+            li
+              a(href='generated-seeds/' + seed + '-2-4.html') dungeon 2 spoiler
+            li
+              a(href='generated-seeds/' + seed + '-3-4.html') dungeon 3 spoiler
+
+
