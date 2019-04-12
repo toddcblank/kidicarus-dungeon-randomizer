@@ -35,7 +35,7 @@ romPath = './public/generated-seeds/'
 
 
 //Generates a random dungeon and returns the 64 * 3 bytes for the dungeon and enemies for the dungeon
-function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29, minimumDistanctToBoss=0) {    
+function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29, minimumDistanceToBoss=0) {    
     let xsize = 8;
     let ysize = 8;
     while(true){
@@ -103,13 +103,13 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         }
 
         var meetsMinimumBossDistance = true;
-        if (startingRoom.distanceFromBoss.forEach((x) => {
-            if (x < minimumDistanceToBoss) {
-                meetsMinimumBossDistance = false;
+        startingRoom.distanceFromBoss.forEach((x) => {
+            if (x < minimumDistanceToBoss && x != -1) {
+                meetsMinimumBossDistance = false;                
             }
-        }))
+        })
 
-        if (!meetsMinimumBossDistance) {
+        if (!meetsMinimumBossDistance) {                    
             continue;
         }
 
@@ -121,13 +121,13 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
 
         //find another spot for the hospital
         for (var i = 0; i < numHospital; i++){
-            placeRoom(0x15, [roomDefined, roomNotOpensUp, roomVisitable, notBossRoom])
+            placeRoom(0x15, [roomDefined, notStartingRoom, roomNotOpensUp, roomVisitable, notBossRoom])
         }
         for (var i = 0; i < numShops; i++) {
-            placeRoom(0x16, [roomDefined, roomNotOpensUp, roomVisitable, notBossRoom])
+            placeRoom(0x16, [roomDefined, notStartingRoom, roomNotOpensUp, roomVisitable, notBossRoom])
         }
         for (var i = 0; i < numSpa; i++) {
-            placeRoom(0x28, [roomDefined, roomNotOpensUp, roomNotOpensDown, roomVisitable, notBossRoom])
+            placeRoom(0x28, [roomDefined, notStartingRoom, roomNotOpensUp, roomNotOpensDown, roomVisitable, notBossRoom])
         }
         placeEnemies();
 
@@ -135,12 +135,9 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         maze[bossx][bossy].openings = NONE;
 
         let size = getMazeSize();
-        if (size > minimumSize){
-            console.log("Finished with size of " + size + " & " + unvisitableRooms + " unvisitableRooms")
-        }
 
         if (size >= minimumSize && size <= maximumSize) {         
-            // printAllRooms()            
+            // printAllRooms()           
             return printHex();
         }   
 
@@ -168,7 +165,7 @@ function printHex() {
     while (response.length < 128) {
         response.push("00")
     }
-    console.log(row + enemies)
+    //console.log(row + enemies)
     //console.log(response)
     return response
 }
@@ -218,6 +215,10 @@ function roomNotOpensUp(room) {
 
 function roomNotOpensDown(room) {
     return (room.openings & DOWN) == 0
+}
+
+function notStartingRoom(room) {
+    return room !== undefined && room.roomId != 0x01;
 }
 
 function roomVisitable(room) {
