@@ -18,7 +18,21 @@ let ADD_MAP_PATCH_D34 = {
     offset: 0x1B88C
 }
 
-//TODO: find offsets for 2-4 and 3-4
+let ENEMY_POSITION_PATCH_D1 = {
+    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 43 01 43 03 AB 00 AB 02 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    offset: 0x1B278
+}
+
+let ENEMY_POSITION_PATCH_D2 = {
+    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 43 01 43 03 AB 00 AB 02 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    offset: 0x1B56C
+}
+
+let ENEMY_POSITION_PATCH_D3 = {
+    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 43 01 43 03 AB 00 AB 02 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    offset: 0x1B840
+}
+
 dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 
 function createNewRandomizedRom() {
@@ -86,6 +100,9 @@ function createNewRandomizedRom() {
     rp.patchRom(ADD_MAP_PATCH_D14, romPath + newFilename + ".nes");
     rp.patchRom(ADD_MAP_PATCH_D24, romPath + newFilename + ".nes");
     rp.patchRom(ADD_MAP_PATCH_D34, romPath + newFilename + ".nes");
+    rp.patchRom(ENEMY_POSITION_PATCH_D1, romPath + newFilename + ".nes");
+    rp.patchRom(ENEMY_POSITION_PATCH_D2, romPath + newFilename + ".nes");
+    rp.patchRom(ENEMY_POSITION_PATCH_D3, romPath + newFilename + ".nes");
 
     return seed;   
 }
@@ -125,7 +142,6 @@ function printMaze(mazePatch) {
     }
     htmlSpoiler += line;
     htmlSpoiler += "<div></body></html>";
-    console.log(htmlSpoiler)
     return htmlSpoiler;
 
 }

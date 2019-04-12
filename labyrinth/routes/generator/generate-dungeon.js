@@ -104,7 +104,7 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
 
         var meetsMinimumBossDistance = true;
         if (startingRoom.distanceFromBoss.forEach((x) => {
-            if (x < minimumDistanctToBoss) {
+            if (x < minimumDistanceToBoss) {
                 meetsMinimumBossDistance = false;
             }
         }))
