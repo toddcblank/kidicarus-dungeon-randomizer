@@ -10,7 +10,8 @@ router.get('/', function(req, res, next) {
 
 router.get('/generate-seed', function(req, res, next) {
 
-  let generatedSeed = generator.createNewRandomizedRom()
+  let skipSpoilers = req.query.skipSpoilers;
+  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false))
 
   res.render('generated', { title: 'Labrinyth' , seed: generatedSeed});
 });

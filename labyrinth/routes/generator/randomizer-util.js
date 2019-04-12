@@ -35,7 +35,7 @@ let ENEMY_POSITION_PATCH_D3 = {
 
 dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 
-function createNewRandomizedRom() {
+function createNewRandomizedRom(skipSpoilers=false) {
     let seed = new Date().getTime();
     let newFilename = 'ki-' + seed;
 
@@ -63,35 +63,37 @@ function createNewRandomizedRom() {
     let htmlSpoiler3 = printMaze(dungeon3);
 
     patches = [];
-    fs.open(romPath + newFilename + '-1-4.html', 'a', (err, fd) => {
-        if (err) {
-            console.log(err)
-            return;
-        }
-        fs.write(fd, htmlSpoiler, 0, 'utf-8',(err, writte, str) => {
-            console.log("Wrote html spoiler")
-        });
-    })
+    if(!skipSpoilers){
+        fs.open(romPath + newFilename + '-1-4.html', 'a', (err, fd) => {
+            if (err) {
+                console.log(err)
+                return;
+            }
+            fs.write(fd, htmlSpoiler, 0, 'utf-8',(err, writte, str) => {
+                console.log("Wrote html spoiler")
+            });
+        })
 
-    fs.open(romPath + newFilename + '-2-4.html', 'a', (err, fd) => {
-        if (err) {
-            console.log(err)
-            return;
-        }
-        fs.write(fd, htmlSpoiler2, 0, 'utf-8',(err, writte, str) => {
-            console.log("Wrote html spoiler")
-        });
-    })
+        fs.open(romPath + newFilename + '-2-4.html', 'a', (err, fd) => {
+            if (err) {
+                console.log(err)
+                return;
+            }
+            fs.write(fd, htmlSpoiler2, 0, 'utf-8',(err, writte, str) => {
+                console.log("Wrote html spoiler")
+            });
+        })
 
-    fs.open(romPath + newFilename + '-3-4.html', 'a', (err, fd) => {
-        if (err) {
-            console.log(err)
-            return;
-        }
-        fs.write(fd, htmlSpoiler3, 0, 'utf-8',(err, writte, str) => {
-            console.log("Wrote html spoiler")
-        });
-    })
+        fs.open(romPath + newFilename + '-3-4.html', 'a', (err, fd) => {
+            if (err) {
+                console.log(err)
+                return;
+            }
+            fs.write(fd, htmlSpoiler3, 0, 'utf-8',(err, writte, str) => {
+                console.log("Wrote html spoiler")
+            });
+        })
+    }
 
     rp.copyOriginalRom('ki-orig.nes', romPath + newFilename + ".nes");
     rp.patchRom(dungeon1Patch, romPath + newFilename + ".nes");
