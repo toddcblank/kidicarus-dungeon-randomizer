@@ -11,6 +11,9 @@
     position: relative;
 }
 
+.password {
+    width: 256px;
+}
 .row {
     display: block;
 }

@@ -1,7 +1,8 @@
 extends layout
-
 block content
   h1= title
+  head
+    link(rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css")
   p Welcome to #{title}
   p Link to seed: 
     a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      
@@ -12,5 +13,12 @@ block content
       a(href='generated-seeds/ki-' + seed + '-2-4.html') dungeon 2 spoiler
     p
       a(href='generated-seeds/ki-' + seed + '-3-4.html') dungeon 3 spoiler
-  p This code is useful to start at 1-4 with stuff
-    img(src="images/1-4-code.png", alt="0000mo C0LB00 ue0008 1000pr")
+  p This code is useful to start at 1-4 with stuff 
+  p  
+    img(src="images/1-4-code.png", class="password", alt="0000mo C0LB00 ue0008 1000pr")
+  p This code is useful to start at 2-4 with stuff
+  p 
+    img(src="images/2-4-code.png", class="password", alt="0000mo C0LB00 ue0008 1000pr")
+  p This code is useful to start at 3-4 with stuff
+  p
+    img(src="images/3-4-code.png", class="password" alt="0000mo C0LB00 ue0008 1000pr")
