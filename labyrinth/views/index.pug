@@ -4,11 +4,15 @@ block content
   h1= title
   h2 Welcome to #{title} Kid Icarus Randomizer.  Click here to get a new seed:
   p 
-    a(href='generate-seed') new seed     
-  p
-    a(href='generate-seed?skipSpoilers=true') new seed without spoilers (for racing)
-  h2 Download already generated seeds here:
-  p
-    a(href='existing-seeds') existing seeds 
+    if(hasRom)
+      p
+        a(href='generate-seed') new seed   
+      p
+        a(href='generate-seed?skipSpoilers=true') new seed without spoilers (for racing)
+    else
+      form(action="./upload-rom-for-patch" method="POST" encType="multipart/form-data")
+        input(type='file' name='rom') 
+        input(type='submit' name='submit' value='upload') 
+
   h3 About this
-    p Made by Rumbleminze, make sure you save or get a password because you can softlock.  Although all dungeons are completable without wall clipping or other bug abuse
+    p Made by Rumbleminze in collaboration with FruitBatSalad and playtesting by AngryIrishSnake, make sure you save or get a password because you can softlock.  Although all dungeons are completable without wall clipping or other bug abuse

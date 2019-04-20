@@ -1,6 +1,7 @@
 let fs = require('fs')
 
 function copyOriginalRom(originalName ='ki-orig.nes', newFilename) {
+    console.log("copying " + originalName + " to " + newFilename)
     fs.copyFileSync(originalName, newFilename)
     fs.chmod(newFilename, 0666, (error) => {
         console.log('Changed permissions')

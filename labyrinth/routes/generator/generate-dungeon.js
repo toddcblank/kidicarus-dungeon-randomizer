@@ -144,6 +144,10 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
     }
 }
 
+function generateLinearDungeon(minimumDistanceToBoss=10, bossRoomId=0x29) {
+    
+}
+
 function printHex() {
     
     var row = ""

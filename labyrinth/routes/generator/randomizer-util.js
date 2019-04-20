@@ -34,8 +34,10 @@ let ENEMY_POSITION_PATCH_D3 = {
 }
 
 dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
+scrollingLevelOffsets = [[], [0, 0x1a56b, ,0x1a584, 0x1a5a2], [], []]
 
-function createNewRandomizedRom(skipSpoilers=false) {
+
+function createNewRandomizedRom(skipSpoilers=false, romname) {
     let seed = new Date().getTime();
     let newFilename = 'ki-' + seed;
 
@@ -95,7 +97,7 @@ function createNewRandomizedRom(skipSpoilers=false) {
         })
     }
 
-    rp.copyOriginalRom('ki-orig.nes', romPath + newFilename + ".nes");
+    rp.copyOriginalRom(romname, romPath + newFilename + ".nes");
     rp.patchRom(dungeon1Patch, romPath + newFilename + ".nes");
     rp.patchRom(dungeon2Patch, romPath + newFilename + ".nes");    
     rp.patchRom(dungeon3Patch, romPath + newFilename + ".nes");
