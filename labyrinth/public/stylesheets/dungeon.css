@@ -136,3 +136,26 @@
     border-bottom-color: white;
     border-left-color: white;
 }
+
+.dungeon-settings {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 2fr 2fr 1fr;
+    grid-template-rows: repeat(8, 25px);
+    grid-gap: 5px;
+    text-align: right;
+}
+
+.form-group {
+    display: grid;
+    grid-template-rows: repeat(4, 29px);
+    grid-template-columns: 2fr .1fr 8fr;
+    border-style: solid;
+    padding-bottom: 10px;
+    padding-top: 5px;
+}
+
+.form-group.seed {
+    grid-template-columns: 241px 158px;
+    grid-template-rows: 29px 29px;
+    text-align: left;
+}

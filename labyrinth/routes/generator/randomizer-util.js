@@ -37,6 +37,41 @@ dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 scrollingLevelOffsets = [[], [0, 0x1a56b, ,0x1a584, 0x1a5a2], [], []]
 
 
+let settings = {
+    seed: 0,
+    randomizeFortresses1: true,
+    randomizeFortresses2: true,
+    randomizeFortresses3: true,
+    fortress1MinSize: 20,
+    fortress1MaxSize: 35,
+    fortress1WallChance: 60,
+    fortress1MaxUnvisitable: 0,
+    fortress1Shops: 1,
+    fortress1Hospitals: 1, 
+    fortress1Spas: 1,
+    fortress1MinimumDistanceToBoss: 5,
+
+    fortress2MinSize: 35,
+    fortress2MaxSize: 45,
+    fortress2WallChance: 30,
+    fortress2MaxUnvisitable: 8,
+    fortress2Shops: 2,
+    fortress2Hospitals: 1, 
+    fortress2Spas: 1,
+    fortress2MinimumDistanceToBoss: 7,
+
+    fortress3MinSize: 20,
+    fortress3MaxSize: 35,
+    fortress3WallChance: 60,
+    fortress3MaxUnvisitable: 0,
+    fortress3Shops: 1,
+    fortress3Hospitals: 1, 
+    fortress3Spas: 1,
+    fortress3MinimumDistanceToBoss: 5,
+}
+
+let 
+
 function createNewRandomizedRom(skipSpoilers=false, romname) {
     let seed = new Date().getTime();
     let newFilename = 'ki-' + seed;
