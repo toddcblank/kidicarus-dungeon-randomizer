@@ -225,9 +225,9 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     }
 
     //minor patches
-    // rp.patchRom(REMOVE_DOOR_PATCH, newFullFileName);
-    // rp.patchRom(ADD_FORTRESS_ITEMS, newFullFileName);
-    // rp.patchRom(STR_2_PATCH, newFullFileName);
+    rp.patchRom(REMOVE_DOOR_PATCH, newFullFileName);
+    rp.patchRom(ADD_FORTRESS_ITEMS, newFullFileName);
+    rp.patchRom(STR_2_PATCH, newFullFileName);
 
     rp.patchRom(getBossHealthPatch(25, 25, 25), newFullFileName);
     rp.patchRom(getTitleTextPatch("foo", "bar"), newFullFileName)
