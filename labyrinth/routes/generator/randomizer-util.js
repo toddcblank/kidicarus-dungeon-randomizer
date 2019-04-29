@@ -200,7 +200,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     if (levelsToRandomized.indexOf(1) > -1){
         let world1Patches = fbs.randomizeWorld(1, difficulty);
         rp.patchRom(world1Patches, newFullFileName);
-        writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches), romPath + newFilename + "-w1.html");
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1), romPath + newFilename + "-w1.html");
     }
 
     //world 2 randomization
@@ -214,7 +214,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     if (levelsToRandomized.indexOf(3) > -1){
         let world3Patches = fbs.randomizeWorld(3, difficulty);    
         rp.patchRom(world3Patches, newFullFileName);
-        writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches), romPath + newFilename + "-w3.html");  
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3), romPath + newFilename + "-w3.html");  
     }
     
     
@@ -261,7 +261,7 @@ function writeWorld2Spoilers(patches) {
         var line = '<div class="levelRow">'
         for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
             let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
-            line += '<div class="levelScreen"><img class="vertImage" src="../images/' + screen + '" /></div>'
+            line += '<div class="levelScreen"><img class="vertImage" src="../images/w2/' + screen + '" /></div>'
         }
         line += "</div>"
         htmlSpoiler += line;
@@ -278,7 +278,7 @@ function writeWorld4Spoilers(patches) {
     var line = '<div class="levelRow">'
     for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
         let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
-        line += '<div class="levelScreen"><img class="vertImage" src="../images/' + screen + '" /></div>'
+        line += '<div class="levelScreen"><img class="vertImage" src="../images/w4/' + screen + '" /></div>'
     }
     line += "</div>"
     htmlSpoiler += line;
@@ -286,7 +286,7 @@ function writeWorld4Spoilers(patches) {
     return htmlSpoiler;
 }
 
-function writeVerticalWorldSpoilers(patches) {
+function writeVerticalWorldSpoilers(patches, world) {
     
     var htmlSpoiler = '<html><head><link rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css" /></head><body>'
     htmlSpoiler += '<div class="vertical-level">'
@@ -311,7 +311,7 @@ function writeVerticalWorldSpoilers(patches) {
         var line = "";
         for (var w = 0; w < worldImages.length; w++){
             if (worldImages[w][index] != undefined) {
-                line += '<div class="levelScreen"><img class="vertImage" src="../images/' + worldImages[w][index].toString(16).padStart(2, '0') + '" /></div>'
+                line += '<div class="levelScreen"><img class="vertImage" src="../images/w' + world + '/' + worldImages[w][index].toString(16).padStart(2, '0') + '" /></div>'
             } else {
                 line += '<div class="levelScreen"><img class="vertImage" src="../images/00.png" /></div>'
             }
