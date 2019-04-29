@@ -218,7 +218,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     }
     
     
-    if (levelsToRandomized.indexOf(3) > -1){
+    if (levelsToRandomized.indexOf(4) > -1){
         let world4Patches = fbs.randomizeWorld(4, difficulty);
         rp.patchRom(world4Patches, newFullFileName);
         writeHtmlSpoiler(writeWorld4Spoilers(world4Patches), romPath + newFilename + "-w4.html");    

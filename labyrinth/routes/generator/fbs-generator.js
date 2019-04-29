@@ -55,7 +55,7 @@ function randomizeWorld(world, difficulty) {
             success = true;
             let screenUsed = [];
             stagePlan[0] = INITIAL_SCREENS[world][currentStage];
-            for (var currentScreen = 1; currentScreen <= stageLength[world][currentStage] - 1; currentScreen++) {
+            for (var currentScreen = 1; currentScreen < stageLength[world][currentStage] - 1; currentScreen++) {
                 var screenChoice = 0;
                 while (screenChoice == 0) {
                     screenChoice = pickScreen(world);
@@ -110,7 +110,7 @@ function randomizeWorld(world, difficulty) {
             let secondToLastScreen = stagePlan[thisStageLength - 2]
             //There's something special about world 4 here, I think I skip all this
             if(world == 4) {
-                stagePlan[thisStageLength] = exitScreen;
+                stagePlan[thisStageLength-1] = exitScreen;
                 exitWorks = true;
             } else {
                 //Each stage has 3 possible exit screens
@@ -118,7 +118,7 @@ function randomizeWorld(world, difficulty) {
                     let possibleResult = screenRules(secondToLastScreen, possibleExit, world)
                     if (possibleResult == SCREEN_OKAY || possibleResult == SCREEN_AWESOME || (difficulty == DIFF_HARD && possibleResult == SCREEN_HARD)) {
                         //Exit works!
-                        stagePlan[thisStageLength] = possibleExit
+                        stagePlan[thisStageLength - 1] = possibleExit
 
                         exitWorks = true;
                         break;
@@ -130,13 +130,14 @@ function randomizeWorld(world, difficulty) {
                 console.log("Tried all 3 exits, and none work with previous screen " + secondToLastScreen)
                 success = false;
             } else {
-                console.log("Exit " + stagePlan[thisStageLength] + " works with " + secondToLastScreen)
+                console.log("Exit " + stagePlan[thisStageLength - 1] + " works with " + secondToLastScreen)
             }
         }
        
         //finished!  create the patch!        
         let patchBytes = []
         stagePlans[currentStage] = stagePlan;
+        console.log(stagePlan)
         for(var i = 0; i < stagePlan.length; i++) {
             let screenToAdd = stagePlan[i];
             patchBytes.push(screens[world][screenToAdd].address1)
@@ -220,16 +221,18 @@ function randomizeWorld(world, difficulty) {
         }
     }
 
-    patches.push({data: enemyTable1Data, offset: ENEMY_TABLE_START_LOCATIONS[world][0]});
-    patches.push({data: enemyTable2Data, offset: ENEMY_TABLE_START_LOCATIONS[world][1]});
-    patches.push({data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[world][2]});
-    patches.push({data: enemyTable4Data, offset: ENEMY_TABLE_START_LOCATIONS[world][3]});
+    if (world != 4){
+        patches.push({data: enemyTable1Data, offset: ENEMY_TABLE_START_LOCATIONS[world][0]});
+        patches.push({data: enemyTable2Data, offset: ENEMY_TABLE_START_LOCATIONS[world][1]});
+        patches.push({data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[world][2]});
+        patches.push({data: enemyTable4Data, offset: ENEMY_TABLE_START_LOCATIONS[world][3]});
+    }
     if (world == 1) {
         patches.push(getPatchForWorld1Items(difficulty))
     } else if (world == 2) {
         patches.push(getPatchForWorld2Items(difficulty))
     } else if (world == 3) {
-        //patches.push(getPatchForWorld3Items(difficulty))
+        patches.push(getPatchForWorld3Items(difficulty))
     }
     patches.push(radomizePlatforms(world));
 
@@ -284,6 +287,10 @@ function getPatchForWorld3Items(difficulty) {
 
 function radomizePlatforms(world, difficulty) {
     //two patches, 1 to remove them all, 1 to randomly add them
+    if (world == 4) {
+        return {offset: 0x0, data: []};
+    }
+
     let removalPatch = {offset: PLATFORM_ADDRESS[world], data: []}
     for (var i = 0; i < 128; i++) {
         removalPatch.data.push(0xff);
@@ -296,7 +303,7 @@ function radomizePlatforms(world, difficulty) {
     let locationOptions = [0x37, 0x67, 0x97, 0xC7]
     let addPlatformsPatch = {offset: PLATFORM_ADDRESS[world], data: []}
     for (var i = 0; i < 32; i++) {
-        choice = Math.floor(Math.random() * difficulty);
+        choice = Math.floor(Math.random() * difficulty) + 1;
         if (choice == 1) {
             let stage = Math.floor(Math.random() * 3);
             let screen = Math.floor(Math.random() * stageLength[world][stage])

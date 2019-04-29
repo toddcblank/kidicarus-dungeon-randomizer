@@ -61,7 +61,7 @@ router.post('/generate-seed', function(req, res, next) {
   if (req.body.randomizeFortress2) {
     fortressesToRandomize.push(2)
   }
-  if (req.body.randomizeFortress3) {
+  if (req.body.randomizeFortress4) {
     fortressesToRandomize.push(3)
   }
 
