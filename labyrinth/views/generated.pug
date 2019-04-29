@@ -6,13 +6,23 @@ block content
   p Welcome to #{title}
   p Link to seed: 
     a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      
-  p Link to spoiler image:
-    p
-      a(href='generated-seeds/ki-' + seed + '-1-4.html') dungeon 1 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-2-4.html') dungeon 2 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-3-4.html') dungeon 3 spoiler
+  if(spoilers)
+    p Link to spoiler pages (note if you didn't randomize the world/level it will 404):  
+      p
+        a(href='generated-seeds/ki-' + seed + '-w1.html') World 1 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-1-4.html') dungeon 1 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-w2.html') World 2 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-2-4.html') dungeon 2 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-w3.html') World 3 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-3-4.html') dungeon 3 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-w4.html') World 4 spoiler
+
   p This code is useful to start at 1-4 with stuff 
   p  
     img(src="images/1-4-code.png", class="password", alt="0000mo C0LB00 ue0008 1000pr")

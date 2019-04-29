@@ -10,80 +10,99 @@ block content
         div.form-group.seed
           label(for="seed") Seed (Leave 0 for new seed)  
           input(type="text", name="seed", value="0")
-        
-        div.form-group
-          label(for="randomizeFortress1") Randomize Fotress 1
+          label(for="difficulty") Difficulty
+          select(name="difficulty")
+            option(value="1") EASY
+            option(value="2") NORMAL
+            option(value="3") HARD
+          label(for="skipSpoilers") Skip Spoilers
+          input(type="checkbox", name="skipSpoilers")
+        div.form-group.seed
+          label(for="randomizeWorld1") Randomize World 1
+          input(type="checkbox", name="randomizeWorld1", checked)
+          label(for="randomizeFortress1") Randomize Fortress 1
           input(type="checkbox", name="randomizeFortress1", checked)
-
-          div.dungeon-settings
-            label(for="fortress1MinSize") Minimum Size 
-            input#fortress1MinSize.form-control(type="range", name="fortress1MinSize" value="20" min="10" max="64" oninput="fortress1MinSizeDisplay.value = value")
-            input#fortress1MinSizeDisplay.form-control.display(type="number", value="20", disabled)
-            label(for="fortress1MaxSize") Maximum Size
-            input#fortress1MaxSize.form-control(type="range", name="fortress1MaxSize"  value="35" min="10" max="64" oninput="fortress1MaxSizeDisplay.value = value")
-            input#fortress1MaxSizeDisplay.form-control.display(type="number", value="35", disabled)
-            label(for="fortress1WallChance") Chance for Wall
-            input#fortress1WallChance.form-control(type="range", name="fortress1WallChance"  value="60" min="0" max="100" oninput="fortress1WallChanceDisplay.value = value")
-            input#fortress1WallChanceDisplay.form-control.display(type="number", value="60", disabled)
-            label(for="fortress1MaxUnvisitable") Allowed # unvisitable
-            input#fortress1MaxUnvisitable.form-control(type="range", name="fortress1MaxUnvisitable"  value="0" min="0" max="10" oninput="fortress1MaxUnvisitableDisplay.value = value")
-            input#fortress1MaxUnvisitableDisplay.form-control.display(type="number", value="0", disabled)
-            label(for="fortress1Shops") Number of Shops
-            input#fortress1Shops.form-control(type="range", name="fortress1Shops"  value="1" list="roomCountOptions" min="0" max="5" oninput="fortress1ShopsDisplay.value = value")
-            input#fortress1ShopsDisplay.form-control.display(type="number", value="1", disabled)
-            label(for="fortress1Hospitals") Number of Hospitals
-            input#fortress1Hospitals.form-control(type="range", name="fortress1Hospitals"  value="1" list="roomCountOptions" min="0" max="5" oninput="fortress1HospitalsDisplay.value = value")
-            input#fortress1HospitalsDisplay.form-control.display(type="number", value="1", disabled)
-            label(for="fortress1Spas") Number of Spas
-            input#fortress1Spas.form-control(type="range", name="fortress1Spas"  value="1" list="roomCountOptions" min="0" max="5" oninput="fortress1SpasDisplay.value = value")
-            input#fortress1SpasDisplay.form-control.display(type="number", value="1", disabled)
-            label(for="fortress1MinimumDistanceToBoss") Minimum Path Length
-            input#fortress1MinimumDistanceToBoss.form-control(type="range" name="fortress1MinimumDistanceToBoss"  value="5" min="0" max="30" oninput="fortress1MinimumDistanceToBossDisplay.value = value")
-            input#fortress1MinimumDistanceToBossDisplay.form-control.display(type="number", value="5", disabled)
-
-        div.form-group  
-          label(for="randomizeFortress2") Randomize Fotress 2
+        div.form-group.seed
+          label(for="randomizeWorld2") Randomize World 2
+          input(type="checkbox", name="randomizeWorld2", checked)
+          label(for="randomizeFortress2") Randomize Fortress 2
           input(type="checkbox", name="randomizeFortress2", checked)
-
-          div.dungeon-settings
-            label(for="fortress2MinSize") Minimum Size 
-            input#fortress2MinSize.form-control(type="range", name="fortress2MinSize" min="10" max="54")
-            label(for="fortress2MaxSize") Maximum Size
-            input#fortress2MaxSize.form-control(type="range", name="fortress2MaxSize" min="20" max="64")
-            label(for="fortress2WallChance") Chance for Wall
-            input#fortress2WallChance.form-control(type="range", name="fortress2WallChance"  min="0" max="100")
-            label(for="fortress2MaxUnvisitable") Allowed # unvisitable
-            input#fortress2MaxUnvisitable.form-control(type="range", name="fortress2MaxUnvisitable" list="roomCountOptions" min="0" max="5")
-            label(for="fortress2Shops") Number of Shops
-            input#fortress2MaxUnvisitable.form-control(type="range", name="fortress2Shops" list="roomCountOptions" min="0" max="5")
-            label(for="fortress2Hospitals") Number of Hospitals
-            input#fortress2Hospitals.form-control(type="range", name="fortress2Hospitals" list="roomCountOptions" min="0" max="5")
-            label(for="fortress2Spas") Number of Spas
-            input#fortress2Spas.form-control(type="range", name="fortress2Spas" list="roomCountOptions" min="0" max="5")
-            label(for="fortress2MinimumDistanceToBoss") Minimum Path Length
-            input#fortress2MinimumDistanceToBoss.form-control(type="range", name="fortress2MinimumDistanceToBoss"  value="7")
-          
-        div.form-group
-          label(for="randomizeFortress3") Randomize Fotress 3
+        div.form-group.seed
+          label(for="randomizeWorld3") Randomize World 3
+          input(type="checkbox", name="randomizeWorld3", checked)
+          label(for="randomizeFortress3") Randomize Fortress 3
           input(type="checkbox", name="randomizeFortress3", checked)
+        div.form-group.seed
+          label(for="randomizeWorld4") Randomize World 4
+          input(type="checkbox", name="randomizeWorld4", checked)
+        div.form-group.seed
+          input(type="submit", value="submit")
 
-          div.dungeon-settings
-            label(for="fortress3MinSize") Minimum Size 
-            input#fortress3MinSize.form-control(type="range", name="fortress3MinSize" min="10" max="54")
-            label(for="fortress3MaxSize") Maximum Size
-            input#fortress3MaxSize.form-control(type="range", name="fortress3MaxSize"  min="10" max="64")
-            label(for="fortress3WallChance") Chance for Wall
-            input#fortress3WallChance.form-control(type="range", name="fortress3WallChance")
-            label(for="fortress3MaxUnvisitable") Allowed # unvisitable
-            input#fortress3MaxUnvisitable.form-control(type="range", name="fortress3MaxUnvisitable")
-            label(for="fortress3Shops") Number of Shops
-            input#fortress3MaxUnvisitable.form-control(type="range", name="fortress3Shops")
-            label(for="fortress3Hospitals") Number of Hospitals
-            input#fortress3Hospitals.form-control(type="range", name="fortress3Hospitals")
-            label(for="fortress3Spas") Number of Spas
-            input#fortress3Spas.form-control(type="range", name="fortress3Spas")
-            label(for="fortress3MinimumDistanceToBoss") Minimum Path Length
-            input#fortress3MinimumDistanceToBoss.form-control(type="range", name="fortress3MinimumDistanceToBoss"  value="10")
+
+      //-     div.dungeon-settings
+      //-       label(for="fortress1MinSize") Minimum Size 
+      //-       input#fortress1MinSize.form-control(type="range", name="fortress1MinSize" value="20" min="10" max="64" oninput="fortress1MinSizeDisplay.value = value")
+      //-       input#fortress1MinSizeDisplay.form-control.display(type="number", value="20", disabled)
+      //-       label(for="fortress1MaxSize") Maximum Size
+      //-       input#fortress1MaxSize.form-control(type="range", name="fortress1MaxSize"  value="35" min="10" max="64" oninput="fortress1MaxSizeDisplay.value = value")
+      //-       input#fortress1MaxSizeDisplay.form-control.display(type="number", value="35", disabled)
+      //-       label(for="fortress1WallChance") Chance for Wall
+      //-       input#fortress1WallChance.form-control(type="range", name="fortress1WallChance"  value="60" min="0" max="100" oninput="fortress1WallChanceDisplay.value = value")
+      //-       input#fortress1WallChanceDisplay.form-control.display(type="number", value="60", disabled)
+      //-       label(for="fortress1MaxUnvisitable") Allowed # unvisitable
+      //-       input#fortress1MaxUnvisitable.form-control(type="range", name="fortress1MaxUnvisitable"  value="0" min="0" max="10" oninput="fortress1MaxUnvisitableDisplay.value = value")
+      //-       input#fortress1MaxUnvisitableDisplay.form-control.display(type="number", value="0", disabled)
+      //-       label(for="fortress1Shops") Number of Shops
+      //-       input#fortress1Shops.form-control(type="range", name="fortress1Shops"  value="1" list="roomCountOptions" min="0" max="5" oninput="fortress1ShopsDisplay.value = value")
+      //-       input#fortress1ShopsDisplay.form-control.display(type="number", value="1", disabled)
+      //-       label(for="fortress1Hospitals") Number of Hospitals
+      //-       input#fortress1Hospitals.form-control(type="range", name="fortress1Hospitals"  value="1" list="roomCountOptions" min="0" max="5" oninput="fortress1HospitalsDisplay.value = value")
+      //-       input#fortress1HospitalsDisplay.form-control.display(type="number", value="1", disabled)
+      //-       label(for="fortress1Spas") Number of Spas
+      //-       input#fortress1Spas.form-control(type="range", name="fortress1Spas"  value="1" list="roomCountOptions" min="0" max="5" oninput="fortress1SpasDisplay.value = value")
+      //-       input#fortress1SpasDisplay.form-control.display(type="number", value="1", disabled)
+      //-       label(for="fortress1MinimumDistanceToBoss") Minimum Path Length
+      //-       input#fortress1MinimumDistanceToBoss.form-control(type="range" name="fortress1MinimumDistanceToBoss"  value="5" min="0" max="30" oninput="fortress1MinimumDistanceToBossDisplay.value = value")
+      //-       input#fortress1MinimumDistanceToBossDisplay.form-control.display(type="number", value="5", disabled)
+
+     
+      //-     div.dungeon-settings
+      //-       label(for="fortress2MinSize") Minimum Size 
+      //-       input#fortress2MinSize.form-control(type="range", name="fortress2MinSize" min="10" max="54")
+      //-       label(for="fortress2MaxSize") Maximum Size
+      //-       input#fortress2MaxSize.form-control(type="range", name="fortress2MaxSize" min="20" max="64")
+      //-       label(for="fortress2WallChance") Chance for Wall
+      //-       input#fortress2WallChance.form-control(type="range", name="fortress2WallChance"  min="0" max="100")
+      //-       label(for="fortress2MaxUnvisitable") Allowed # unvisitable
+      //-       input#fortress2MaxUnvisitable.form-control(type="range", name="fortress2MaxUnvisitable" list="roomCountOptions" min="0" max="5")
+      //-       label(for="fortress2Shops") Number of Shops
+      //-       input#fortress2MaxUnvisitable.form-control(type="range", name="fortress2Shops" list="roomCountOptions" min="0" max="5")
+      //-       label(for="fortress2Hospitals") Number of Hospitals
+      //-       input#fortress2Hospitals.form-control(type="range", name="fortress2Hospitals" list="roomCountOptions" min="0" max="5")
+      //-       label(for="fortress2Spas") Number of Spas
+      //-       input#fortress2Spas.form-control(type="range", name="fortress2Spas" list="roomCountOptions" min="0" max="5")
+      //-       label(for="fortress2MinimumDistanceToBoss") Minimum Path Length
+      //-       input#fortress2MinimumDistanceToBoss.form-control(type="range", name="fortress2MinimumDistanceToBoss"  value="7")
+          
+
+
+      //-     div.dungeon-settings
+      //-       label(for="fortress3MinSize") Minimum Size 
+      //-       input#fortress3MinSize.form-control(type="range", name="fortress3MinSize" min="10" max="54")
+      //-       label(for="fortress3MaxSize") Maximum Size
+      //-       input#fortress3MaxSize.form-control(type="range", name="fortress3MaxSize"  min="10" max="64")
+      //-       label(for="fortress3WallChance") Chance for Wall
+      //-       input#fortress3WallChance.form-control(type="range", name="fortress3WallChance")
+      //-       label(for="fortress3MaxUnvisitable") Allowed # unvisitable
+      //-       input#fortress3MaxUnvisitable.form-control(type="range", name="fortress3MaxUnvisitable")
+      //-       label(for="fortress3Shops") Number of Shops
+      //-       input#fortress3MaxUnvisitable.form-control(type="range", name="fortress3Shops")
+      //-       label(for="fortress3Hospitals") Number of Hospitals
+      //-       input#fortress3Hospitals.form-control(type="range", name="fortress3Hospitals")
+      //-       label(for="fortress3Spas") Number of Spas
+      //-       input#fortress3Spas.form-control(type="range", name="fortress3Spas")
+      //-       label(for="fortress3MinimumDistanceToBoss") Minimum Path Length
+      //-       input#fortress3MinimumDistanceToBoss.form-control(type="range", name="fortress3MinimumDistanceToBoss"  value="10")
 
         datalist(id="dungeonSizes")
           option(value="5" label="5")
@@ -95,15 +114,8 @@ block content
           option(value="3" label="3")
           option(value="4")
           option(value="5" label="5")
-
-      p
-        a(href='generate-seed') new seed   
-      p
-        a(href='generate-seed?skipSpoilers=true') new seed without spoilers (for racing)
     else
+      p Please provide a vanilla, unheadered Kid Icarus ROM to patch:
       form(action="./upload-rom-for-patch" method="POST" encType="multipart/form-data")
         input(type='file' name='rom') 
         input(type='submit' name='submit' value='upload') 
-
-  h3 About this
-    p Made by Rumbleminze and fruitbatsalad with playtesting by AngryIrishSnake and Maniacal42, make sure you save or get a password because you can softlock.  Although all dungeons are completable without wall clipping or other bug abuse

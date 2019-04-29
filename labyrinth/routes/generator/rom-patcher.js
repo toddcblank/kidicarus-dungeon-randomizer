@@ -16,6 +16,14 @@ patch should be an object with:
 }
 */
 function patchRom(patch, filename) {
+
+    if (patch.constructor === Array) {
+        patch.forEach((p) => {
+            patchRom(p, filename)
+        })
+        return;
+    }
+    // console.log(patch)
     fs.open(filename, 'r+', function(status, fd) {
         if (status) {
             console.log("Status: " + status.message);
@@ -23,10 +31,13 @@ function patchRom(patch, filename) {
         }
         // console.log(patches)
         decPatches = []
-        patch.data.forEach((x) => {
-            decPatches.push(parseInt(x, 16))
-        })
-        // console.log(decPatches)
+        if (typeof patch.data[0] == 'number') {
+            decPatches = patch.data
+        } else {
+            patch.data.forEach((x) => {
+                decPatches.push(parseInt(x, 16))
+           })
+        }
         var buffer = new Buffer.from(decPatches)
         fs.writeSync(fd, buffer, 0, decPatches.length, patch.offset);
     })

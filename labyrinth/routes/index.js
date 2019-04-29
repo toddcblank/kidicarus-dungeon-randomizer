@@ -1,22 +1,77 @@
 var express = require('express');
 var router = express.Router();
 var generator = require('./generator/randomizer-util')
-var fs = require('fs');
+var seedrandom = require('seedrandom');
+var fs = require('fs')
 
+const DIFF_ABBREV = ["U", "E", "N", "H"]
 /* GET home page. */
 router.get('/', function(req, res, next) {
   let hasRom = req.session.uploadedrom !== undefined
   res.render('index', { title: 'Labrinyth', hasRom: hasRom});
 });
-
 router.get('/generate-seed', function(req, res, next) {
-
-  let romname = './uploaded-roms/' + req.session.uploadedrom
-  let skipSpoilers = req.query.skipSpoilers;
-  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romname)
-
-  res.render('generated', { title: 'Labrinyth' , seed: generatedSeed});
+  res.redirect("/")
 });
+router.post('/generate-seed', function(req, res, next) {
+
+  let difficulty = req.body.difficulty
+  var rngSeed = new Date().getTime().toString();
+  if (req.body.seed && req.body.seed != 0) {
+    rngSeed = req.body.seed;
+  }
+
+  rngSeed = DIFF_ABBREV[difficulty] + rngSeed;
+
+  console.log("Using seed " + rngSeed)
+
+  let rom = req.session.uploadedrom
+  let romFullPath = './uploaded-roms/' + rom
+
+  if (rom == undefined) {
+    console.log("No rom uploaded, redirecting")
+    res.redirect("/")
+    return;
+  }
+
+  let rng = seedrandom(rngSeed);
+  Math.random = () => {
+    return rng();
+  }
+
+  let skipSpoilers = req.body.skipSpoilers;
+  //There's definitely a better way to do this, but I'll save that for another day.
+  let fortressesToRandomize = []
+  let levelsToRandomize = []
+  if (req.body.randomizeWorld1) {
+    levelsToRandomize.push(1)
+  }
+  if (req.body.randomizeWorld2) {
+    levelsToRandomize.push(2)
+  }
+  if (req.body.randomizeWorld3) {
+    levelsToRandomize.push(3)
+  }
+  if (req.body.randomizeWorld4) {
+    levelsToRandomize.push(4);    
+  }
+  if (req.body.randomizeFortress1) {
+    fortressesToRandomize.push(1)
+  }
+  if (req.body.randomizeFortress2) {
+    fortressesToRandomize.push(2)
+  }
+  if (req.body.randomizeFortress3) {
+    fortressesToRandomize.push(3)
+  }
+
+
+
+  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty)
+
+  res.render('generated', { title: 'Labrinyth' , seed: generatedSeed, spoilers: !skipSpoilers});
+});
+
 
 // router.get('/existing-seeds', (req, res, next) => {
 //     fs.readdir('./public/generated-seeds', function(err, items) {
@@ -25,19 +80,11 @@ router.get('/generate-seed', function(req, res, next) {
 // })
 
 router.post('/upload-rom-for-patch', (req, res, next) => {
-  console.log(req.files)
+  
     let rom = req.files.rom
     let seed = new Date().getTime();
-    rom.mv('./uploaded-roms/' + seed + '-' + rom.name)
-    console.log(rom.name)
-
-    //TODO Session Mgmt to 
-    //1 check if they've uploaded a file
-    console.log(req.session)
-    req.session.uploadedrom = seed + '-' + rom.name
-    //req.session.fileUploaded = rom
-    //2 use it to pass in 
-
+    rom.mv('./uploaded-roms/' + seed + '-' + rom.name)  
+    req.session.uploadedrom = seed + '-' + rom.name  
     res.redirect("/")
 
 })

@@ -159,3 +159,31 @@
     grid-template-rows: 29px 29px;
     text-align: left;
 }
+
+.vertical-level {
+    display: grid;
+    grid-template-columns: repeat(6, 128px);
+    grid-template-rows: repeat(44, auto);
+}
+
+.levelScreen {
+    height: 120px;
+    width: 128px;
+}
+
+.vertImage {
+    height: 120px;
+    width: 128px;
+}
+
+.horizontal-level {
+    display: grid;
+    grid-template-rows: 128px 128px 128px;
+}
+
+.levelRow {
+    display: grid;
+    grid-template-rows: 128px;
+    grid-template-columns: repeat(35, 128px);
+    padding-bottom: 8px;
+}

@@ -2,6 +2,7 @@ let dg = require('./generate-dungeon')
 let rp = require('./rom-patcher')
 let romPath = './public/generated-seeds/'
 let fs = require('fs')
+let fbs = require('./fbs-generator')
 
 let ADD_MAP_PATCH_D14 = {
     data: ["1b", "88", 'FF'],
@@ -33,15 +34,43 @@ let ENEMY_POSITION_PATCH_D3 = {
     offset: 0x1B840
 }
 
-dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
-scrollingLevelOffsets = [[], [0, 0x1a56b, ,0x1a584, 0x1a5a2], [], []]
+let REMOVE_DOOR_PATCH = {
+    data: [],
+    offset: 0x1efd8
+}
 
+let ADD_FORTRESS_ITEMS = [
+    {
+        data: [0xD0],
+        offset: 0x1e27b,
+    },
+    {
+        data: [0xD0],
+        offset: 0x1524c,
+    },
+    {
+        data: [0xD0],
+        offset: 0x1e21b,
+    },
+]
+
+let STR_2_PATCH = [
+    {data: [0xee, 0x52, 0x01], offset: 0x6170},
+    {data: [0xa9, 0x01, 0x8d, 0x52, 0x01], offset: 0x1eac3},
+]
+
+for (var i = 0; i < 181; i++) {
+    REMOVE_DOOR_PATCH.data.push("0xff")
+}
+
+dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 
 let settings = {
     seed: 0,
     randomizeFortresses1: true,
     randomizeFortresses2: true,
     randomizeFortresses3: true,
+
     fortress1MinSize: 20,
     fortress1MaxSize: 35,
     fortress1WallChance: 60,
@@ -60,90 +89,240 @@ let settings = {
     fortress2Spas: 1,
     fortress2MinimumDistanceToBoss: 7,
 
-    fortress3MinSize: 20,
-    fortress3MaxSize: 35,
-    fortress3WallChance: 60,
-    fortress3MaxUnvisitable: 0,
-    fortress3Shops: 1,
+    fortress3MinSize: 50,
+    fortress3MaxSize: 64,
+    fortress3WallChance: 20,
+    fortress3MaxUnvisitable: 8,
+    fortress3Shops: 3,
     fortress3Hospitals: 1, 
     fortress3Spas: 1,
-    fortress3MinimumDistanceToBoss: 5,
+    fortress3MinimumDistanceToBoss: 10,
 }
 
-let 
+function getBossHealthPatch(boss1, boss2, boss3) {
+    return {
+        data: [boss1, boss2, boss3],
+        offset: 0x15127
+    }
+}
 
-function createNewRandomizedRom(skipSpoilers=false, romname) {
-    let seed = new Date().getTime();
-    let newFilename = 'ki-' + seed;
+//Right now this just uses FBS's text, would like to edit it 
+function getTitleTextPatch(lineOne, lineTwo) {
 
-    let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
-    let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7);
-    let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10)
+    let extraLetters1 = {
+        data: "E6 4C 58 70 58 4C E6 00 00 00 00 00 00 00 00 00".split(" "),
+        offset: 0x3b60
+    }
+
+    let extraLetters2 = {
+        data: "7C 10 10 10 10 10 7C 00 00 00 00 00 00 00 00 00".split(" "),
+        offset: 0x3a00
+    }
+
+    let extraLetters3 = {
+        data: "FE 42 48 78 48 40 E0 00 00 00 00 00 00 00 00 00".split(" "),
+        offset: 0x37c0
+    }
+
+    let textPatch1 = {
+        data: [0x12, 0xb5, 0x9f, 0x12, 0xb6, 0xa7, 0xa6, 0xbf, 0xb7, 0x12],
+        offset: 0x63c3
+    }
+
+    let textPatch2 = {
+        data: [0x65, 0xaf, 0x12, 0x7b, 0x65, 0xc0],
+        offset: 0x63e5
+    }
+
+    return [extraLetters1, extraLetters2, extraLetters3, textPatch1, textPatch2]
+}
+
+function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1) {
+
+    console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
+    let newFilename = 'ki-' + seed;    
+    let newFullFileName = romPath + newFilename + ".nes";
+    rp.copyOriginalRom(romname, newFullFileName);
+
+    if (fortressesToRandomize.indexOf(1) > -1){        
+        console.log("Generating dungeon 1")
+        let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
+        let dungeon1Patch = {
+            data: dungeon1,
+            offset: dungeonLevelOffsets[1]
+        }
+        let htmlSpoiler = printMaze(dungeon1);
+        if(!skipSpoilers){        
+            writeHtmlSpoiler(htmlSpoiler, romPath + newFilename + "-1-4.html");
+        }
+        rp.patchRom(dungeon1Patch, newFullFileName);        
+        rp.patchRom(ENEMY_POSITION_PATCH_D1, newFullFileName);
+    }
+
+    if (fortressesToRandomize.indexOf(2) > -1){     
+        console.log("Generating dungeon 2")
+        let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7);
+        let dungeon2Patch = {
+            data: dungeon2,
+            offset: dungeonLevelOffsets[2]
+        }
+        
+        let htmlSpoiler2 = printMaze(dungeon2);   
+        rp.patchRom(dungeon2Patch, newFullFileName);   
+        rp.patchRom(ENEMY_POSITION_PATCH_D2, newFullFileName);
+        if(!skipSpoilers){        
+            writeHtmlSpoiler(htmlSpoiler2, romPath + newFilename + "-2-4.html");
+        }
+    }
+
+    if (fortressesToRandomize.indexOf(3) > -1){     
+       console.log("Generating dungeon 3")
+        let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10)
+
+        let dungeon3Patch = {
+            data: dungeon3,
+            offset: dungeonLevelOffsets[3]
+        }
     
-    let dungeon1Patch = {
-        data: dungeon1,
-        offset: dungeonLevelOffsets[1]
+        let htmlSpoiler3 = printMaze(dungeon3);if(!skipSpoilers){        
+            writeHtmlSpoiler(htmlSpoiler3, romPath + newFilename + "-3-4.html");
+        }
+        rp.patchRom(dungeon3Patch, newFullFileName);
+        rp.patchRom(ENEMY_POSITION_PATCH_D3, newFullFileName);
+    
     }
 
-    let dungeon2Patch = {
-        data: dungeon2,
-        offset: dungeonLevelOffsets[2]
+    // rp.patchRom(ADD_MAP_PATCH_D14, newFullFileName);
+    // rp.patchRom(ADD_MAP_PATCH_D24, newFullFileName);
+    // rp.patchRom(ADD_MAP_PATCH_D34, newFullFileName);
+
+    //world 1 randomization
+    if (levelsToRandomized.indexOf(1) > -1){
+        let world1Patches = fbs.randomizeWorld(1, difficulty);
+        rp.patchRom(world1Patches, newFullFileName);
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches), romPath + newFilename + "-w1.html");
     }
 
-    let dungeon3Patch = {
-        data: dungeon3,
-        offset: dungeonLevelOffsets[3]
+    //world 2 randomization
+    if (levelsToRandomized.indexOf(2) > -1){
+        let world2Patches = fbs.randomizeWorld(2, difficulty);
+        rp.patchRom(world2Patches, newFullFileName);
+        writeHtmlSpoiler(writeWorld2Spoilers(world2Patches), romPath + newFilename + "-w2.html");
+    }
+    
+    //world 3 randomization
+    if (levelsToRandomized.indexOf(3) > -1){
+        let world3Patches = fbs.randomizeWorld(3, difficulty);    
+        rp.patchRom(world3Patches, newFullFileName);
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches), romPath + newFilename + "-w3.html");  
+    }
+    
+    
+    if (levelsToRandomized.indexOf(3) > -1){
+        let world4Patches = fbs.randomizeWorld(4, difficulty);
+        rp.patchRom(world4Patches, newFullFileName);
+        writeHtmlSpoiler(writeWorld4Spoilers(world4Patches), romPath + newFilename + "-w4.html");    
     }
 
-    let htmlSpoiler = printMaze(dungeon1);
-    let htmlSpoiler2 = printMaze(dungeon2);    
-    let htmlSpoiler3 = printMaze(dungeon3);
+    //minor patches
+    // rp.patchRom(REMOVE_DOOR_PATCH, newFullFileName);
+    // rp.patchRom(ADD_FORTRESS_ITEMS, newFullFileName);
+    // rp.patchRom(STR_2_PATCH, newFullFileName);
 
-    patches = [];
-    if(!skipSpoilers){
-        fs.open(romPath + newFilename + '-1-4.html', 'a', (err, fd) => {
-            if (err) {
-                console.log(err)
-                return;
-            }
-            fs.write(fd, htmlSpoiler, 0, 'utf-8',(err, writte, str) => {
-                console.log("Wrote html spoiler")
-            });
-        })
-
-        fs.open(romPath + newFilename + '-2-4.html', 'a', (err, fd) => {
-            if (err) {
-                console.log(err)
-                return;
-            }
-            fs.write(fd, htmlSpoiler2, 0, 'utf-8',(err, writte, str) => {
-                console.log("Wrote html spoiler")
-            });
-        })
-
-        fs.open(romPath + newFilename + '-3-4.html', 'a', (err, fd) => {
-            if (err) {
-                console.log(err)
-                return;
-            }
-            fs.write(fd, htmlSpoiler3, 0, 'utf-8',(err, writte, str) => {
-                console.log("Wrote html spoiler")
-            });
-        })
-    }
-
-    rp.copyOriginalRom(romname, romPath + newFilename + ".nes");
-    rp.patchRom(dungeon1Patch, romPath + newFilename + ".nes");
-    rp.patchRom(dungeon2Patch, romPath + newFilename + ".nes");    
-    rp.patchRom(dungeon3Patch, romPath + newFilename + ".nes");
-    rp.patchRom(ADD_MAP_PATCH_D14, romPath + newFilename + ".nes");
-    rp.patchRom(ADD_MAP_PATCH_D24, romPath + newFilename + ".nes");
-    rp.patchRom(ADD_MAP_PATCH_D34, romPath + newFilename + ".nes");
-    rp.patchRom(ENEMY_POSITION_PATCH_D1, romPath + newFilename + ".nes");
-    rp.patchRom(ENEMY_POSITION_PATCH_D2, romPath + newFilename + ".nes");
-    rp.patchRom(ENEMY_POSITION_PATCH_D3, romPath + newFilename + ".nes");
+    rp.patchRom(getBossHealthPatch(25, 25, 25), newFullFileName);
+    rp.patchRom(getTitleTextPatch("foo", "bar"), newFullFileName)
 
     return seed;   
+}
+
+function writeHtmlSpoiler(html, filename) {
+    console.log("Writing html spoiler: " + filename)
+    if (fs.existsSync(filename)) {
+        return;
+    }
+
+    fs.open(filename, 'a', (err, fd) => {
+        if (err) {
+            console.log(err)
+            return;
+        }
+        fs.write(fd, html, 0, 'utf-8',(err, writte, str) => {
+            console.log("Wrote html spoiler: " + filename)
+        });
+    })
+}
+
+function writeWorld2Spoilers(patches) {
+    var htmlSpoiler = '<html><head><link rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css" /></head><body>'
+    htmlSpoiler += '<div class="horizontal-level">'
+    //The first 3 patches hold the 3 level datas
+    for (var index = 0; index < 3; index++) {
+        let levelData = patches[index].data;
+        var line = '<div class="levelRow">'
+        for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
+            let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
+            line += '<div class="levelScreen"><img class="vertImage" src="../images/' + screen + '" /></div>'
+        }
+        line += "</div>"
+        htmlSpoiler += line;
+    }
+
+    return htmlSpoiler;
+}
+
+function writeWorld4Spoilers(patches) {
+    var htmlSpoiler = '<html><head><link rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css" /></head><body>'
+    htmlSpoiler += '<div class="horizontal-level">'
+    //The first patch hold the 4-1 level datas
+    let levelData = patches[0].data;
+    var line = '<div class="levelRow">'
+    for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
+        let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
+        line += '<div class="levelScreen"><img class="vertImage" src="../images/' + screen + '" /></div>'
+    }
+    line += "</div>"
+    htmlSpoiler += line;
+
+    return htmlSpoiler;
+}
+
+function writeVerticalWorldSpoilers(patches) {
+    
+    var htmlSpoiler = '<html><head><link rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css" /></head><body>'
+    htmlSpoiler += '<div class="vertical-level">'
+    //The first 3 patches hold the 3 level datas
+    let worldImages = [[],[],[]]
+    for (var index = 0; index < 3; index++) {
+        let levelData = patches[index].data;
+
+        for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
+            
+            let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
+            worldImages[index][screenIndex] = screen;
+        }
+    }
+
+    //start from the end
+    let largestLevel = Math.max(worldImages[0].length, worldImages[1].length, worldImages[2].length);
+    for(var index = largestLevel - 1; index >= 0; index--) {
+        if (index%2 == 1) {
+            continue;
+        }
+        var line = "";
+        for (var w = 0; w < worldImages.length; w++){
+            if (worldImages[w][index] != undefined) {
+                line += '<div class="levelScreen"><img class="vertImage" src="../images/' + worldImages[w][index].toString(16).padStart(2, '0') + '" /></div>'
+            } else {
+                line += '<div class="levelScreen"><img class="vertImage" src="../images/00.png" /></div>'
+            }
+            line += '<div class="levelScreen"><img class="vertImage" src="../images/00.png" /></div>'
+        }
+
+        htmlSpoiler += line;
+    }
+    
+    htmlSpoiler += "<div></body></html>";
+    return htmlSpoiler;
 }
 
 function printMaze(mazePatch) {
