@@ -3,6 +3,7 @@ let rp = require('./rom-patcher')
 let romPath = './public/generated-seeds/'
 let fs = require('fs')
 let fbs = require('./fbs-generator')
+let fbsf = require('./fbs-fortress-generator')
 
 let ADD_MAP_PATCH_D14 = {
     data: ["1b", "88", 'FF'],
@@ -146,17 +147,20 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
 
     if (fortressesToRandomize.indexOf(1) > -1){        
         console.log("Generating dungeon 1")
-        let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
-        let dungeon1Patch = {
-            data: dungeon1,
-            offset: dungeonLevelOffsets[1]
-        }
-        let htmlSpoiler = printMaze(dungeon1);
+        // let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
+        // let dungeon1Patch = {
+            // data: dungeon1,
+            // offset: dungeonLevelOffsets[1]
+        // }
+
+        let dungeon1Patch = fbsf.generatePatchForFortress(1, difficulty);
+        console.log(dungeon1Patch)
+        let htmlSpoiler = printMaze(dungeon1Patch[0].data);
         if(!skipSpoilers){        
             writeHtmlSpoiler(htmlSpoiler, romPath + newFilename + "-1-4.html");
         }
         rp.patchRom(dungeon1Patch, newFullFileName);        
-        rp.patchRom(ENEMY_POSITION_PATCH_D1, newFullFileName);
+        // rp.patchRom(ENEMY_POSITION_PATCH_D1, newFullFileName);
     }
 
     if (fortressesToRandomize.indexOf(2) > -1){     
@@ -332,13 +336,11 @@ function printMaze(mazePatch) {
     var line = ""
     for (var index = 0; index < 128; index = index + 2) {
         
-        var imgName = mazeBytes[index].toString(16) + ".png"
-        if (mazeBytes[index].length < 2) {
-            imgName = "0" + imgName;
-        }
+        var imgName = mazeBytes[index].toString(16).padStart(2, "0") + ".png"
+     
 
         let openings = parseInt(mazeBytes[index+1], 16);
-        line += '<div class="room open-' + mazeBytes[index+1] + '">'
+        line += '<div class="room open-' + openings.toString().padStart(2, "0") + '">'
         if ((openings & 0x01) == 1) {
             line += '<img class="opening-img" src="../images/open-up.png" />';
         }
