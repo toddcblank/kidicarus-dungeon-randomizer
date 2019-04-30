@@ -43,6 +43,7 @@ router.post('/generate-seed', function(req, res, next) {
   //There's definitely a better way to do this, but I'll save that for another day.
   let fortressesToRandomize = []
   let levelsToRandomize = []
+  let useFbsLogic = []
   if (req.body.randomizeWorld1) {
     levelsToRandomize.push(1)
   }
@@ -61,13 +62,22 @@ router.post('/generate-seed', function(req, res, next) {
   if (req.body.randomizeFortress2) {
     fortressesToRandomize.push(2)
   }
-  if (req.body.randomizeFortress4) {
+  if (req.body.randomizeFortress3) {
     fortressesToRandomize.push(3)
+  }
+  if (req.body.useFbsLogic1) {
+    useFbsLogic.push(1)
+  }
+  if (req.body.useFbsLogic2) {
+    useFbsLogic.push(2)
+  }
+  if (req.body.useFbsLogic3) {
+    useFbsLogic.push(3)
   }
 
 
 
-  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty)
+  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic)
 
   res.render('generated', { title: 'Labrinyth' , seed: generatedSeed, spoilers: !skipSpoilers});
 });

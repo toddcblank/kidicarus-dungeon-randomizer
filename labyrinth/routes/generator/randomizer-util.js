@@ -138,7 +138,7 @@ function getTitleTextPatch(lineOne, lineTwo) {
     return [extraLetters1, extraLetters2, extraLetters3, textPatch1, textPatch2]
 }
 
-function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1) {
+function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[]) {
 
     console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
     let newFilename = 'ki-' + seed;    
@@ -146,34 +146,49 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     rp.copyOriginalRom(romname, newFullFileName);
 
     if (fortressesToRandomize.indexOf(1) > -1){        
-        console.log("Generating dungeon 1")
-        // let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
-        // let dungeon1Patch = {
-            // data: dungeon1,
-            // offset: dungeonLevelOffsets[1]
-        // }
+        console.log("Generating dungeon 1") 
+        var dungeon1Patch = []
+        var dungeon1Data = [];
+        if (useFbsLogic.indexOf(1) > -1) {
+            dungeon1Patch = fbsf.generatePatchForFortress(1, difficulty);
+            dungeon1Data = dungeon1Patch[0].data
+        } else {
+            let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5);
+            dungeon1Patch = {
+                data: dungeon1,
+                offset: dungeonLevelOffsets[1]
+            }
+            dungeon1Data = dungeon1;
+            rp.patchRom(ENEMY_POSITION_PATCH_D1, newFullFileName);
+        }
 
-        let dungeon1Patch = fbsf.generatePatchForFortress(1, difficulty);
-        console.log(dungeon1Patch)
-        let htmlSpoiler = printMaze(dungeon1Patch[0].data);
+        let htmlSpoiler = printMaze(dungeon1Data);
         if(!skipSpoilers){        
             writeHtmlSpoiler(htmlSpoiler, romPath + newFilename + "-1-4.html");
         }
         rp.patchRom(dungeon1Patch, newFullFileName);        
-        // rp.patchRom(ENEMY_POSITION_PATCH_D1, newFullFileName);
     }
 
     if (fortressesToRandomize.indexOf(2) > -1){     
         console.log("Generating dungeon 2")
-        let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7);
-        let dungeon2Patch = {
-            data: dungeon2,
-            offset: dungeonLevelOffsets[2]
-        }
+
+        var dungeon2Data = [];
+        var dungeon2Patch = [];
+        if(useFbsLogic.indexOf(2) > -1) {
+            dungeon2Patch = fbsf.generatePatchForFortress(2, difficulty);
+            dungeon2Data = dungeon2Patch[0].data
+        } else {
+            let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7);
+            dungeon2Patch = {
+                data: dungeon2,
+                offset: dungeonLevelOffsets[2]
+            }
+            dungeon2Data = dungeon2;
+            rp.patchRom(ENEMY_POSITION_PATCH_D2, newFullFileName);
+        }       
         
-        let htmlSpoiler2 = printMaze(dungeon2);   
+        let htmlSpoiler2 = printMaze(dungeon2Data);   
         rp.patchRom(dungeon2Patch, newFullFileName);   
-        rp.patchRom(ENEMY_POSITION_PATCH_D2, newFullFileName);
         if(!skipSpoilers){        
             writeHtmlSpoiler(htmlSpoiler2, romPath + newFilename + "-2-4.html");
         }
@@ -181,18 +196,28 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
 
     if (fortressesToRandomize.indexOf(3) > -1){     
        console.log("Generating dungeon 3")
-        let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10)
+        
 
-        let dungeon3Patch = {
-            data: dungeon3,
-            offset: dungeonLevelOffsets[3]
+        var dungeo3Patch = [];
+        var dungeon3Data;
+        if(useFbsLogic.indexOf(3) > -1) {
+            dungeon3Patch = fbsf.generatePatchForFortress(3, difficulty);
+            dungeon3Data = dungeon3Patch[0].data
+        } else {
+            let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10)
+            dungeon3Patch = {
+                data: dungeon3,
+                offset: dungeonLevelOffsets[3]
+            }
+            dungeon3Data = dungeon3;
+            rp.patchRom(ENEMY_POSITION_PATCH_D3, newFullFileName);
         }
     
-        let htmlSpoiler3 = printMaze(dungeon3);if(!skipSpoilers){        
+        let htmlSpoiler3 = printMaze(dungeon3Data);
+        if(!skipSpoilers){        
             writeHtmlSpoiler(htmlSpoiler3, romPath + newFilename + "-3-4.html");
         }
         rp.patchRom(dungeon3Patch, newFullFileName);
-        rp.patchRom(ENEMY_POSITION_PATCH_D3, newFullFileName);
     
     }
 
@@ -336,11 +361,18 @@ function printMaze(mazePatch) {
     var line = ""
     for (var index = 0; index < 128; index = index + 2) {
         
-        var imgName = mazeBytes[index].toString(16).padStart(2, "0") + ".png"
+        var imgName = "";
+        var openings = "";
+        if(typeof mazeBytes[index] === 'string') {
+            imgName = mazeBytes[index].padStart(2, "0") + ".png"      
+            openings = parseInt(mazeBytes[index+1], 16);             
+        } else {
+            imgName = mazeBytes[index].toString(16).padStart(2, "0") + ".png"            
+            openings = mazeBytes[index+1];
+        }
      
 
-        let openings = parseInt(mazeBytes[index+1], 16);
-        line += '<div class="room open-' + openings.toString().padStart(2, "0") + '">'
+        line += '<div class="room open-' + openings.toString(16).padStart(2, "0") + '">'
         if ((openings & 0x01) == 1) {
             line += '<img class="opening-img" src="../images/open-up.png" />';
         }

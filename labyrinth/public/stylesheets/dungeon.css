@@ -152,10 +152,11 @@
     border-style: solid;
     padding-bottom: 10px;
     padding-top: 5px;
+    grid-gap: 3px;
 }
 
 .form-group.seed {
-    grid-template-columns: 241px 158px;
+    grid-template-columns: 320px 158px;
     grid-template-rows: 29px 29px;
     text-align: left;
 }

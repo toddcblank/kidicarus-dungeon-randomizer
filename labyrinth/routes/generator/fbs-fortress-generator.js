@@ -125,9 +125,9 @@ function generatePatchForFortress(world, difficulty) {
                 case 8:
                     //no room
                     roomId = 0x0;
+                    openings = 0x0;
                     break;
                 case ROOM_NORMAL:
-                    console.log("normal room")
                     while(roomId == 0x0){
                         let randRoom = Math.floor(Math.random() * 41) + 1;
                         let roomOpenings = roomokay[randRoom]
@@ -137,7 +137,6 @@ function generatePatchForFortress(world, difficulty) {
                         }
                         
                     }
-                    console.log("Normal room using roomId " + roomId)
                     break;
                 case ROOM_START:
                     roomId = 0x01;
@@ -170,7 +169,6 @@ function generatePatchForFortress(world, difficulty) {
                     }
                 }
             }
-            console.log("Using roomId " + roomId)
             //Push the roomId and the openings
             roomData.push(roomId);
             roomData.push(openings);
@@ -262,16 +260,16 @@ function generateFortress(world, difficulty) {
             }
         }
 
-        console.log("----- Initial Map ----")
-        printMap(map)
+        // console.log("----- Initial Map ----")
+        // printMap(map)
 
         //step 1.5 if this is 3.4 add a room in lower right
         if (world == 3) {
             map[7][7] = 1;
         }
 
-        console.log("----- Adding lower right room ----")
-        printMap(map)
+        // console.log("----- Adding lower right room ----")
+        // printMap(map)
         
         //step 2 - holes in dense 3x3 areas
         for (var x = 1; x < 7; x++) {
@@ -286,8 +284,8 @@ function generateFortress(world, difficulty) {
             }
         }
 
-        console.log("---- poking holes in 3x3 -----")
-        printMap(map)
+        // console.log("---- poked holes in 3x3 -----")
+        // printMap(map)
         
         //step 3 - holes in dense 2x2 areas
         for (var x = 0; x < 7; x++) {
@@ -317,15 +315,15 @@ function generateFortress(world, difficulty) {
             }
         }
 
-        console.log("---- poking holes in 2x2 -----")
-        printMap(map)
+        // console.log("---- poking holes in 2x2 -----")
+        // printMap(map)
 
         //step 4 - remove unconnected rooms
         map[3][3] = 1;
         map[2][3] = 0;
         floodfill(map, 3, 3, 1, 4);
-        console.log("----- Flood Filling ----")
-        printMap(map)
+        // console.log("----- Flood Filling ----")
+        // printMap(map)
         for (var x = 0; x < 8; x++) {
             for (var y = 0; y < 8; y++){
                 if (map[x][y] != 4) {map[x][y] = 0}
@@ -338,8 +336,8 @@ function generateFortress(world, difficulty) {
             }
         }
 
-        console.log("---- Visitable only -----")
-        printMap(map)
+        // console.log("---- Visitable only -----")
+        // printMap(map)
 
         //step 5 - trim downward dead ends
         for (y = 7; y >=0; y--) {
@@ -355,8 +353,8 @@ function generateFortress(world, difficulty) {
             }
         }
 
-        console.log("---- Trimmed downward ends -----")
-        printMap(map)
+        // console.log("---- Trimmed downward ends -----")
+        // printMap(map)
 
         //step 6 - compute distance from each room to start
         let roomDistance = []
@@ -449,8 +447,8 @@ function generateFortress(world, difficulty) {
             }
         }
 
-        console.log("---- Rooms Placed -----")
-        printMap(map)
+        // console.log("---- Rooms Placed -----")
+        // printMap(map)
 
         var roomcount = 0;
 
@@ -467,13 +465,9 @@ function generateFortress(world, difficulty) {
             fortress = 3
         } 
 
-        if (fortress == 0) {
-            console.log("Distance (" + farthestDistance + ") probably too short...")
-        }
-
         if (roomcount <= farthestDistance & 1.35) {
             fortress = -1;
-            console.log("Roomcount too linear")
+            // console.log("Roomcount too linear")
         }
 
         if (fortress > 0 && fortress < 3 && roomcount >= farthestDistance*3) {
@@ -483,18 +477,18 @@ function generateFortress(world, difficulty) {
         //Last minute checks
         if((farthestX == 0 || map[farthestX-1][farthestY] == 0) &&  (farthestY == 0 || map[farthestX][farthestY-1] == 0)) {
             fortress = 0
-            console.log("Boss room not enterable from top or right")
+            // console.log("Boss room not enterable from top or right")
         }
 
         //make sure there is no room to the right or below of the boss
         if(farthestX != 7 && map[farthestX + 1][farthestY] != 0) {
             fortress = 0
-            console.log("Room to right or boss!")
+            // console.log("Room to right or boss!")
         }
 
         if(farthestY != 7 && map[farthestX][farthestY + 1] != 0) {
             fortress = 0
-            console.log("Room to bottom of boss!")
+            // console.log("Room to bottom of boss!")
         }
 
         //make sure theres only an entrance to left or right, and not both
@@ -503,17 +497,17 @@ function generateFortress(world, difficulty) {
         if(farthestY == 0 || map[farthestX][farthestY - 1] > 0) count += 1
         if(count != 1){
             fortress = 0;
-            console.log("Two entrances to boss!")
+            // ("Two entrances to boss!")
         }
 
         //if 3-4, make sure there is a room in lower right that isn't boss
         if(world == 3 && map[7,7] == 0 || map[7,7] == 3){
             fortress = 0
-            console.log("No Room in lower right!")
+            // console.log("No Room in lower right!")
         }
-        console.log("generated fortress: " + fortress)
-        printMap(map)
-        console.log("-----------------------")
+        // console.log("generated fortress: " + fortress)
+        // printMap(map)
+        // console.log("-----------------------")
         if (fortress != world) {
             map = []
         }
