@@ -258,7 +258,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     rp.patchRom(ADD_FORTRESS_ITEMS, newFullFileName);
     rp.patchRom(STR_2_PATCH, newFullFileName);
 
-    rp.patchRom(getBossHealthPatch(25, 25, 25), newFullFileName);
+    rp.patchRom(getBossHealthPatch(100, 100, 100), newFullFileName);
     rp.patchRom(getTitleTextPatch("foo", "bar"), newFullFileName)
 
     return seed;   
