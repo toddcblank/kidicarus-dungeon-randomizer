@@ -1,12 +1,17 @@
 extends layout
 
 block content
+  - var formLocation = "generate-seed"
   script(src="javascripts/util.js")
   h1= title
   h2 Welcome to #{title} Kid Icarus Randomizer.  Click here to get a new seed:
   p 
-    if(hasRom)
-      form(action="generate-seed", method="post")
+    if(hasRom || spoilersOnly)
+      
+      if(spoilersOnly)
+        - formLocation = "generate-maps-only"
+
+      form(action=formLocation, method="post")
         div.form-group.seed
           label(for="seed") Seed (Leave 0 for new seed)  
           input(type="text", name="seed", value="0")
@@ -125,3 +130,5 @@ block content
       form(action="./upload-rom-for-patch" method="POST" encType="multipart/form-data")
         input(type='file' name='rom') 
         input(type='submit' name='submit' value='upload') 
+      p 
+        a(href="/generate-maps-only") Or click here if you just want to generate dungeon spoilers without an actual NES file

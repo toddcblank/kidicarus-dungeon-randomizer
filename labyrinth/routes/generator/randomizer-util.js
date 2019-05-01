@@ -138,12 +138,13 @@ function getTitleTextPatch(lineOne, lineTwo) {
     return [extraLetters1, extraLetters2, extraLetters3, textPatch1, textPatch2]
 }
 
-function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[]) {
+function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false) {
 
     console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
     let newFilename = 'ki-' + seed;    
     let newFullFileName = romPath + newFilename + ".nes";
-    rp.copyOriginalRom(romname, newFullFileName);
+    
+    let patchesToApply = []
 
     if (fortressesToRandomize.indexOf(1) > -1){        
         console.log("Generating dungeon 1") 
@@ -159,14 +160,14 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
                 offset: dungeonLevelOffsets[1]
             }
             dungeon1Data = dungeon1;
-            rp.patchRom(ENEMY_POSITION_PATCH_D1, newFullFileName);
+            patchesToApply.push(ENEMY_POSITION_PATCH_D1);
         }
 
         let htmlSpoiler = printMaze(dungeon1Data);
         if(!skipSpoilers){        
             writeHtmlSpoiler(htmlSpoiler, romPath + newFilename + "-1-4.html");
         }
-        rp.patchRom(dungeon1Patch, newFullFileName);        
+       patchesToApply.push(dungeon1Patch);        
     }
 
     if (fortressesToRandomize.indexOf(2) > -1){     
@@ -184,21 +185,20 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
                 offset: dungeonLevelOffsets[2]
             }
             dungeon2Data = dungeon2;
-            rp.patchRom(ENEMY_POSITION_PATCH_D2, newFullFileName);
+            patchesToApply.push(ENEMY_POSITION_PATCH_D2);
         }       
         
         let htmlSpoiler2 = printMaze(dungeon2Data);   
-        rp.patchRom(dungeon2Patch, newFullFileName);   
+        patchesToApply.push(dungeon2Patch);   
         if(!skipSpoilers){        
             writeHtmlSpoiler(htmlSpoiler2, romPath + newFilename + "-2-4.html");
         }
     }
 
     if (fortressesToRandomize.indexOf(3) > -1){     
-       console.log("Generating dungeon 3")
-        
+       console.log("Generating dungeon 3")        
 
-        var dungeo3Patch = [];
+        var dungeon3Patch = [];
         var dungeon3Data;
         if(useFbsLogic.indexOf(3) > -1) {
             dungeon3Patch = fbsf.generatePatchForFortress(3, difficulty);
@@ -210,14 +210,14 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
                 offset: dungeonLevelOffsets[3]
             }
             dungeon3Data = dungeon3;
-            rp.patchRom(ENEMY_POSITION_PATCH_D3, newFullFileName);
+            patchesToApply.push(ENEMY_POSITION_PATCH_D3);
         }
     
         let htmlSpoiler3 = printMaze(dungeon3Data);
         if(!skipSpoilers){        
             writeHtmlSpoiler(htmlSpoiler3, romPath + newFilename + "-3-4.html");
         }
-        rp.patchRom(dungeon3Patch, newFullFileName);
+        patchesToApply.push(dungeon3Patch);
     
     }
 
@@ -228,38 +228,43 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     //world 1 randomization
     if (levelsToRandomized.indexOf(1) > -1){
         let world1Patches = fbs.randomizeWorld(1, difficulty);
-        rp.patchRom(world1Patches, newFullFileName);
+        patchesToApply.push(world1Patches);
         writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1), romPath + newFilename + "-w1.html");
     }
 
     //world 2 randomization
     if (levelsToRandomized.indexOf(2) > -1){
         let world2Patches = fbs.randomizeWorld(2, difficulty);
-        rp.patchRom(world2Patches, newFullFileName);
+        patchesToApply.push(world2Patches);
         writeHtmlSpoiler(writeWorld2Spoilers(world2Patches), romPath + newFilename + "-w2.html");
     }
     
     //world 3 randomization
     if (levelsToRandomized.indexOf(3) > -1){
         let world3Patches = fbs.randomizeWorld(3, difficulty);    
-        rp.patchRom(world3Patches, newFullFileName);
+        patchesToApply.push(world3Patches);
         writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3), romPath + newFilename + "-w3.html");  
     }
     
     
     if (levelsToRandomized.indexOf(4) > -1){
         let world4Patches = fbs.randomizeWorld(4, difficulty);
-        rp.patchRom(world4Patches, newFullFileName);
+        patchesToApply.push(world4Patches);
         writeHtmlSpoiler(writeWorld4Spoilers(world4Patches), romPath + newFilename + "-w4.html");    
     }
 
     //minor patches
-    rp.patchRom(REMOVE_DOOR_PATCH, newFullFileName);
-    rp.patchRom(ADD_FORTRESS_ITEMS, newFullFileName);
-    rp.patchRom(STR_2_PATCH, newFullFileName);
+    patchesToApply.push(REMOVE_DOOR_PATCH);
+    patchesToApply.push(ADD_FORTRESS_ITEMS);
+    patchesToApply.push(STR_2_PATCH);
 
-    rp.patchRom(getBossHealthPatch(100, 100, 100), newFullFileName);
-    rp.patchRom(getTitleTextPatch("foo", "bar"), newFullFileName)
+    patchesToApply.push(getBossHealthPatch(100, 100, 100));
+    patchesToApply.push(getTitleTextPatch("foo", "bar"));
+
+    if(!spoilersOnly){
+        rp.copyOriginalRom(romname, newFullFileName);
+        rp.patchRom(patchesToApply, newFullFileName)
+    }
 
     return seed;   
 }

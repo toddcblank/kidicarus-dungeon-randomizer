@@ -4,8 +4,9 @@ block content
   head
     link(rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css")
   p Welcome to #{title}
-  p Link to seed: 
-    a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      
+  if(!spoilersOnly)
+    p Link to seed: 
+      a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      
   if(spoilers)
     p Link to spoiler pages (note if you didn't randomize the world/level it will 404):  
       p
