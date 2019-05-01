@@ -194,11 +194,11 @@ function generatePatchForFortress(world, difficulty) {
             }
 
             if(spikes.indexOf(roomId) > -1) {
-                enemyId = spikeInfo[roomId][world];
+                enemy = spikeInfo[roomId][world];
             }
 
             if(map[x][y] == ROOM_BOSS) {
-                enemyId = 0xf0
+                enemy = 0xf0
             }
 
             enemyData.push(enemy);            
