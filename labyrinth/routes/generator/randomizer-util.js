@@ -36,20 +36,25 @@ let ENEMY_POSITION_PATCH_D3 = {
 }
 
 let REMOVE_DOOR_PATCH = {
+    name: "Remove Doors",
     data: [],
     offset: 0x1efd8
 }
 
 let ADD_FORTRESS_ITEMS = [
+    
     {
+        name: "Invert Torch functionality",
         data: [0xD0],
         offset: 0x1e27b,
     },
     {
+        name: "Invert Pencil functionality",
         data: [0xD0],
         offset: 0x1524c,
     },
     {
+        name: "Invert Map functionality",
         data: [0xD0],
         offset: 0x1e21b,
     },
@@ -269,10 +274,30 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
 
     if(!spoilersOnly){
         rp.copyOriginalRom(romname, newFullFileName);
+        writePatchFiles(patchesToApply, newFullFileName + ".patches");
         rp.patchRom(patchesToApply, newFullFileName)
     }
 
     return seed;   
+}
+
+function writePatchFiles(patches, filename) {
+    if (fs.existsSync(filename)){
+        return;
+    }
+
+    fs.open(filename, 'a', (err, fd) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        fs.write(fd, JSON.stringify(patches, (key, value) => {
+            if(typeof value === 'number') {return value.toString(16).padStart(2);}
+            else {return value}
+        }, 2), 0, 'utf-8',(err, writte, str) => {
+            console.log("Wrote patches file: " + filename)
+        });
+    })
 }
 
 function writeHtmlSpoiler(html, filename) {

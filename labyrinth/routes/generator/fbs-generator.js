@@ -141,6 +141,7 @@ function randomizeWorld(world, difficulty) {
         }
 
         patches[currentStage-1] = {
+            name: "Stage " + world + "-" + currentStage,
             data: patchBytes,
             offset: stageAddresses[currentStage]
         }
@@ -218,10 +219,10 @@ function randomizeWorld(world, difficulty) {
     }
 
     if (world != 4){
-        patches.push({data: enemyTable1Data, offset: ENEMY_TABLE_START_LOCATIONS[world][0]});
-        patches.push({data: enemyTable2Data, offset: ENEMY_TABLE_START_LOCATIONS[world][1]});
-        patches.push({data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[world][2]});
-        patches.push({data: enemyTable4Data, offset: ENEMY_TABLE_START_LOCATIONS[world][3]});
+        patches.push({name: "Enemy Table 1 for world " + world, data: enemyTable1Data, offset: ENEMY_TABLE_START_LOCATIONS[world][0]});
+        patches.push({name: "Enemy Table 2 for world " + world, data: enemyTable2Data, offset: ENEMY_TABLE_START_LOCATIONS[world][1]});
+        patches.push({name: "Enemy Table 3 for world " + world, data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[world][2]});
+        patches.push({name: "Enemy Table 4 for world " + world, data: enemyTable4Data, offset: ENEMY_TABLE_START_LOCATIONS[world][3]});
     }
     if (world == 1) {
         patches.push(getPatchForWorld1Items(difficulty))
@@ -230,7 +231,7 @@ function randomizeWorld(world, difficulty) {
     } else if (world == 3) {
         patches.push(getPatchForWorld3Items(difficulty))
     }
-    patches.push(radomizePlatforms(world));
+    patches.push(radomizePlatforms(world, difficulty));
 
     return patches;
 }
@@ -256,7 +257,7 @@ function getPatchForWorld3Items(difficulty) {
 
     // 'World 3 items
     let startlocation = 0x1B0CD 
-    let patch = {offset: startlocation, data: []}
+    let patch = {name: "world 3 items", offset: startlocation, data: []}
 
     // 'move item from 3-3 into 3-2
     // put #f, startlocation+1, cubyte("&h01")
@@ -284,10 +285,10 @@ function getPatchForWorld3Items(difficulty) {
 function radomizePlatforms(world, difficulty) {
     //two patches, 1 to remove them all, 1 to randomly add them
     if (world == 4) {
-        return {offset: 0x0, data: []};
+        return {name: "world " + world + " platforms", offset: 0x0, data: []};
     }
 
-    let removalPatch = {offset: PLATFORM_ADDRESS[world], data: []}
+    let removalPatch = {name: "world " + world + " platforms", offset: PLATFORM_ADDRESS[world], data: []}
     for (var i = 0; i < 128; i++) {
         removalPatch.data.push(0xff);
     }
@@ -297,7 +298,7 @@ function radomizePlatforms(world, difficulty) {
     }
 
     let locationOptions = [0x37, 0x67, 0x97, 0xC7]
-    let addPlatformsPatch = {offset: PLATFORM_ADDRESS[world], data: []}
+    let addPlatformsPatch = {name: "world " + world + " platforms", offset: PLATFORM_ADDRESS[world], data: []}
     for (var i = 0; i < 32; i++) {
         choice = Math.floor(Math.random() * difficulty) + 1;
         if (choice == 1) {
@@ -323,6 +324,7 @@ function getPatchForWorld2Items(difficulty) {
     let item1 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
     let item2 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
     return {
+        name: "world 2 items",
         data: [0x13, 0x9e, item1, 0x01, 0x15, 0x9e, item2],
         offset: 0xbc3c
     }
@@ -345,8 +347,8 @@ function getPatchForWorld1Items(difficulty) {
         let coords2 = xOffset2 + 32;        
         let item2 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
 
-        let item1Patch = {data: [screen, coords1, item1], offset: itemlocations[i]}
-        let item2Patch = {data: [screen * 2, coords2, item2], offset: itemlocations[i+1]}
+        let item1Patch = {name: "world 1 item 1", data: [screen, coords1, item1], offset: itemlocations[i]}
+        let item2Patch = {name: "world 1 item 2", data: [screen * 2, coords2, item2], offset: itemlocations[i+1]}
 
         patches.push(item1Patch)
         patches.push(item2Patch)

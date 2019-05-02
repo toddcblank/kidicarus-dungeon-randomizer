@@ -38,6 +38,8 @@ roomokay[0x29]=0b0000
 
 roomenemy1 = [];
 roomenemy2 = [];
+roomenemy1[0x00] = 0x00;
+roomenemy2[0x00] = 0x00;
 roomenemy1[0x01] = 0x00;
 roomenemy2[0x01] = 0x00;
 roomenemy1[0x02] = 0x61;
@@ -175,18 +177,22 @@ function generatePatchForFortress(world, difficulty) {
             //determine enemies for rooms
             var enemy = 0x0;
             let enemyChance = Math.floor(Math.random()* 100) + 1;
-            if (difficulty == 1) {
-                //easy 20/80/0
-                if(enemyChance > 20) {
-                    enemy =  roomenemy1[roomId]                   
+            if (roomenemy1.indexOf(roomId) == -1) {
+                enemy = 0x0;
+            } else {
+                if (difficulty == 1) {
+                    //easy 20/80/0
+                    if(enemyChance > 20) {
+                        enemy =  roomenemy1[roomId]                   
+                    }
+                } else if(difficulty == 2) {
+                    if (enemyChance >= 10 && enemyChance <= 90) {enemy = roomenemy1[roomId]}
+                    else if(enemyChance > 90) {enemy = roomenemy2[roomId]}
+                } else if(difficulty == 3) {
+                    if (enemyChance <= 80) {enemy = roomenemy1[roomId]}
+                    else if(enemyChance > 80) {enemy = roomenemy2[roomId]}  
                 }
-            } else if(difficulty == 2) {
-                if (enemyChance >= 10 && enemyChance <= 90) {enemy = roomenemy1[roomId]}
-                else if(enemyChance > 90) {enemy =  roomenemy2[roomId]}
-            } else if(difficulty == 3) {
-                if (enemyChance <= 80) {enemy =  roomenemy1[roomId]}
-                else if(enemyChance > 80) {enemy =  roomenemy2[roomId]}  
-            }
+            }   
 
             if(spikes.indexOf(roomId) > -1) {
                 enemy = spikeInfo[roomId][world];
@@ -201,9 +207,11 @@ function generatePatchForFortress(world, difficulty) {
     }
 
     return [{
+        name: "world " + world + " fortress room data", 
         data: roomData.concat(enemyData),
         offset: dungeonLevelOffsets[world]
     },{
+        name: "world " + world + " fortress centurion data", 
         data: centurionData,
         offset: centurionOffsets[world]
     }]
