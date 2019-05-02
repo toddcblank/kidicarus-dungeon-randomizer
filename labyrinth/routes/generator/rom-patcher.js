@@ -18,11 +18,13 @@ patch should be an object with:
 function patchRom(patch, filename) {
 
     if (patch.constructor === Array) {
+        console.log("Patch is actually " + patch.length + " patches, will recursively apply them")
         patch.forEach((p) => {
             patchRom(p, filename)
         })
         return;
     }
+    console.log("patching at location " + patch.offset.toString("16"))
     // console.log(patch)
     fs.open(filename, 'r+', function(status, fd) {
         if (status) {

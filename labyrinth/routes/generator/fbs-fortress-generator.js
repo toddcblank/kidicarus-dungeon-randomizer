@@ -1,7 +1,7 @@
 
 
 const dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
-const centurionOffsets = [0, 0x1b2c4, 0x1b5b8, 0x1bb88c]
+const centurionOffsets = [0, 0x1b2c4, 0x1b5b8, 0x1b88c]
 const ROOM_NORMAL = 1;
 const ROOM_START = 2;
 const ROOM_BOSS = 3;
