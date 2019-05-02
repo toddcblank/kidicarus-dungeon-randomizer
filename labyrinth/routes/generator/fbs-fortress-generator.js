@@ -131,11 +131,6 @@ function generatePatchForFortress(world, difficulty) {
                     while(roomId == 0x0){
                         let randRoom = Math.floor(Math.random() * 41) + 1;
                         let roomOpenings = roomokay[randRoom]
-                        if (randRoom == 0x1c) {
-                            console.log("roomOpenings: " + roomOpenings)
-                            console.log("Room 0x1c has openings " + roomOpenings)
-                            console.log("(roomOpenings & openings): " + (roomOpenings & openings))
-                        }                        
                         if (roomOpenings != undefined && ((roomOpenings & openings) == openings) && randRoom != previousRoom){
                             previousRoom = randRoom;
                             roomId = randRoom
@@ -346,7 +341,7 @@ function generateFortress(world, difficulty) {
         //step 5 - trim downward dead ends
         for (y = 7; y >=0; y--) {
             let j = 8;
-            for (x = 0; x < j-1; x++) {
+            for (x = 0; x < j; x++) {
                 if (x == 3 && y == 3) {
                     continue;
                 }

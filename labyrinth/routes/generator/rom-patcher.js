@@ -12,8 +12,10 @@ function copyOriginalRom(originalName ='ki-orig.nes', newFilename) {
 patch should be an object with:
 {
     data: [], //byte array of the data to patch in
-    offset: 0x0000, // address to patch from
+    offset: 0x0000, // address to patch from    
 }
+
+or an array of said objects (or an array of arrays of said objects, etc)
 */
 function patchRom(patch, filename) {
 
@@ -24,7 +26,7 @@ function patchRom(patch, filename) {
         })
         return;
     }
-    console.log("patching at location " + patch.offset.toString("16"))
+    console.log("patching " + patch.data.length + " bytes at location " + patch.offset.toString("16"))
     // console.log(patch)
     fs.open(filename, 'r+', function(status, fd) {
         if (status) {

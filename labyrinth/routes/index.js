@@ -31,6 +31,14 @@ router.post('/generate-maps-only', function(req, res, next) {
     return rng();
   }
 
+  console.log("------------------ Testing RNG for seed " + rngSeed + " ------------------------")
+  console.log(Math.random())
+  console.log(Math.random())
+  console.log(Math.random())
+  console.log(Math.random())
+  console.log("-----------------------------------------------------------------")
+
+
   //this would be pointless.
   let skipSpoilers = false;
 
@@ -103,6 +111,13 @@ router.post('/generate-seed', function(req, res, next) {
   Math.random = () => {
     return rng();
   }
+
+  console.log("------------------ Testing RNG for seed " + rngSeed + " ------------------------")
+  console.log(Math.random())
+  console.log(Math.random())
+  console.log(Math.random())
+  console.log(Math.random())
+  console.log("-----------------------------------------------------------------")
 
   let skipSpoilers = req.body.skipSpoilers;
 

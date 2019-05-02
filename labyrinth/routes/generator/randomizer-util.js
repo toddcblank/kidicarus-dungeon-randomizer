@@ -141,6 +141,12 @@ function getTitleTextPatch(lineOne, lineTwo) {
 function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false) {
 
     console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
+    console.log("------------------ Testing RNG for seed in Randomization function " + seed + " ------------------------")
+    console.log(Math.random())
+    console.log(Math.random())
+    console.log(Math.random())
+    console.log(Math.random())
+    console.log("-----------------------------------------------------------------")
     let newFilename = 'ki-' + seed;    
     let newFullFileName = romPath + newFilename + ".nes";
     

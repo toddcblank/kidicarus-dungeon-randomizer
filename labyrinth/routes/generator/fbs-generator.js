@@ -127,17 +127,13 @@ function randomizeWorld(world, difficulty) {
             }
 
             if (!exitWorks) {
-                console.log("Tried all 3 exits, and none work with previous screen " + secondToLastScreen)
                 success = false;
-            } else {
-                console.log("Exit " + stagePlan[thisStageLength - 1] + " works with " + secondToLastScreen)
-            }
+            } 
         }
        
         //finished!  create the patch!        
         let patchBytes = []
-        stagePlans[currentStage] = stagePlan;
-        console.log(stagePlan)
+        stagePlans[currentStage] = stagePlan;        
         for(var i = 0; i < stagePlan.length; i++) {
             let screenToAdd = stagePlan[i];
             patchBytes.push(screens[world][screenToAdd].address1)
