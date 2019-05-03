@@ -274,7 +274,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
 
     if(!spoilersOnly){
         rp.copyOriginalRom(romname, newFullFileName);
-        writePatchFiles(patchesToApply, newFullFileName + ".patches");
+        writePatchFiles(patchesToApply, newFullFileName + ".patches.json");
         rp.patchRom(patchesToApply, newFullFileName)
     }
 
@@ -292,7 +292,7 @@ function writePatchFiles(patches, filename) {
             return;
         }
         fs.write(fd, JSON.stringify(patches, (key, value) => {
-            if(typeof value === 'number') {return value.toString(16).padStart(2);}
+            if(typeof value === 'number') {return value.toString(16).padStart(2, "0");}
             else {return value}
         }, 2), 0, 'utf-8',(err, writte, str) => {
             console.log("Wrote patches file: " + filename)

@@ -165,7 +165,7 @@ function randomizeWorld(world, difficulty) {
         }
 
         let enemyChoice = ENEMY_TABLE1[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[world][difficulty].length)]
-        let enemy3Choice = ENEMY_TABLE3[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[world][difficulty].length)]
+        let enemy3Choice = ENEMY_TABLE3[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE3[world][difficulty].length)]
 
         enemyTable1Data.push(enemyChoice);
         enemyTable3Data.push(enemy3Choice);
@@ -176,25 +176,19 @@ function randomizeWorld(world, difficulty) {
         //2-1
         for(var i = 0; i < stageLength[world][1]; i++) {
             if ([1,4,6,7,24,26,27,28].indexOf(stagePlans[1][i]) > -1) {
-                enemyTable2Data.push(0x02)
-            } else {
-                enemyTable2Data.push(0x00)
+                enemyTable3Data[i] = 0x02;
             }
         }
         //2-2
         for(var i = 0; i < stageLength[world][2]; i++) {
             if ([1,4,6,7,24,26,27,28].indexOf(stagePlans[2][i]) > -1) {
-                enemyTable2Data.push(0x02)
-            } else {
-                enemyTable2Data.push(0x00)
-            }
+                enemyTable3Data[stageLength[world][1] + i] = 0x02;
+            } 
         }
         //2-3
-        for(var i = 0; i < stageLength[world][2]; i++) {
+        for(var i = 0; i < stageLength[world][3]; i++) {
             if ([1,4,6,7,24,26,27,28].indexOf(stagePlans[3][i]) > -1) {
-                enemyTable2Data.push(0x02)
-            } else {
-                enemyTable2Data.push(0x00)
+                enemyTable3Data[stageLength[world][1] + stageLength[world][2] + i] = 0x02;
             }
         }
     } else if (world == 1 || world == 3) {
