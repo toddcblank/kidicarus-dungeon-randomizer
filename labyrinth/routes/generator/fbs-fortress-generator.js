@@ -36,60 +36,34 @@ roomokay[0x26]=0b0110
 roomokay[0x28]=0b0000
 roomokay[0x29]=0b0000
 
-roomenemy1 = [];
-roomenemy2 = [];
-roomenemy1[0x00] = 0x00;
-roomenemy2[0x00] = 0x00;
-roomenemy1[0x01] = 0x00;
-roomenemy2[0x01] = 0x00;
-roomenemy1[0x02] = 0x61;
-roomenemy2[0x02] = 0x61;
-roomenemy1[0x03] = 0x37;
-roomenemy2[0x03] = 0x10;
-roomenemy1[0x04] = 0x38;
-roomenemy2[0x04] = 0x10;
-roomenemy1[0x07] = 0x51;
-roomenemy2[0x07] = 0x51;
-roomenemy1[0x08] = 0x52;
-roomenemy2[0x08] = 0x52;
-roomenemy1[0x0A] = 0x35;
-roomenemy2[0x0A] = 0x10;
-roomenemy1[0x0B] = 0x0F;
-roomenemy2[0x0B] = 0x0F;
-roomenemy1[0x0C] = 0x36;
-roomenemy2[0x0C] = 0x10;
-roomenemy1[0x0E] = 0x31;
-roomenemy2[0x0E] = 0x41;
-roomenemy1[0x0F] = 0x10;
-roomenemy2[0x0F] = 0x10;
-roomenemy1[0x12] = 0x30;
-roomenemy2[0x02] = 0x40;
-roomenemy1[0x13] = 0x50;
-roomenemy2[0x03] = 0x50;
-roomenemy1[0x14] = 0x38;
-roomenemy2[0x04] = 0x10;
-roomenemy1[0x15] = 0x00;
-roomenemy2[0x05] = 0x00;
-roomenemy1[0x16] = 0x00;
-roomenemy2[0x06] = 0x00;
-roomenemy1[0x19] = 0x41;
-roomenemy2[0x09] = 0x10;
-roomenemy1[0x1B] = 0x36;
-roomenemy2[0x0B] = 0x46;
-roomenemy1[0x1C] = 0x52;
-roomenemy2[0x0C] = 0x52;
-roomenemy1[0x1E] = 0x00;
-roomenemy2[0x0E] = 0x10;
-roomenemy1[0x20] = 0x50;
-roomenemy2[0x00] = 0x50;
-roomenemy1[0x21] = 0x00;
-roomenemy2[0x01] = 0x10;
-roomenemy1[0x26] = 0x31;
-roomenemy2[0x06] = 0x41;
-roomenemy1[0x28] = 0x00;
-roomenemy2[0x08] = 0x00;
-roomenemy1[0x29] = 0x0F;
-roomenemy2[0x09] = 0x0F;
+let roomenemy1 = [];
+let roomenemy2 = [];
+roomenemy1[0x00] = 0x00;roomenemy2[0x00] = 0x00;
+roomenemy1[0x01] = 0x00;roomenemy2[0x01] = 0x00;
+roomenemy1[0x02] = 0x61;roomenemy2[0x02] = 0x61;
+roomenemy1[0x03] = 0x37;roomenemy2[0x03] = 0x10;
+roomenemy1[0x04] = 0x38;roomenemy2[0x04] = 0x10;
+roomenemy1[0x07] = 0x51;roomenemy2[0x07] = 0x51;
+roomenemy1[0x08] = 0x52;roomenemy2[0x08] = 0x52;
+roomenemy1[0x0A] = 0x35;roomenemy2[0x0A] = 0x10;
+roomenemy1[0x0B] = 0x0F;roomenemy2[0x0B] = 0x0F;
+roomenemy1[0x0C] = 0x36;roomenemy2[0x0C] = 0x10;
+roomenemy1[0x0E] = 0x31;roomenemy2[0x0E] = 0x41;
+roomenemy1[0x0F] = 0x10;roomenemy2[0x0F] = 0x10;
+roomenemy1[0x12] = 0x30;roomenemy2[0x12] = 0x40;
+roomenemy1[0x13] = 0x50;roomenemy2[0x13] = 0x50;
+roomenemy1[0x14] = 0x38;roomenemy2[0x14] = 0x10;
+roomenemy1[0x15] = 0x00;roomenemy2[0x15] = 0x00;
+roomenemy1[0x16] = 0x00;roomenemy2[0x16] = 0x00;
+roomenemy1[0x19] = 0x41;roomenemy2[0x19] = 0x10;
+roomenemy1[0x1B] = 0x36;roomenemy2[0x1B] = 0x46;
+roomenemy1[0x1C] = 0x52;roomenemy2[0x1C] = 0x52;
+roomenemy1[0x1E] = 0x00;roomenemy2[0x1E] = 0x10;
+roomenemy1[0x20] = 0x50;roomenemy2[0x20] = 0x50;
+roomenemy1[0x21] = 0x00;roomenemy2[0x21] = 0x10;
+roomenemy1[0x26] = 0x31;roomenemy2[0x26] = 0x41;
+roomenemy1[0x28] = 0x00;roomenemy2[0x28] = 0x00;
+roomenemy1[0x29] = 0x0F;roomenemy2[0x29] = 0x0F;
 
 const spikes = [0x07, 0x08, 0x13, 0x1c, 0x20]
 const spikeInfo = []
@@ -176,23 +150,27 @@ function generatePatchForFortress(world, difficulty) {
 
             //determine enemies for rooms
             var enemy = 0x0;
-            let enemyChance = Math.floor(Math.random()* 100) + 1;
-            if (roomenemy1.indexOf(roomId) == -1) {
-                enemy = 0x0;
-            } else {
-                if (difficulty == 1) {
-                    //easy 20/80/0
-                    if(enemyChance > 20) {
-                        enemy =  roomenemy1[roomId]                   
-                    }
-                } else if(difficulty == 2) {
-                    if (enemyChance >= 10 && enemyChance <= 90) {enemy = roomenemy1[roomId]}
-                    else if(enemyChance > 90) {enemy = roomenemy2[roomId]}
-                } else if(difficulty == 3) {
-                    if (enemyChance <= 80) {enemy = roomenemy1[roomId]}
-                    else if(enemyChance > 80) {enemy = roomenemy2[roomId]}  
+            let enemyChance = Math.floor(Math.random()* 100) + 1;           
+            
+            if (difficulty == 1) {
+                //easy 20/80/0
+                if(enemyChance > 20) {
+                    enemy =  roomenemy1[roomId]                   
                 }
-            }   
+            } else if(difficulty == 2) {
+                if (enemyChance >= 10 && enemyChance <= 90) {
+                    enemy = roomenemy1[roomId]}
+                else if(enemyChance > 90) {
+                    enemy = roomenemy2[roomId]
+                }
+            } else if(difficulty == 3) {
+                if (enemyChance <= 80) {enemy = roomenemy1[roomId]}
+                else if(enemyChance > 80) {enemy = roomenemy2[roomId]}  
+            }
+              
+            if (enemy == undefined) {
+                enemy = 0x0;
+            }
 
             if(spikes.indexOf(roomId) > -1) {
                 enemy = spikeInfo[roomId][world];
