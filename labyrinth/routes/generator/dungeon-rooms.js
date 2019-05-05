@@ -1,8 +1,8 @@
 //roomId - id in Kid Icaraus, also cooresponds to image of room
-//paths - array for paths FROM TBRL of room to TBRL of room.  i.e. [F, F, F, F] would be a 4 way room that you can go any direction
+//paths - array for paths FROM TRBL of room to TBRL of room.  i.e. [F, F, F, F] would be a 4 way room that you can go any direction
 //        [(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN)] would mean all entrences can go TBR but none can go L
 //clipPaths - same as paths, but for if the person can do the wall clips
-//validEntrances:  TBRL hex value of where you can enter the room from.  i.e. the vertical rooms would be 1 + 2 + 0 + 0 = 3
+//validEntrances:  TRBL hex value of where you can enter the room from.  i.e. the vertical rooms would be 1 + 2 + 0 + 0 = 3
 
 const UP = 0x1;
 const RIGHT = 0x2;

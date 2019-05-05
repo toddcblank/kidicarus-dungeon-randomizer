@@ -1,9 +1,9 @@
 extends layout
 block content
-  h1= title
+  h1 Kid Icarus Randomize
   head
     link(rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css")
-  p Welcome to #{title}
+  p Here's your seed!
   if(!spoilersOnly)
     p Link to seed: 
       a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      

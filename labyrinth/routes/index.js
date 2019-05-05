@@ -8,11 +8,11 @@ const DIFF_ABBREV = ["U", "E", "N", "H"]
 /* GET home page. */
 router.get('/', function(req, res, next) {
   let hasRom = req.session.uploadedrom !== undefined
-  res.render('index', { title: 'Labrinyth', hasRom: hasRom, spoilersOnly: false});
+  res.render('index', { title: 'Kid Icarus Randomizer', hasRom: hasRom, spoilersOnly: false});
 });
 
 router.get('/generate-maps-only', function(req, res, next) {
-  res.render('index', { title: 'Labrinyth', spoilersOnly: true});
+  res.render('index', { title: 'Kid Icarus Randomizer', spoilersOnly: true});
 })
 
 router.post('/generate-maps-only', function(req, res, next) {

@@ -109,45 +109,49 @@ screenRule[4][5] = [0, 3,  1,  1,  1,  1,  1, -1];
 screenRule[4][6] = [0, 3,  1,  2,  1,  1,  1, -1];
 screenRule[4][7] = [0, 3,  1,  1,  1,  1,  1, -1];
 
-
+screensByWorldAndAddress = []
+screensByWorldAndAddress[0] = []
+screensByWorldAndAddress[1] = []
+screensByWorldAndAddress[2] = []
+screensByWorldAndAddress[3] = []
 screens = [
     [], //world 0 no-existo
     [
-        {id:00, address1: 0x00, address2: 0x00},
-        {id:01, address1: 0x0b, address2: 0x71},
-        {id:02, address1: 0x3e, address2: 0x71},
-        {id:03, address1: 0x80, address2: 0x71},
-        {id:04, address1: 0xa4, address2: 0x71},
-        {id:05, address1: 0xec, address2: 0x71},
-        {id:06, address1: 0x3a, address2: 0x72},
-        {id:07, address1: 0x73, address2: 0x72},
-        {id:08, address1: 0xa3, address2: 0x72},
-        {id:09, address1: 0xd3, address2: 0x72},
-        {id:10, address1: 0x4b, address2: 0x73},
-        {id:11, address1: 0x81, address2: 0x73},
-        {id:12, address1: 0xa5, address2: 0x73},
-        {id:13, address1: 0xcf, address2: 0x73},
-        {id:14, address1: 0xf9, address2: 0x73},
-        {id:15, address1: 0x23, address2: 0x74},
-        {id:16, address1: 0x56, address2: 0x74},
-        {id:17, address1: 0x7d, address2: 0x74},
-        {id:18, address1: 0xf8, address2: 0x74},
-        {id:19, address1: 0x76, address2: 0x75},
-        {id:20, address1: 0x97, address2: 0x75},
-        {id:21, address1: 0xc4, address2: 0x75},
-        {id:22, address1: 0x0c, address2: 0x76},
-        {id:23, address1: 0x39, address2: 0x76},
-        {id:24, address1: 0xb1, address2: 0x76},
-        {id:25, address1: 0x17, address2: 0x77},
-        {id:26, address1: 0x4d, address2: 0x77},
-        {id:27, address1: 0x8c, address2: 0x77},
-        {id:28, address1: 0xbd, address2: 0x70},
-        {id:29, address1: 0x09, address2: 0x73},
-        {id:30, address1: 0x2e, address2: 0x75},
-        {id:31, address1: 0x00, address2: 0x70},
-        {id:32, address1: 0x39, address2: 0x70},
-        {id:33, address1: 0x78, address2: 0x70},
-        {id:34, address1: 0xdb, address2: 0x76}
+        {id:00, address1: 0x00, address2: 0x00, door: 0x0},
+        {id:01, address1: 0x0b, address2: 0x71, door: 0xae},
+        {id:02, address1: 0x3e, address2: 0x71, door: 0x74},
+        {id:03, address1: 0x80, address2: 0x71, door: 0x4b},
+        {id:04, address1: 0xa4, address2: 0x71, door: 0x63},
+        {id:05, address1: 0xec, address2: 0x71, door: 0x73},
+        {id:06, address1: 0x3a, address2: 0x72, door: 0xab},
+        {id:07, address1: 0x73, address2: 0x72, door: 0x83},
+        {id:08, address1: 0xa3, address2: 0x72, door: 0x55},
+        {id:09, address1: 0xd3, address2: 0x72, door: 0x19},
+        {id:10, address1: 0x4b, address2: 0x73, door: 0x71},
+        {id:11, address1: 0x81, address2: 0x73, door: 0x74},
+        {id:12, address1: 0xa5, address2: 0x73, door: 0x2e},
+        {id:13, address1: 0xcf, address2: 0x73, door: 0x99},
+        {id:14, address1: 0xf9, address2: 0x73, door: 0x64},
+        {id:15, address1: 0x23, address2: 0x74, door: 0xb1},
+        {id:16, address1: 0x56, address2: 0x74, door: 0x75},
+        {id:17, address1: 0x7d, address2: 0x74, door: 0x4c},
+        {id:18, address1: 0xf8, address2: 0x74, door: 0x2c},
+        {id:19, address1: 0x76, address2: 0x75, door: 0x8e},
+        {id:20, address1: 0x97, address2: 0x75, door: 0x51},
+        {id:21, address1: 0xc4, address2: 0x75, door: 0x43},
+        {id:22, address1: 0x0c, address2: 0x76, door: 0x55},
+        {id:23, address1: 0x39, address2: 0x76, door: 0x00},
+        {id:24, address1: 0xb1, address2: 0x76, door: 0x9e},
+        {id:25, address1: 0x17, address2: 0x77, door: 0x5b},
+        {id:26, address1: 0x4d, address2: 0x77, door: 0x46},
+        {id:27, address1: 0x8c, address2: 0x77, door: 0x41},
+        {id:28, address1: 0xbd, address2: 0x70, door: 0x9d},
+        {id:29, address1: 0x09, address2: 0x73, door: 0x9d},
+        {id:30, address1: 0x2e, address2: 0x75, door: 0x9d},
+        {id:31, address1: 0x00, address2: 0x70, door: 0x96},
+        {id:32, address1: 0x39, address2: 0x70, door: 0xb1},
+        {id:33, address1: 0x78, address2: 0x70, door: 0x76},
+        {id:34, address1: 0xdb, address2: 0x76, door: 0x92}
     ],
     [
         {id:00, address1: 0x00, address2: 0x00},
@@ -220,6 +224,14 @@ screens = [
     ]
 ]
 
+for (var i = 1; i <= 3; i++){
+    screensForWorld = screens[i];
+    for(var s = 0; s < screensForWorld.length; s++) {
+        scr = screensForWorld[s];
+        let key = ((scr.address2 << 8) + scr.address1).toString(16)
+        screensByWorldAndAddress[i][key] = scr
+    }
+}
 
 //World 1 Enemies
 let ENEMY_NONE = 0x0;           //Empty
@@ -560,4 +572,4 @@ const ENEMY_TABLE3 = [
     ]
 ]
 
-module.exports = {screenRules, screens, ENEMY_TABLE1, ENEMY_TABLE3}
+module.exports = {screenRules, screens, ENEMY_TABLE1, ENEMY_TABLE3, screensByWorldAndAddress}

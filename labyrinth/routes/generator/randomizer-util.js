@@ -4,6 +4,7 @@ let romPath = './public/generated-seeds/'
 let fs = require('fs')
 let fbs = require('./fbs-generator')
 let fbsf = require('./fbs-fortress-generator')
+let sr = require('./scrolling-level-info')
 
 let ADD_MAP_PATCH_D14 = {
     data: ["1b", "88", 'FF'],
@@ -39,6 +40,18 @@ let REMOVE_DOOR_PATCH = {
     name: "Remove Doors",
     data: [],
     offset: 0x1efd8
+}
+
+let REMOVE_HIDDEN_SCORE_REQ = {
+    name: "Removes hidden score requirement from upgrade rooms",
+    data: [0xE9, 0x00, 0xAD, 0x35, 0x01, 0xE9, 0x00],
+    offset: 0x18ABE
+}
+
+let ADD_STR_DOOR_TO_STAGE_1_1 = {
+    name: "Adds str upgrade to first screen of 1-1",
+    data: [0x00, 0x00, 0x9D, 0x24, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF],
+    offset: 0x1efd9
 }
 
 let ADD_FORTRESS_ITEMS = [
@@ -110,6 +123,89 @@ function getBossHealthPatch(boss1, boss2, boss3) {
         data: [boss1, boss2, boss3],
         offset: 0x15127
     }
+}
+
+
+
+function generateDoorPatchForLevels(level1data, level2data, level3data) {
+
+    const NOSE_ROOM = 0x22;
+    const TRAINING_ROOM = 0x23;
+    const UPGRADE_ROOM = 0x24;
+    const SHOP = 0x25;
+    const BLACK_MARKET = 0x26;
+    const EMPTY = 0x27;
+
+    let doorPatch = {
+        name: "Door Patch",
+        data: [],
+        offset: 0x1efd9,
+
+    }
+
+    maxDoorsPerLevel = 4;
+    maxDoorsPerWorld = 11;
+    maxDoorsTotal = 34
+
+    level1 = [[], level1data[0].data, level1data[1].data, level1data[2].data]
+    
+    var doorsToPlacePerWorldLevel = [[],[0, 3, 4, 5], [0,0,0,0], [0,0,0,0]]
+
+
+    var doorTypes = [NOSE_ROOM, TRAINING_ROOM, SHOP, BLACK_MARKET]
+
+    //randomize world 1 doors
+    var numDoorsToPlace = doorsToPlacePerWorldLevel[1][1] + 
+                            doorsToPlacePerWorldLevel[1][2] + 
+                            doorsToPlacePerWorldLevel[1][3];
+    let doorsToPlace = [];                       
+    for (var door = 0; door < numDoorsToPlace; door++) {
+        let doorType = doorTypes[Math.floor(Math.random() * doorTypes.length)];
+        doorsToPlace.push(doorType);
+    }
+
+    //Place 1 upgrade room in world 1
+    doorsToPlace[Math.floor(Math.random() * doorsToPlace.length)] = UPGRADE_ROOM;
+    console.log("Placing doors on level 1: " + doorsToPlace)
+    for(var x = 1; x <= level1.length; x++){
+        var screensWithDoors = [];
+
+        while (screensWithDoors.length < doorsToPlacePerWorldLevel[1][x]) {
+            //pick a random screen
+            let randomScreen = Math.floor((Math.random() * level1[x].length)/2)
+            var key = (level1[x][randomScreen * 2] + (level1[x][(randomScreen*2)+1]  << 8)).toString(16)
+            console.log("using randomScreen " + randomScreen)
+            console.log("has key " + key)
+            screen = sr.screensByWorldAndAddress[1][key]
+            console.log(screen)
+
+            if (!screen.door || screen.door == 0x0 || screensWithDoors.indexOf(randomScreen) > -1) {
+                continue;
+            }
+
+            //good door location
+            screensWithDoors.push(randomScreen)
+            doorPatch.data.push(x-1);                     //stage - 1
+            doorPatch.data.push(randomScreen);          //screen
+            doorPatch.data.push(screen.door);           //door coords
+            doorPatch.data.push(doorsToPlace.pop());    //door type
+        }
+    }
+    
+
+    //End of World 1
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+    //End of World 2
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+    //End of World 3
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+    //End of World 4 (no doors here silly)
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+    return doorPatch;
 }
 
 //Right now this just uses FBS's text, would like to edit it 
@@ -239,7 +335,11 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     //world 1 randomization
     if (levelsToRandomized.indexOf(1) > -1){
         let world1Patches = fbs.randomizeWorld(1, difficulty);
+
+        let doorPatch = generateDoorPatchForLevels(world1Patches, undefined, undefined)
+
         patchesToApply.push(world1Patches);
+        patchesToApply.push(doorPatch);
         writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1), romPath + newFilename + "-w1.html");
     }
 
@@ -265,9 +365,11 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     }
 
     //minor patches
-    patchesToApply.push(REMOVE_DOOR_PATCH);
+    // patchesToApply.push(REMOVE_DOOR_PATCH);
     patchesToApply.push(ADD_FORTRESS_ITEMS);
-    patchesToApply.push(STR_2_PATCH);
+    // patchesToApply.push(STR_2_PATCH);
+    // patchesToApply.push(ADD_STR_DOOR_TO_STAGE_1_1);
+    patchesToApply.push(REMOVE_HIDDEN_SCORE_REQ);
 
     patchesToApply.push(getBossHealthPatch(100, 100, 100));
     patchesToApply.push(getTitleTextPatch("foo", "bar"));
