@@ -4,7 +4,7 @@ let romPath = './public/generated-seeds/'
 let fs = require('fs')
 let fbs = require('./fbs-generator')
 let fbsf = require('./fbs-fortress-generator')
-let sr = require('./scrolling-level-info')
+let dr = require('./doorRandomizer')
 
 let ADD_MAP_PATCH_D14 = {
     data: ["1b", "88", 'FF'],
@@ -120,123 +120,152 @@ let settings = {
 
 function getBossHealthPatch(boss1, boss2, boss3) {
     return {
+        name: "adjusts boss health",
         data: [boss1, boss2, boss3],
         offset: 0x15127
     }
 }
 
-
-
-function generateDoorPatchForLevels(level1data, level2data, level3data) {
-
-    const NOSE_ROOM = 0x22;
-    const TRAINING_ROOM = 0x23;
-    const UPGRADE_ROOM = 0x24;
-    const SHOP = 0x25;
-    const BLACK_MARKET = 0x26;
-    const EMPTY = 0x27;
-
-    let doorPatch = {
-        name: "Door Patch",
-        data: [],
-        offset: 0x1efd9,
-
-    }
-
-    maxDoorsPerLevel = 4;
-    maxDoorsPerWorld = 11;
-    maxDoorsTotal = 34
-
-    level1 = [[], level1data[0].data, level1data[1].data, level1data[2].data]
-    
-    var doorsToPlacePerWorldLevel = [[],[0, 3, 4, 5], [0,0,0,0], [0,0,0,0]]
-
-
-    var doorTypes = [NOSE_ROOM, TRAINING_ROOM, SHOP, BLACK_MARKET]
-
-    //randomize world 1 doors
-    var numDoorsToPlace = doorsToPlacePerWorldLevel[1][1] + 
-                            doorsToPlacePerWorldLevel[1][2] + 
-                            doorsToPlacePerWorldLevel[1][3];
-    let doorsToPlace = [];                       
-    for (var door = 0; door < numDoorsToPlace; door++) {
-        let doorType = doorTypes[Math.floor(Math.random() * doorTypes.length)];
-        doorsToPlace.push(doorType);
-    }
-
-    //Place 1 upgrade room in world 1
-    doorsToPlace[Math.floor(Math.random() * doorsToPlace.length)] = UPGRADE_ROOM;
-    console.log("Placing doors on level 1: " + doorsToPlace)
-    for(var x = 1; x <= level1.length; x++){
-        var screensWithDoors = [];
-
-        while (screensWithDoors.length < doorsToPlacePerWorldLevel[1][x]) {
-            //pick a random screen
-            let randomScreen = Math.floor((Math.random() * level1[x].length)/2)
-            var key = (level1[x][randomScreen * 2] + (level1[x][(randomScreen*2)+1]  << 8)).toString(16)
-            console.log("using randomScreen " + randomScreen)
-            console.log("has key " + key)
-            screen = sr.screensByWorldAndAddress[1][key]
-            console.log(screen)
-
-            if (!screen.door || screen.door == 0x0 || screensWithDoors.indexOf(randomScreen) > -1) {
-                continue;
-            }
-
-            //good door location
-            screensWithDoors.push(randomScreen)
-            doorPatch.data.push(x-1);                     //stage - 1
-            doorPatch.data.push(randomScreen);          //screen
-            doorPatch.data.push(screen.door);           //door coords
-            doorPatch.data.push(doorsToPlace.pop());    //door type
-        }
-    }
-    
-
-    //End of World 1
-    doorPatch.data.push(0xff);
-    doorPatch.data.push(0xff);
-    //End of World 2
-    doorPatch.data.push(0xff);
-    doorPatch.data.push(0xff);
-    //End of World 3
-    doorPatch.data.push(0xff);
-    doorPatch.data.push(0xff);
-    //End of World 4 (no doors here silly)
-    doorPatch.data.push(0xff);
-    doorPatch.data.push(0xff);
-    return doorPatch;
-}
-
 //Right now this just uses FBS's text, would like to edit it 
-function getTitleTextPatch(lineOne, lineTwo) {
+function getTitleTextPatch(seed) {
 
-    let extraLetters1 = {
-        data: "E6 4C 58 70 58 4C E6 00 00 00 00 00 00 00 00 00".split(" "),
-        offset: 0x3b60
+    //A = D2
+    //b = D3
+    //C = d4
+    //etc
+
+    let alphabet = {
+        name: "Adds alphabet to title screen",
+        data: "38 44 82 82 FE 82 82 00 00 00 00 00 00 00 00 00 FC 42 42 7C 42 42 FC 00 00 00 00 00 00 00 00 00 7C 82 80 80 80 82 7C 00 00 00 00 00 00 00 00 00 FC 42 42 42 42 42 FC 00 00 00 00 00 00 00 00 00 FE 42 48 78 48 42 FE 00 00 00 00 00 00 00 00 00 FE 42 48 78 48 40 E0 00 00 00 00 00 00 00 00 00 7C 82 80 8E 82 86 7A 00 00 00 00 00 00 00 00 00 C6 44 44 7C 44 44 C6 00 00 00 00 00 00 00 00 00 7C 10 10 10 10 10 7C 00 00 00 00 00 00 00 00 00 0E 04 04 84 84 84 78 00 00 00 00 00 00 00 00 00 E6 4C 58 70 58 4C E6 00 00 00 00 00 00 00 00 00 E0 40 40 40 40 42 FE 00 00 00 00 00 00 00 00 00 82 C6 AA 92 82 82 C6 00 00 00 00 00 00 00 00 00 C6 64 54 54 4C 44 C6 00 00 00 00 00 00 00 00 00 7C 82 82 82 82 82 7C 00 00 00 00 00 00 00 00 00 FC 42 42 7C 40 40 E0 00 00 00 00 00 00 00 00 00 7C 82 82 82 BA 84 7A 00 00 00 00 00 00 00 00 00 FC 42 42 7C 48 4A E6 00 00 00 00 00 00 00 00 00 7C 82 80 78 06 82 7C 00 00 00 00 00 00 00 00 00 FE 92 10 10 10 10 38 00 00 00 00 00 00 00 00 00 82 82 82 82 82 82 7C 00 00 00 00 00 00 00 00 00 82 82 82 82 44 28 10 00 00 00 00 00 00 00 00 00 82 82 92 92 92 AA 44 00 00 00 00 00 00 00 00 00 82 44 28 10 28 44 82 00 00 00 00 00 00 00 00 00 C6 44 28 10 10 10 38 00 00 00 00 00 00 00 00 00 FE 84 08 10 20 42 FE 00 00 00 00 00 00 00 00 00".split(" "),
+        offset: 0x3d30,
     }
 
-    let extraLetters2 = {
-        data: "7C 10 10 10 10 10 7C 00 00 00 00 00 00 00 00 00".split(" "),
-        offset: 0x3a00
-    }
+    const letterLookup = []
 
-    let extraLetters3 = {
-        data: "FE 42 48 78 48 40 E0 00 00 00 00 00 00 00 00 00".split(" "),
-        offset: 0x37c0
-    }
+    
+    letterLookup['0'] = 0x00;    
+    letterLookup['1'] = 0x01;
+    letterLookup['2'] = 0x02;
+    letterLookup['3'] = 0x03;
+    letterLookup['4'] = 0x04;
+    letterLookup['5'] = 0x05;
+    letterLookup['6'] = 0x06;
+    letterLookup['7'] = 0x07;
+    letterLookup['8'] = 0x08;
+    letterLookup['9'] = 0x09;
+    
+    letterLookup['A'] = 0xd2;
+    letterLookup['B'] = 0xd3;
+    letterLookup['C'] = 0xd4;
+    letterLookup['D'] = 0xd5;
+    letterLookup['E'] = 0xd6;
+    letterLookup['F'] = 0xd7;
+    letterLookup['G'] = 0xd8;
+    letterLookup['H'] = 0xd9;
+    letterLookup['I'] = 0xda;
+    letterLookup['J'] = 0xdb;
+    letterLookup['K'] = 0xdc;
+    letterLookup['L'] = 0xdd;
+    letterLookup['M'] = 0xde;
+    letterLookup['N'] = 0xdf;
+    letterLookup['O'] = 0xe0;
+    letterLookup['P'] = 0xe1;
+    letterLookup['Q'] = 0xe2;
+    letterLookup['R'] = 0xe3;
+    letterLookup['S'] = 0xe4;
+    letterLookup['T'] = 0xe5;
+    letterLookup['U'] = 0xe6;
+    letterLookup['V'] = 0xe7;
+    letterLookup['W'] = 0xe8;
+    letterLookup['X'] = 0xe9;
+    letterLookup['Y'] = 0xea;
+    letterLookup['Z'] = 0xeb;
+    letterLookup[' '] = 0x12;
+    letterLookup["BORDER"] = 0x1f;
 
     let textPatch1 = {
-        data: [0x12, 0xb5, 0x9f, 0x12, 0xb6, 0xa7, 0xa6, 0xbf, 0xb7, 0x12],
+        name: "Line 1 of title text patch",
+        data: [
+            letterLookup["K"],
+            letterLookup["I"],
+            letterLookup["D"],
+            letterLookup[" "],
+            letterLookup["I"],
+            letterLookup["C"],
+            letterLookup["A"],
+            letterLookup["R"],
+            letterLookup["U"],
+            letterLookup["S"],
+        ],
         offset: 0x63c3
     }
 
     let textPatch2 = {
-        data: [0x65, 0xaf, 0x12, 0x7b, 0x65, 0xc0],
-        offset: 0x63e5
+        name: "line 2 of title text patch",
+        data: [            
+            letterLookup["R"],
+            letterLookup["A"],
+            letterLookup["N"],
+            letterLookup["D"],
+            letterLookup["O"],
+            letterLookup["M"],
+            letterLookup["I"],
+            letterLookup["Z"],
+            letterLookup["E"],
+            letterLookup["R"],            
+        ],
+        offset: 0x63e3
     }
 
-    return [extraLetters1, extraLetters2, extraLetters3, textPatch1, textPatch2]
+    let textPatch3 = {
+        name: "line 3 of title text patch",
+        data: [           
+            letterLookup["BORDER"], 
+            letterLookup["B"],
+            letterLookup["Y"],
+            letterLookup[" "],
+            letterLookup["F"],
+            letterLookup["B"],
+            letterLookup["S"],
+            letterLookup[" "],
+            letterLookup["A"],
+            letterLookup["N"],
+            letterLookup["D"],      
+            letterLookup["BORDER"],      
+        ],
+        offset: 0x6402
+    }
+
+    let textPatch4 = {
+        name: "line 4 of title text patch",
+        data: [            
+            letterLookup["R"],
+            letterLookup["U"],
+            letterLookup["M"],
+            letterLookup["B"],
+            letterLookup["L"],
+            letterLookup["E"],
+            letterLookup["M"],
+            letterLookup["I"],
+            letterLookup["N"],
+            letterLookup["Z"], 
+            letterLookup["E"],  
+            letterLookup["BORDER"],         
+        ],
+        offset: 0x6422
+    }
+
+    let addSeedNamePatch = {
+        name: "Add seed name to title screen",
+        data: [],
+        offset: 0x64c5
+    }
+
+    for (var i = 0; i < seed.length; i++) {
+        addSeedNamePatch.data.push(letterLookup[seed.charAt(i)])
+    }
+
+    return [alphabet, textPatch1, textPatch2, textPatch3, textPatch4, addSeedNamePatch]
 }
 
 function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false) {
@@ -328,36 +357,41 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     
     }
 
+
     // rp.patchRom(ADD_MAP_PATCH_D14, newFullFileName);
     // rp.patchRom(ADD_MAP_PATCH_D24, newFullFileName);
     // rp.patchRom(ADD_MAP_PATCH_D34, newFullFileName);
 
+    var world1Patches = []
+    var world2Patches = []
+    var world3Patches = []
+
     //world 1 randomization
     if (levelsToRandomized.indexOf(1) > -1){
-        let world1Patches = fbs.randomizeWorld(1, difficulty);
-
-        let doorPatch = generateDoorPatchForLevels(world1Patches, undefined, undefined)
-
+        world1Patches = fbs.randomizeWorld(1, difficulty);
         patchesToApply.push(world1Patches);
-        patchesToApply.push(doorPatch);
         writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1), romPath + newFilename + "-w1.html");
     }
 
     //world 2 randomization
     if (levelsToRandomized.indexOf(2) > -1){
-        let world2Patches = fbs.randomizeWorld(2, difficulty);
+        world2Patches = fbs.randomizeWorld(2, difficulty);
         patchesToApply.push(world2Patches);
         writeHtmlSpoiler(writeWorld2Spoilers(world2Patches), romPath + newFilename + "-w2.html");
     }
     
     //world 3 randomization
     if (levelsToRandomized.indexOf(3) > -1){
-        let world3Patches = fbs.randomizeWorld(3, difficulty);    
+        world3Patches = fbs.randomizeWorld(3, difficulty);    
         patchesToApply.push(world3Patches);
         writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3), romPath + newFilename + "-w3.html");  
     }
     
     
+    let doorPatch = dr.generateRandomizedDoorPatchForLevels(world1Patches, world2Patches, world3Patches)
+    patchesToApply.push(doorPatch);
+
+
     if (levelsToRandomized.indexOf(4) > -1){
         let world4Patches = fbs.randomizeWorld(4, difficulty);
         patchesToApply.push(world4Patches);
@@ -372,7 +406,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     patchesToApply.push(REMOVE_HIDDEN_SCORE_REQ);
 
     patchesToApply.push(getBossHealthPatch(100, 100, 100));
-    patchesToApply.push(getTitleTextPatch("foo", "bar"));
+    patchesToApply.push(getTitleTextPatch(seed));
 
     if(!spoilersOnly){
         rp.copyOriginalRom(romname, newFullFileName);

@@ -5,9 +5,20 @@ block content
     link(rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css")
   p Here's your seed!
   if(!spoilersOnly)
+    p Things you should know:
+      ul
+        li Theres 1 strength upgrade in each world, plus one more randomly placed.  It's possible that it will be inaccessible due to being in the same level as another upgrade.
+        li No wall clips are necessary, although it is randomly possible to wall clip out of the lower right hand corner in 3-4 and skip the boss 
+        li The logic for maps, torches, and pencils are inverted so that if you don't have them, you'll get their benefit.  This is to aid you in the randomized fortresses.  If you buy one, they'll stop working
+        li Boss health has been adjusted down
+        li some screens look weird because of palette differences
+        li All vanilla Kid Icarus passwords should work
+        li This is a beta, so bugs are likely, if you find any, or want to provide feedback message Rumbleminze on discord (Rumbleminze#7132)
+        
+
     p Link to seed: 
       a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      
-    p Patches: 
+    p Patches (useful for debugging, ignore if you don't like hex numbers): 
       a(href='generated-seeds/ki-' + seed + '.nes.patches.json') Patch JSON    
   if(spoilers)
     p Link to spoiler pages (note if you didn't randomize the world/level it will 404):  
@@ -26,12 +37,12 @@ block content
       p
         a(href='generated-seeds/ki-' + seed + '-w4.html') World 4 spoiler
 
-  p This code is useful to start at 1-4 with stuff 
-  p  
-    img(src="images/1-4-code.png", class="password", alt="0000mo C0LB00 ue0008 1000pr")
-  p This code is useful to start at 2-4 with stuff
-  p 
-    img(src="images/2-4-code.png", class="password", alt="")
-  p This code is useful to start at 3-4 with stuff
-  p
-    img(src="images/3-4-code.png", class="password" alt="")
+  //- p This code is useful to start at 1-4 with stuff 
+  //- p  
+  //-   img(src="images/1-4-code.png", class="password", alt="0000mo C0LB00 ue0008 1000pr")
+  //- p This code is useful to start at 2-4 with stuff
+  //- p 
+  //-   img(src="images/2-4-code.png", class="password", alt="")
+  //- p This code is useful to start at 3-4 with stuff
+  //- p
+  //-   img(src="images/3-4-code.png", class="password" alt="")
