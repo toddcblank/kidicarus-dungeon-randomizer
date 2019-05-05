@@ -6,6 +6,10 @@ let fbs = require('./fbs-generator')
 let fbsf = require('./fbs-fortress-generator')
 let dr = require('./doorRandomizer')
 
+
+const DOOR_FULL_RANDO_NO_REQS = 1;
+const UPGRADES_AT_END = 2;
+
 let ADD_MAP_PATCH_D14 = {
     data: ["1b", "88", 'FF'],
     offset: 0x1b2c4
@@ -268,7 +272,8 @@ function getTitleTextPatch(seed) {
     return [alphabet, textPatch1, textPatch2, textPatch3, textPatch4, addSeedNamePatch]
 }
 
-function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false) {
+
+function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false, doors=DOOR_FULL_RANDO_NO_REQS) {
 
     console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
     console.log("------------------ Testing RNG for seed in Randomization function " + seed + " ------------------------")
@@ -388,8 +393,14 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     }
     
     
-    let doorPatch = dr.generateRandomizedDoorPatchForLevels(world1Patches, world2Patches, world3Patches)
-    patchesToApply.push(doorPatch);
+    if (doors == DOOR_FULL_RANDO_NO_REQS){
+        let doorPatch = dr.generateRandomizedDoorPatchForLevels(world1Patches, world2Patches, world3Patches)
+        patchesToApply.push(doorPatch);
+        patchesToApply.push(REMOVE_HIDDEN_SCORE_REQ);
+    } else if (doors = UPGRADES_AT_END){
+        let doorPatch = dr.addUpgradeDoorsToEndOfLevels();
+        patchesToApply.push(doorPatch);
+    }
 
 
     if (levelsToRandomized.indexOf(4) > -1){
@@ -399,11 +410,9 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     }
 
     //minor patches
-    // patchesToApply.push(REMOVE_DOOR_PATCH);
     patchesToApply.push(ADD_FORTRESS_ITEMS);
     // patchesToApply.push(STR_2_PATCH);
     // patchesToApply.push(ADD_STR_DOOR_TO_STAGE_1_1);
-    patchesToApply.push(REMOVE_HIDDEN_SCORE_REQ);
 
     patchesToApply.push(getBossHealthPatch(100, 100, 100));
     patchesToApply.push(getTitleTextPatch(seed));
@@ -570,4 +579,4 @@ function printMaze(mazePatch) {
 
 }
 
-module.exports = {createNewRandomizedRom}
+module.exports = {createNewRandomizedRom, DOOR_FULL_RANDO_NO_REQS, UPGRADES_AT_END}

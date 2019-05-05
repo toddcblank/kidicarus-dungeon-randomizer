@@ -1,18 +1,87 @@
 
 let sr = require('./scrolling-level-info')
 
+
+const NOSE_ROOM = 0x22;
+const TRAINING_ROOM = 0x23;
+const UPGRADE_ROOM = 0x24;
+const SHOP = 0x25;
+const BLACK_MARKET = 0x26;
+const EMPTY_OR_SPA = 0x27;
+
+function addUpgradeDoorsToEndOfLevels() {
+    let doorPatch = {
+        name: "Adds Str upgrades to end of 1-2, 2-1, 2-2, and 3-2",
+        data: [],
+        offset: 0x1efd9
+    }
+
+    doorPatch.data.push(01); //stage 1-2
+    doorPatch.data.push(13); //screen 14
+    doorPatch.data.push(0x97); //coords, I think this works for all 3 options
+    doorPatch.data.push(UPGRADE_ROOM); //..upgrade room...thought that was clear.
+
+    //12 empty doors
+    for (var i = 0; i < 12; i++) {
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+    }
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+    
+    //World 2
+    doorPatch.data.push(00); //stage 2-1
+    doorPatch.data.push(26); //screen 27
+    doorPatch.data.push(0xaa); //coords, I think this works for all 3 options
+    doorPatch.data.push(UPGRADE_ROOM); //..upgrade room...thought that was clear.
+    
+    doorPatch.data.push(01); //stage 2-2
+    doorPatch.data.push(29); //screen 30
+    doorPatch.data.push(0xaa); //coords, I think this works for all 3 options
+    doorPatch.data.push(UPGRADE_ROOM); //..upgrade room...thought that was clear.
+    
+    //21 empty doors
+    for (var i = 0; i < 21; i++) {
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+    }
+
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+
+    //World 3
+    doorPatch.data.push(01); //stage 3-2
+    doorPatch.data.push(13); //screen 14
+    doorPatch.data.push(0x99); //coords, I think this works for all 3 options
+    doorPatch.data.push(UPGRADE_ROOM); //..upgrade room...thought that was clear.
+
+    //7 empty doors
+    for (var i = 0; i < 7; i++) {
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+    }
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+
+    
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+
+    return doorPatch;
+}
+
 //Generates doors for the full world
 //requires 3 parameters, which are the patch files for each world
 //each world patch should have the stage patch for x-1, x-2, x-3 in 
 //array entry 0-2.  if a patch is not passed in the doors will not be present.
 function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = [], world3patch = []) {
 
-    const NOSE_ROOM = 0x22;
-    const TRAINING_ROOM = 0x23;
-    const UPGRADE_ROOM = 0x24;
-    const SHOP = 0x25;
-    const BLACK_MARKET = 0x26;
-    const EMPTY_OR_SPA = 0x27;
 
     let doorPatch = {
         name: "Door Patch",
@@ -92,4 +161,4 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
     return doorPatch;
 }
 
-module.exports = {generateRandomizedDoorPatchForLevels}
+module.exports = {generateRandomizedDoorPatchForLevels, addUpgradeDoorsToEndOfLevels}

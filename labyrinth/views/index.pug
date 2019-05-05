@@ -22,6 +22,12 @@ block content
             option(value="3") HARD
           label(for="skipSpoilers") Skip Spoilers
           input(type="checkbox", name="skipSpoilers")
+        div.form-group.seed  
+          label(for="doors") Randomize All Doors, remove upgrade room requirements
+          input(type="radio", name="doors", value="1", checked=true) 
+          label(for="doors") Put Upgrades at end of 1-2, 2-1, 2-2, and 3-2, keep requirements
+          input(type="radio", name="doors", value="2")
+
         div.form-group.seed
           label(for="randomizeWorld1") Randomize World 1
           input(type="checkbox", name="randomizeWorld1", checked)

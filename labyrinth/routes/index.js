@@ -17,7 +17,7 @@ router.get('/generate-maps-only', function(req, res, next) {
 
 router.post('/generate-maps-only', function(req, res, next) {
   let difficulty = req.body.difficulty
-  var rngSeed = new Date().getTime().toString();
+  var rngSeed = new Date().getTime().toString(16);
   if (req.body.seed && req.body.seed != 0) {
     rngSeed = req.body.seed;
   }
@@ -89,7 +89,7 @@ router.get('/generate-seed', function(req, res, next) {
 router.post('/generate-seed', function(req, res, next) {
 
   let difficulty = req.body.difficulty
-  var rngSeed = new Date().getTime().toString();
+  var rngSeed = new Date().getTime().toString(16).substr(5).toUpperCase();
   if (req.body.seed && req.body.seed != 0) {
     rngSeed = req.body.seed;
   }
@@ -156,7 +156,9 @@ router.post('/generate-seed', function(req, res, next) {
     useFbsLogic.push(3)
   }
 
-  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false)
+  let doors = req.body.doors;
+
+  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false, doors)
 
   res.render('generated', { title: 'Labrinyth' , seed: generatedSeed, spoilers: !skipSpoilers});
 });

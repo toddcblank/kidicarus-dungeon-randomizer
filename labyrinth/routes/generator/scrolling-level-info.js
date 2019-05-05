@@ -167,7 +167,7 @@ screens = [
         {id:10, address1: 0x89, address2: 0xB2, door: 0x1e},
         {id:11, address1: 0xB3, address2: 0xB2, door: 0xae},
         {id:12, address1: 0x0A, address2: 0xB3, door: 0xaa},
-        {id:13, address1: 0x28, address2: 0xB3, door: 0xa6},
+        {id:13, address1: 0x28, address2: 0xB3, door: 0x6a},
         {id:14, address1: 0x52, address2: 0xB3, door: 0xaa},
         {id:15, address1: 0x7C, address2: 0xB3, door: 0x89},
         {id:16, address1: 0xAC, address2: 0xB3, door: 0x68},
