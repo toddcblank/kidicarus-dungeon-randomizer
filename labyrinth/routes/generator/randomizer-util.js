@@ -414,7 +414,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     // patchesToApply.push(STR_2_PATCH);
     // patchesToApply.push(ADD_STR_DOOR_TO_STAGE_1_1);
 
-    patchesToApply.push(getBossHealthPatch(100, 100, 100));
+    // patchesToApply.push(getBossHealthPatch(100, 100, 100));
     patchesToApply.push(getTitleTextPatch(seed));
 
     if(!spoilersOnly){

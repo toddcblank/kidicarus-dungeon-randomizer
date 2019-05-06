@@ -1,16 +1,15 @@
 extends layout
 block content
-  h1 Kid Icarus Randomize
+  h1 Kid Icarus Randomizer
   head
     link(rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css")
   p Here's your seed!
   if(!spoilersOnly)
     p Things you should know:
       ul
-        li Theres 1 strength upgrade in each world, plus one more randomly placed.  It's possible that it will be inaccessible due to being in the same level as another upgrade.
+        li Theres 1 strength upgrade in each world, plus one more randomly placed (unless you chose the other option).  It's possible that it will be inaccessible due to being in the same level as another upgrade.
         li No wall clips are necessary, although it is randomly possible to wall clip out of the lower right hand corner in 3-4 and skip the boss 
         li The logic for maps, torches, and pencils are inverted so that if you don't have them, you'll get their benefit.  This is to aid you in the randomized fortresses.  If you buy one, they'll stop working
-        li Boss health has been adjusted down
         li some screens look weird because of palette differences
         li All vanilla Kid Icarus passwords should work
         li This is a beta, so bugs are likely, if you find any, or want to provide feedback message Rumbleminze on discord (Rumbleminze#7132)
