@@ -10,7 +10,7 @@ const ENEMY_TABLE_START_LOCATIONS = [[0],
  [0x1a626, 0x1a65b, 0x1a68a + 6, 0x1a6bf + 6], 
  [0xbc55, 0xbcb2, 0xbd0f, 0xbd6c], 
  [0x1af87, 0x1afc1, 0x1affb, 0x1b035], 
- [0xff0d]]
+ [0xff0d, 0xff22]]
 const ENEMY_TABLE1 = sr.ENEMY_TABLE1;
 const ENEMY_TABLE3 = sr.ENEMY_TABLE3;
 const DIFF_EASY = 1;
@@ -29,6 +29,7 @@ const EXITS = [0, 31, 36, 13, 6]
 //forced first screen for each of x-1 through x-3
 const INITIAL_SCREENS = [[], [0, 28, 29, 30], [0, 33, 34, 35], [0, 11, 11, 12], [0, 1]]
 const INVALID_ROOMS =   [[],[28, 29, 30, 31, 32, 33], [36, 37, 38], [13, 14, 15], []]
+
 
 //x-1 memory addresses            1-1     2-1      3-1     4-1
 const STAGE_1_ADDRESSES = [0, 0x1a56a, 0xbb3e, 0x1aef5, 0xfeb6]
@@ -217,6 +218,9 @@ function randomizeWorld(world, difficulty) {
         patches.push({name: "Enemy Table 2 for world " + world, data: enemyTable2Data, offset: ENEMY_TABLE_START_LOCATIONS[world][1]});
         patches.push({name: "Enemy Table 3 for world " + world, data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[world][2]});
         patches.push({name: "Enemy Table 4 for world " + world, data: enemyTable4Data, offset: ENEMY_TABLE_START_LOCATIONS[world][3]});
+    } else {
+        patches.push({name: "Enemy Table 1 for world " + world, data: enemyTable1Data, offset: ENEMY_TABLE_START_LOCATIONS[world][0]});
+        patches.push({name: "Enemy Table 2 for world " + world, data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[world][1]});               
     }
     if (world == 1) {
         patches.push(getPatchForWorld1Items(difficulty))
