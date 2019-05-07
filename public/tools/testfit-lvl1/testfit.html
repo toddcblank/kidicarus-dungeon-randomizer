@@ -5,7 +5,7 @@
             function changeImage(id, increment, display) {
                 let element = document.getElementById(id);
                 let currentSrc = element.src;
-                let dotIndex = currentSrc.indexOf(".")
+                let dotIndex = currentSrc.lastIndexOf(".")
                 let imgPrefix = currentSrc.substring(0, dotIndex - 2)
                 var imageIndex = parseInt(currentSrc.substring(dotIndex -2, dotIndex))
 
