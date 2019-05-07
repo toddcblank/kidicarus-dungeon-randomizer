@@ -169,7 +169,21 @@ function randomizeWorld(world, difficulty) {
         let enemy3Choice = ENEMY_TABLE3[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE3[world][difficulty].length)]
 
         enemyTable1Data.push(enemyChoice);
+        
         enemyTable3Data.push(enemy3Choice);
+        if (enemyChoice == sr.ENEMY_REAPER) {
+            //Enemy is a reaper, table 2 holds it position (put in upper left)
+            enemyTable2Data.push((4 << 8) + Math.floor(Math.random()*8));
+        } else {
+            enemyTable2Data.push(0x00);
+        }
+        if (enemy3Choice == sr.ENEMY_REAPER) {
+            //Enemy is a reaper, table 2 holds it position (put in lower right)
+            enemyTable4Data.push((12 << 8) + Math.floor(Math.random()*8) + 7);
+        } else {
+            enemyTable4Data.push(0x00);
+        }
+        
     }
 
     //2nd table, snakes in W2, reapers in 1&3    
@@ -192,26 +206,7 @@ function randomizeWorld(world, difficulty) {
                 enemyTable3Data[stageLength[world][1] + stageLength[world][2] + i] = 0x02;
             }
         }
-    } else if (world == 1 || world == 3) {
-        for (var currentScreen = 0; currentScreen < enemyTableLength; currentScreen++) {
-            if (difficulty == DIFF_EASY && currentScreen == 0) {
-                enemyTable2Data.push(0x00);
-                enemyTable4Data.push(0x00);
-            } else {
-                if (Math.floor(Math.random() * 100) + 1 < (difficulty * 5)) {
-                    enemyTable2Data.push(0x0d);
-                } else {
-                    enemyTable2Data.push(0x00);
-                }
-
-                if (Math.floor(Math.random() * 100) + 1 < (difficulty * 5)) {
-                    enemyTable4Data.push(0x0d);
-                } else {
-                    enemyTable4Data.push(0x00);
-                }
-            }
-        }
-    }
+    } 
 
     if (world != 4){
         patches.push({name: "Enemy Table 1 for world " + world, data: enemyTable1Data, offset: ENEMY_TABLE_START_LOCATIONS[world][0]});

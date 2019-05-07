@@ -126,7 +126,7 @@ screens = [
         {id:06, address1: 0x3a, address2: 0x72, door: 0xab},
         {id:07, address1: 0x73, address2: 0x72, door: 0x75},
         {id:08, address1: 0xa3, address2: 0x72, door: 0x55},
-        {id:09, address1: 0xd3, address2: 0x72, door: 0x19},
+        {id:09, address1: 0xd3, address2: 0x72, door: 0xa9},
         {id:10, address1: 0x4b, address2: 0x73, door: 0x71},
         {id:11, address1: 0x81, address2: 0x73, door: 0x74},
         {id:12, address1: 0xa5, address2: 0x73, door: 0x2e},
@@ -240,6 +240,7 @@ let ENEMY_NETTLER = 0x05;       //frogs
 let ENEMY_COMMYLOOSE = 0x0A;    //octopus
 let ENEMY_SHEMUN = 0x02;        //snakes
 let ENEMY_MCGOO = 0x03;         //slime
+let ENEMY_REAPER = 0x0D;        //reaper
 
 let ENEMY_MICKS = 0x08;         //Flying mouths
 let ENEMY_MINOS = 0x0A;         //Rising faces
@@ -278,6 +279,7 @@ const ENEMY_TABLE1 = [
             ENEMY_MONOEYE,
             ENEMY_NETTLER,
             ENEMY_COMMYLOOSE,
+            ENEMY_REAPER,
             ENEMY_NONE,
             ENEMY_NONE,
             ENEMY_NONE,
@@ -291,6 +293,7 @@ const ENEMY_TABLE1 = [
             ENEMY_NETTLER,
             ENEMY_COMMYLOOSE,
             ENEMY_COMMYLOOSE,
+            ENEMY_REAPER,
             ENEMY_NONE,
             ENEMY_NONE
         ],[
@@ -303,7 +306,9 @@ const ENEMY_TABLE1 = [
             ENEMY_NETTLER,
             ENEMY_COMMYLOOSE,
             ENEMY_COMMYLOOSE,
-            ENEMY_COMMYLOOSE       
+            ENEMY_COMMYLOOSE,
+            ENEMY_REAPER,
+            ENEMY_REAPER               
         ]
     ],[
         //WORLD2
@@ -350,6 +355,7 @@ const ENEMY_TABLE1 = [
             ENEMY_KEEPAH,
             ENEMY_COLLIN,
             ENEMY_OCTOS,
+            ENEMY_REAPER,
             ENEMY_NONE,
             ENEMY_NONE,
             ENEMY_NONE,
@@ -363,7 +369,7 @@ const ENEMY_TABLE1 = [
             ENEMY_COLLIN,
             ENEMY_OCTOS,
             ENEMY_OCTOS,
-            ENEMY_NONE,
+            ENEMY_REAPER,
             ENEMY_NONE
         ],[            
             ENEMY_KOMAYTO,
@@ -376,6 +382,8 @@ const ENEMY_TABLE1 = [
             ENEMY_OCTOS,
             ENEMY_OCTOS,
             ENEMY_OCTOS,
+            ENEMY_REAPER,
+            ENEMY_REAPER,
         ]
     ],[
         //WORLD4
@@ -572,4 +580,4 @@ const ENEMY_TABLE3 = [
     ]
 ]
 
-module.exports = {screenRules, screens, ENEMY_TABLE1, ENEMY_TABLE3, screensByWorldAndAddress}
+module.exports = {screenRules, screens, ENEMY_TABLE1, ENEMY_TABLE3, ENEMY_REAPER, screensByWorldAndAddress}

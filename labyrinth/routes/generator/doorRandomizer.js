@@ -2,6 +2,7 @@
 let sr = require('./scrolling-level-info')
 
 
+const POT_ROOM = 0x20;
 const NOSE_ROOM = 0x22;
 const TRAINING_ROOM = 0x23;
 const UPGRADE_ROOM = 0x24;
@@ -99,7 +100,7 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
     var doorsToPlacePerWorldLevel = [[],[0, 4, 4, 5], [0,7,8,8], [0,2,3,3]]
 
 
-    var doorTypes = [NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA]
+    var doorTypes = [POT_ROOM, NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA]    
     var randomWorldUpgrade = Math.floor(Math.random() * 3) + 1
     for (var world = 1; world < 4; world++) {
 
