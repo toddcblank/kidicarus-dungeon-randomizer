@@ -18,6 +18,56 @@ DIR_INDEX[RIGHT] = 1
 DIR_INDEX[DOWN] = 2
 DIR_INDEX[LEFT] = 3
 
+//These are actually just the first byte of the enemies.  I use these to denote that we should spawn that type.
+//The rooms themselves have which specific enemy + position they support
+const RED = 0x30;
+const BLUE = 0x40;
+const FLYING_EASY = 0x10;
+const FLYING_HARD = 0x20;
+const EGGPLANT = 0x60;
+
+//These enemies will fill in empty rooms after the QUEUES for that world/difficulty have been placed
+//They'll be placed in order, then repeated.
+const ENEMY_FILLS_BY_DIFF = []
+ENEMY_FILLS_BY_DIFF[1] = [RED, BLUE, RED, BLUE, FLYING_EASY]
+ENEMY_FILLS_BY_DIFF[2] = [RED, BLUE, RED, FLYING_EASY, FLYING_HARD]
+ENEMY_FILLS_BY_DIFF[3] = [BLUE, RED, BLUE, FLYING_HARD, EGGPLANT]
+
+//These enemies will be placed first (after the boss and spikes), followed by filling in empty rooms from the FILLER array
+const ENEMY_QUEUES_BY_WORLD_AND_DIFF = []
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[1] = []
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[2] = []
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[3] = []
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[1][1] = [
+    EGGPLANT, FLYING_HARD, FLYING_EASY
+]
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[1][2] = [
+    EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD
+]
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[1][3] = [
+    EGGPLANT, EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD, FLYING_HARD
+]
+
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[2][1] = [
+    EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD, FLYING_EASY
+]
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[2][2] = [
+    EGGPLANT, EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD
+]
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[2][3] = [
+    EGGPLANT, EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD, FLYING_HARD
+]
+
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[3][1] = [
+    EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD, FLYING_EASY, FLYING_EASY, FLYING_EASY
+]
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[3][2] = [
+    EGGPLANT, EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD, FLYING_HARD, FLYING_HARD
+]
+ENEMY_QUEUES_BY_WORLD_AND_DIFF[3][3] = [
+    EGGPLANT, EGGPLANT, EGGPLANT, EGGPLANT, EGGPLANT, FLYING_HARD, FLYING_HARD, FLYING_HARD, FLYING_HARD, FLYING_HARD
+]
+
 rooms = [
     {
         roomId: '0',
@@ -331,5 +381,7 @@ function getRoomsOpenToDirection(direction) {
 module.exports = {
     getRoomsOpenToDirection,
     rooms,
-    UP, RIGHT, DOWN, LEFT, ALL, NONE, DIRECTIONS, DIR_INDEX
+    UP, RIGHT, DOWN, LEFT, ALL, NONE, DIRECTIONS, DIR_INDEX,
+    ENEMY_QUEUES_BY_WORLD_AND_DIFF,
+    ENEMY_FILLS_BY_DIFF
 }

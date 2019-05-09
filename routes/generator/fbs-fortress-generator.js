@@ -1,4 +1,4 @@
-
+let dr = require('./dungeon-rooms')
 
 const dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 const centurionOffsets = [0, 0x1b2c4, 0x1b5b8, 0x1b88c]
@@ -148,40 +148,115 @@ function generatePatchForFortress(world, difficulty) {
             roomData.push(roomId);
             roomData.push(openings);
 
-            //determine enemies for rooms
-            var enemy = 0x0;
-            let enemyChance = Math.floor(Math.random()* 100) + 1;           
-            
-            if (difficulty == 1) {
-                //easy 20/80/0
-                if(enemyChance > 20) {
-                    enemy =  roomenemy1[roomId]                   
-                }
-            } else if(difficulty == 2) {
-                if (enemyChance >= 10 && enemyChance <= 90) {
-                    enemy = roomenemy1[roomId]}
-                else if(enemyChance > 90) {
-                    enemy = roomenemy2[roomId]
-                }
-            } else if(difficulty == 3) {
-                if (enemyChance <= 80) {enemy = roomenemy1[roomId]}
-                else if(enemyChance > 80) {enemy = roomenemy2[roomId]}  
-            }
-              
-            if (enemy == undefined) {
-                enemy = 0x0;
-            }
+            //fill enemies with "empty to start"
+            var enemy = 0x0;           
 
+            //unless there's spikes
             if(spikes.indexOf(roomId) > -1) {
                 enemy = spikeInfo[roomId][world];
             }
 
+            //or it's the boss
             if(map[x][y] == ROOM_BOSS) {
                 enemy = 0xf0
             }
 
             enemyData.push(enemy);            
         }
+    }
+
+    
+    //Queues by difficulty to ensure we get X number of eggplant/hard flyers.  After this is empty we fill with other enemies
+    let enemyQueue = [].concat(dr.ENEMY_QUEUES_BY_WORLD_AND_DIFF[world][difficulty])    
+
+    while (enemyQueue.length > 0) {
+        let nextEnemeyMask = enemyQueue.pop();
+        var placedEnemy = false;
+        while(!placedEnemy) {
+            //get random room
+            let randomX = Math.floor(Math.random()*8);
+            let randomY = Math.floor(Math.random()*8);
+
+            let room = map[randomX][randomY];
+            if (room == 0) {
+                //empty room
+                continue;
+            }
+
+            //check for current enemy
+            if(enemyData[randomX + randomY * 8] != 0) {
+                continue;
+            }
+
+            //check if it supports the enemy
+            let roomId = roomData[(randomX + randomY * 8) * 2];
+            let filteredRooms = rooms.filter((room) => {return room.roomId == roomId.toString(16).toUpperCase()})            
+            let roomInfo = filteredRooms[0]
+
+            var roomSupportsEnemy = false;
+            var supportedEnemy = 0x0;
+            roomInfo.validEnemies.forEach((enemyId) => {
+                if ((enemyId & 0xf0) == nextEnemeyMask) {
+                    roomSupportsEnemy = true;
+                    supportedEnemy = enemyId;
+                }
+            })
+
+            if (roomSupportsEnemy) {
+                placedEnemy = true;
+                enemyData[randomX + randomY * 8] = supportedEnemy;
+            }
+        }        
+    }
+
+    //now fill any rooms that don't have enemies
+    let enemyFiller = [].concat(dr.ENEMY_FILLS_BY_DIFF[difficulty])
+    for (var roomIndex = 0; roomIndex < enemyData.length; roomIndex++) {
+        let room = map[roomIndex % 8][Math.floor(roomIndex/8)]
+        if (room == 0) {
+            continue;
+        }
+
+        let currentEnemyData = enemyData[roomIndex];
+        if (currentEnemyData != 0x0) {
+            continue;
+        }
+
+        var enemyPlaced = false;
+        var attempts = 0;
+        while(!enemyPlaced){
+
+            
+            let roomId = roomData[roomIndex * 2];
+            let filteredRooms = rooms.filter((room) => {return room.roomId == roomId.toString(16).toUpperCase()})            
+            let roomInfo = filteredRooms[0]
+            if (roomInfo.validEnemies.length == 0) {
+                enemyPlaced = true;
+                continue;
+            }
+
+            //try to place the next enemy filler
+            var enemyToPlace = enemyFiller.shift();
+            //put this enemy back at the back of filler
+            enemyFiller.push(enemyToPlace);
+            attempts++;
+                        
+            var supportedEnemy = 0x0;
+            let supportedEnemies = roomInfo.validEnemies.filter((enemyId) => {
+                return (enemyId & 0xf0) == enemyToPlace;
+            })
+
+            if(supportedEnemies.length > 0) {
+                enemyData[roomIndex] = supportedEnemies[Math.floor(Math.random() * supportedEnemies.length)];
+                enemyPlaced = true;                
+            } else if(attempts == enemyFiller.length) {
+                enemyData[roomIndex] = 0x0;
+                enemyPlaced = true;
+            }
+
+        }
+
+
     }
 
     return [{

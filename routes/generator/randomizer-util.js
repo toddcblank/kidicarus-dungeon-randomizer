@@ -480,8 +480,7 @@ function writeWorld2Spoilers(patches, doorPatch) {
             currentWorld++;
             index += 2
             continue;
-        }
-        
+        }        
 
         if (currentWorld != 2) {            
             index += 4
@@ -495,7 +494,6 @@ function writeWorld2Spoilers(patches, doorPatch) {
         index += 4
     }
 
-    console.log(JSON.stringify(doors))
     //The first 3 patches hold the 3 level datas
     for (var index = 0; index < 3; index++) {
         let levelData = patches[index].data;
@@ -554,8 +552,7 @@ function writeVerticalWorldSpoilers(patches, world, doorPatch) {
             currentWorld++;
             index += 2
             continue;
-        }
-        
+        }        
 
         if (currentWorld != world) {            
             index += 4

@@ -125,7 +125,6 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
             doorsToPlace[randomUpgradeRoom] = UPGRADE_ROOM;
         }
 
-
         console.log("Placing doors on level " + world + ": " + doorsToPlace)
         for(var x = 1; x <= levels[world].length; x++){
             var screensWithDoors = [];
@@ -135,7 +134,6 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
                 let randomScreen = Math.floor((Math.random() * levels[world][x].length)/2)
                 var key = (levels[world][x][randomScreen * 2] + (levels[world][x][(randomScreen*2)+1]  << 8)).toString(16)
                 screen = sr.screensByWorldAndAddress[world][key]
-                console.log("Screen " + key + ":" + JSON.stringify(screen))
                 
                 if (!screen.door || screen.door == 0x0 || screensWithDoors.indexOf(randomScreen) > -1) {
                     continue;
