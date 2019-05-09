@@ -57,7 +57,7 @@ function addUpgradeDoorsToEndOfLevels() {
     //World 3
     doorPatch.data.push(01); //stage 3-2
     doorPatch.data.push(13); //screen 14
-    doorPatch.data.push(0x99); //coords, I think this works for all 3 options
+    doorPatch.data.push(0x9a); //coords, I think this works for all 3 options
     doorPatch.data.push(UPGRADE_ROOM); //..upgrade room...thought that was clear.
 
     //7 empty doors
