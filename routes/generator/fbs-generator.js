@@ -48,10 +48,11 @@ function randomizeWorld(world, difficulty) {
     //Don't include fortresses in length
     let numStages = (world == 4) ? 1 : (stageLength[world].length - 1);
     
+    var screensWithPlatforms = 0; 
     for(var currentStage = 1; currentStage <= numStages; currentStage++) {
         console.log("Randomizing " + world + "-" + currentStage + " difficulty: " + difficulty)
         let stagePlan = []        
-        var success = false;    
+        var success = false;   
         while (!success ) {
             success = true;
             let screenUsed = [];
@@ -63,13 +64,18 @@ function randomizeWorld(world, difficulty) {
                     let alternateScreenChoice = pickScreen(world);  
                     //see if alternate is awesome
                     let previousScreen = stagePlan[currentScreen - 1];
-
+                    
                     if(screenRules(previousScreen, alternateScreenChoice, world) == SCREEN_AWESOME) {
                         screenChoice = alternateScreenChoice;
                     }
 
                     if(screenRules(previousScreen, alternateScreenChoice, world) == SCREEN_HARD) {
                         screenChoice = alternateScreenChoice;
+                    }
+
+                    if (screens[world][screenChoice].platforms && screensWithPlatforms >= 8) {
+                        screenChoice = 0;
+                        continue;
                     }
 
                     //check the rules
@@ -99,6 +105,9 @@ function randomizeWorld(world, difficulty) {
                     }
                 }
 
+                if (screens[world][screenChoice].platforms) {
+                    screensWithPlatforms++;
+                }
                 stagePlan[currentScreen] = screenChoice;
                 screenUsed[screenChoice]++
             }
@@ -224,7 +233,7 @@ function randomizeWorld(world, difficulty) {
     } else if (world == 3) {
         patches.push(getPatchForWorld3Items(difficulty))
     }
-    patches.push(radomizePlatforms(world, difficulty));
+    patches.push(radomizePlatforms(world, difficulty, stagePlans));
 
     return patches;
 }
@@ -275,7 +284,7 @@ function getPatchForWorld3Items(difficulty) {
 }
 
 
-function radomizePlatforms(world, difficulty) {
+function radomizePlatforms(world, difficulty, plan) {
     //two patches, 1 to remove them all, 1 to randomly add them
     if (world == 4) {
         return {name: "world " + world + " platforms", offset: 0x0, data: []};
@@ -286,29 +295,57 @@ function radomizePlatforms(world, difficulty) {
         removalPatch.data.push(0xff);
     }
 
-    if (world == 2) {
+    if (world == 2 || world == 3) {
         return removalPatch;
     }
 
-    let locationOptions = [0x37, 0x67, 0x97, 0xC7]
     let addPlatformsPatch = {name: "world " + world + " platforms", offset: PLATFORM_ADDRESS[world], data: []}
-    for (var i = 0; i < 32; i++) {
-        choice = Math.floor(Math.random() * difficulty) + 1;
-        if (choice == 1) {
-            let stage = Math.floor(Math.random() * 3);
-            let screen = Math.floor(Math.random() * stageLength[world][stage])
-            let location = locationOptions[Math.floor(Math.random() * 4)]
-            addPlatformsPatch.data.push(stage);
-            addPlatformsPatch.data.push(screen);
-            addPlatformsPatch.data.push(location);
-            addPlatformsPatch.data.push(0x00);
-        } else {
-            addPlatformsPatch.data.push(0xff);
-            addPlatformsPatch.data.push(0xff);
-            addPlatformsPatch.data.push(0xff);
-            addPlatformsPatch.data.push(0xff);
+    
+    let platformData = []
+    for (var i = 0; i < 128; i++) {
+        platformData.push(0xff)
+    }
+
+    let platformBanks = [[],[],[],[]]
+    for (var level = 0; level < plan.length; level++) {
+        for (var screen = 0; screen < plan[level].length; screen++){
+            let room = sr.screens[world][plan[level][screen]];
+            if (room.platforms) {
+
+                for (var pi = 0; pi < room.platforms.length; pi++) {
+                    let platform = room.platforms[pi];
+                    platformBanks[pi].push(level - 1)
+                    platformBanks[pi].push(screen + platform.offset)
+                    platformBanks[pi].push(platform.location)
+                    platformBanks[pi].push(0x0)
+                }
+            }
         }
     }
+
+    for (var i = 0; i < platformBanks.length; i++){
+        for(var x = 0; x < platformBanks[i].length; x++) {
+            //these need to be 32 bytes apart
+            platformData[x + (32 * i)] = platformBanks[i][x];
+        }
+    }
+
+    addPlatformsPatch.data = platformData
+
+    // for (var i = 0; i < 32; i++) {
+    //     choice = Math.floor(Math.random() * difficulty) + 1;
+    //     if (choice == 1) {
+    //         let stage = Math.floor(Math.random() * 3);
+    //         let screen = Math.floor(Math.random() * stageLength[world][stage])
+    //         let location = locationOptions[Math.floor(Math.random() * 4)]
+    //         addPlatformsPatch.data.push(stage);
+    //         addPlatformsPatch.data.push(screen);
+    //         addPlatformsPatch.data.push(location);
+    //         addPlatformsPatch.data.push(0x00);
+    //     } 
+    // }
+
+    
 
     return addPlatformsPatch;
 }

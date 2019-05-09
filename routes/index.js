@@ -79,7 +79,7 @@ router.post('/generate-maps-only', function(req, res, next) {
 
   let generatedSeed = generator.createNewRandomizedRom(false, '', rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, true)
 
-  res.render('generated', { title: 'Labrinyth' , seed: generatedSeed, spoilers: !skipSpoilers, spoilersOnly: true});
+  res.render('generated', { title: 'Kid Icarus Randomizer' , seed: generatedSeed, spoilers: !skipSpoilers, spoilersOnly: true});
 })
 
 router.get('/generate-seed', function(req, res, next) {
@@ -160,7 +160,7 @@ router.post('/generate-seed', function(req, res, next) {
 
   let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false, doors)
 
-  res.render('generated', { title: 'Labrinyth' , seed: generatedSeed, spoilers: !skipSpoilers});
+  res.render('generated', { title: 'Kid Icarus Randomizer' , seed: generatedSeed, spoilers: !skipSpoilers});
 });
 
 
