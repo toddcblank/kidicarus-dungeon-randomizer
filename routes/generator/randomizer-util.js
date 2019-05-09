@@ -375,26 +375,30 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     if (levelsToRandomized.indexOf(1) > -1){
         world1Patches = fbs.randomizeWorld(1, difficulty);
         patchesToApply.push(world1Patches);
-        writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1), romPath + newFilename + "-w1.html");
+       
     }
 
     //world 2 randomization
     if (levelsToRandomized.indexOf(2) > -1){
         world2Patches = fbs.randomizeWorld(2, difficulty);
         patchesToApply.push(world2Patches);
-        writeHtmlSpoiler(writeWorld2Spoilers(world2Patches), romPath + newFilename + "-w2.html");
     }
     
     //world 3 randomization
     if (levelsToRandomized.indexOf(3) > -1){
         world3Patches = fbs.randomizeWorld(3, difficulty);    
         patchesToApply.push(world3Patches);
-        writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3), romPath + newFilename + "-w3.html");  
     }
     
     
     if (doors == DOOR_FULL_RANDO_NO_REQS){
         let doorPatch = dr.generateRandomizedDoorPatchForLevels(world1Patches, world2Patches, world3Patches)
+        
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1, doorPatch), romPath + newFilename + "-w1.html");        
+        writeHtmlSpoiler(writeWorld2Spoilers(world2Patches, doorPatch), romPath + newFilename + "-w2.html");
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3, doorPatch), romPath + newFilename + "-w3.html");  
+
+
         patchesToApply.push(doorPatch);
         patchesToApply.push(REMOVE_HIDDEN_SCORE_REQ);
     } else if (doors = UPGRADES_AT_END){
@@ -462,9 +466,36 @@ function writeHtmlSpoiler(html, filename) {
     })
 }
 
-function writeWorld2Spoilers(patches) {
+function writeWorld2Spoilers(patches, doorPatch) {
     var htmlSpoiler = '<html><head><link rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css" /></head><body>'
     htmlSpoiler += '<div class="horizontal-level">'
+
+    let doors = []
+    doors[0] = [];
+    doors[1] = [];
+    doors[2] = [];
+    var currentWorld = 1
+    for (var index = 0; index < doorPatch.data.length;) {
+        if (doorPatch.data[index] == 0xff) {
+            currentWorld++;
+            index += 2
+            continue;
+        }
+        
+
+        if (currentWorld != 2) {            
+            index += 4
+            continue;
+        }
+
+        let level = doorPatch.data[index]
+        let screen = doorPatch.data[index + 1]
+        let room = doorPatch.data[index + 3]
+        doors[level][screen] = room;        
+        index += 4
+    }
+
+    console.log(JSON.stringify(doors))
     //The first 3 patches hold the 3 level datas
     for (var index = 0; index < 3; index++) {
         let levelData = patches[index].data;
@@ -472,6 +503,15 @@ function writeWorld2Spoilers(patches) {
         for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
             let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
             line += '<div class="levelScreen"><img class="vertImage" src="../images/w2/' + screen + '" /></div>'
+        }
+        line += "</div>"        
+        line += '<div class="levelRow">'
+        for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
+            if (doors[index] && doors[index][Math.floor(screenIndex/2)] !== undefined){
+                line += '<div class="levelScreen"><img class="vertImage" src="../images/doors/' + doors[index][Math.floor(screenIndex/2)].toString(16).padStart(2, '0') + '.png" /></div>'
+            } else {
+                line += '<div class="levelScreen"><img class="vertImage" src="../images/00.png" /></div>'
+            }
         }
         line += "</div>"
         htmlSpoiler += line;
@@ -496,28 +536,53 @@ function writeWorld4Spoilers(patches) {
     return htmlSpoiler;
 }
 
-function writeVerticalWorldSpoilers(patches, world) {
+function writeVerticalWorldSpoilers(patches, world, doorPatch) {
     
     var htmlSpoiler = '<html><head><link rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css" /></head><body>'
     htmlSpoiler += '<div class="vertical-level">'
     //The first 3 patches hold the 3 level datas
     let worldImages = [[],[],[]]
+
+    //door patch tells us which screens have doors, we'll add them to the right of the level screen
+    let doors = []
+    doors[1] = [];
+    doors[2] = [];
+    doors[3] = [];
+    var currentWorld = 1
+    for (var index = 0; index < doorPatch.data.length;) {
+        if (doorPatch.data[index] == 0xff) {
+            currentWorld++;
+            index += 2
+            continue;
+        }
+        
+
+        if (currentWorld != world) {            
+            index += 4
+            continue;
+        }
+
+        let level = doorPatch.data[index] + 1
+        let screen = doorPatch.data[index + 1]
+        let room = doorPatch.data[index + 3]
+        doors[level][screen] = room;        
+        index += 4
+    }
+    
     for (var index = 0; index < 3; index++) {
         let levelData = patches[index].data;
 
         for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
             
             let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
-            worldImages[index][screenIndex] = screen;
+            worldImages[index][Math.floor(screenIndex/2)] = screen;
         }
     }
 
     //start from the end
     let largestLevel = Math.max(worldImages[0].length, worldImages[1].length, worldImages[2].length);
     for(var index = largestLevel - 1; index >= 0; index--) {
-        if (index%2 == 1) {
-            continue;
-        }
+        
         var line = "";
         for (var w = 0; w < worldImages.length; w++){
             if (worldImages[w][index] != undefined) {
@@ -525,7 +590,12 @@ function writeVerticalWorldSpoilers(patches, world) {
             } else {
                 line += '<div class="levelScreen"><img class="vertImage" src="../images/00.png" /></div>'
             }
-            line += '<div class="levelScreen"><img class="vertImage" src="../images/00.png" /></div>'
+
+            if (doors[w+1] && doors[w+1][index] !== undefined){
+                line += '<div class="levelScreen"><img class="vertImage" src="../images/doors/' + doors[w+1][index].toString(16).padStart(2, '0') + '.png" /></div>'
+            } else {
+                line += '<div class="levelScreen"><img class="vertImage" src="../images/00.png" /></div>'
+            }
         }
 
         htmlSpoiler += line;
