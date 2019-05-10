@@ -152,7 +152,7 @@ screens = [
         {id:22, address1: 0x0c, address2: 0x76, door: 0x55},
         {id:23, address1: 0x39, address2: 0x76, door: 0x00},
         {id:24, address1: 0xb1, address2: 0x76, door: 0x9e},
-        {id:25, address1: 0x17, address2: 0x77, door: 0x5b, platforms: [
+        {id:25, address1: 0x17, address2: 0x77, door: 0x0, platforms: [
             {location: 0x07, offset: 0}]
         },
         {id:26, address1: 0x4d, address2: 0x77, door: 0x46},
@@ -164,21 +164,21 @@ screens = [
         {id:32, address1: 0x39, address2: 0x70, door: 0xb1},
         {id:33, address1: 0x78, address2: 0x70, door: 0x76},
         {id:34, address1: 0xdb, address2: 0x76, door: 0x92},
-        {id:35, address1: 0xa4, address2: 0x74, door:0x70, platforms: [
+        {id:35, address1: 0xa4, address2: 0x74, door:0x0, platforms: [
             {location: 0xC7, offset: 0},
             {location: 0x97, offset: 0},
             {location: 0x67, offset: 0},
             {location: 0x37, offset: 0},
         ]},
-        {id:36, address1: 0xc5, address2: 0x74, door:0x1e, platforms: [
+        {id:36, address1: 0xc5, address2: 0x74, door:0x0, platforms: [
             {location: 0xC7, offset: 0},
             {location: 0x67, offset: 0}]
         },
-        {id:37, address1: 0xe0, address2: 0x74, door:0x11, platforms: [
+        {id:37, address1: 0xe0, address2: 0x74, door:0x0, platforms: [
             {location: 0xC7, offset: 0},
             {location: 0x37, offset: 0}]
         },
-        {id:38, address1: 0x81, address2: 0x76, door:0x0e, platforms: [
+        {id:38, address1: 0x81, address2: 0x76, door:0x0, platforms: [
             {location: 0xC7, offset: 0},
             {location: 0x97, offset: 0},
             {location: 0x37, offset: 0}]

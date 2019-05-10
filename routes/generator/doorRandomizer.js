@@ -97,8 +97,8 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
     levels[2] = [[], world2patch[0].data, world2patch[1].data, world2patch[2].data]
     levels[3] = [[], world3patch[0].data, world3patch[1].data, world3patch[2].data]
     
-    var doorsToPlacePerWorldLevel = [[],[0, 4, 4, 5], [0,7,8,8], [0,2,3,3]]
-
+    var doorsToPlacePerWorldLevel = [[],[0, 2, 2, 2], [0,3,3,3], [0,2,2,2]]
+    const doorSlotsPerLevel = [0, 13, 23, 8]
 
     var doorTypes = [POT_ROOM, NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA]    
     var randomWorldUpgrade = Math.floor(Math.random() * 3) + 1
@@ -128,14 +128,35 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
         console.log("Placing doors on level " + world + ": " + doorsToPlace)
         for(var x = 1; x <= levels[world].length; x++){
             var screensWithDoors = [];
-
+        
             while (screensWithDoors.length < doorsToPlacePerWorldLevel[world][x]) {
                 //pick a random screen
                 let randomScreen = Math.floor((Math.random() * levels[world][x].length)/2)
-                var key = (levels[world][x][randomScreen * 2] + (levels[world][x][(randomScreen*2)+1]  << 8)).toString(16)
-                screen = sr.screensByWorldAndAddress[world][key]
                 
-                if (!screen.door || screen.door == 0x0 || screensWithDoors.indexOf(randomScreen) > -1) {
+                var key = (levels[world][x][randomScreen * 2] + (levels[world][x][(randomScreen*2)+1]  << 8)).toString(16)
+                let screen = sr.screensByWorldAndAddress[world][key]
+
+                var nextScreenKey = undefined;
+                var nextScreen = {}
+                console.log("randomScreen: " + randomScreen)
+                if((randomScreen+1) * 2 + 1 < Math.floor(levels[world][x].length)){
+                    nextScreenKey = (levels[world][x][(randomScreen+1) * 2] + (levels[world][x][((randomScreen+1)*2)+1]  << 8)).toString(16)
+                    
+                    nextScreen = sr.screensByWorldAndAddress[world][nextScreenKey]
+                    console.log("Checking " + nextScreenKey + " for platforms: " + JSON.stringify(nextScreen))
+                }
+
+                if (!screen.door || screen.door == 0x0 || screensWithDoors.indexOf(randomScreen) > -1 || nextScreen.platforms != undefined) {
+                    continue;
+                }
+                //make sure it's not too close to the other doors
+                var tooClose = false;
+                screensWithDoors.forEach((s) => {
+                    if (Math.abs(s - randomScreen) < 3) {
+                        tooClose = true;
+                    }
+                })
+                if (tooClose) {
                     continue;
                 }
 
@@ -146,6 +167,14 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
                 doorPatch.data.push(screen.door);           //door coords
                 doorPatch.data.push(doorsToPlace.pop());    //door type
             }
+        }
+
+        //fill in empty doors
+        for(var x = doorsToPlace.length; x < doorSlotsPerLevel[world]; x++) {
+            doorPatch.data.push(0xff);
+            doorPatch.data.push(0xff);
+            doorPatch.data.push(0xff);
+            doorPatch.data.push(0xff);            
         }
         
         //End of World
