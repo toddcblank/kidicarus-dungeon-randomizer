@@ -182,13 +182,13 @@ function randomizeWorld(world, difficulty) {
         enemyTable3Data.push(enemy3Choice);
         if (enemyChoice == sr.ENEMY_REAPER) {
             //Enemy is a reaper, table 2 holds it position (put in upper left)
-            enemyTable2Data.push((4 << 8) + Math.floor(Math.random()*8));
+            enemyTable2Data.push((4 << 4) + Math.floor(Math.random()*8));
         } else {
             enemyTable2Data.push(0x00);
         }
         if (enemy3Choice == sr.ENEMY_REAPER) {
             //Enemy is a reaper, table 2 holds it position (put in lower right)
-            enemyTable4Data.push((12 << 8) + Math.floor(Math.random()*8) + 7);
+            enemyTable4Data.push((12 << 4) + Math.floor(Math.random()*8) + 7);
         } else {
             enemyTable4Data.push(0x00);
         }
@@ -306,6 +306,7 @@ function radomizePlatforms(world, difficulty, plan) {
         platformData.push(0xff)
     }
 
+    var currentPlatformBank = 0;
     let platformBanks = [[],[],[],[]]
     for (var level = 0; level < plan.length; level++) {
         for (var screen = 0; screen < plan[level].length; screen++){
@@ -314,10 +315,11 @@ function radomizePlatforms(world, difficulty, plan) {
 
                 for (var pi = 0; pi < room.platforms.length; pi++) {
                     let platform = room.platforms[pi];
-                    platformBanks[pi].push(level - 1)
-                    platformBanks[pi].push(screen + platform.offset)
-                    platformBanks[pi].push(platform.location)
-                    platformBanks[pi].push(0x0)
+                    platformBanks[currentPlatformBank].push(level - 1)
+                    platformBanks[currentPlatformBank].push(screen + platform.offset)
+                    platformBanks[currentPlatformBank].push(platform.location)
+                    platformBanks[currentPlatformBank].push(0x0)
+                    currentPlatformBank = (currentPlatformBank + 1)%4
                 }
             }
         }
