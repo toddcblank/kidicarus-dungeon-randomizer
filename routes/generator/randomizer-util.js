@@ -479,6 +479,9 @@ function writeWorld2Spoilers(patches, doorPatch) {
         if (doorPatch.data[index] == 0xff) {
             currentWorld++;
             index += 2
+            while (doorPatch.data[index] == 0xff){
+                index+=2
+            }
             continue;
         }        
 
@@ -549,8 +552,11 @@ function writeVerticalWorldSpoilers(patches, world, doorPatch) {
     var currentWorld = 1
     for (var index = 0; index < doorPatch.data.length;) {
         if (doorPatch.data[index] == 0xff) {
-            currentWorld++;
+            currentWorld++;            
             index += 2
+            while (doorPatch.data[index] == 0xff){
+                index+=2
+            }
             continue;
         }        
 
