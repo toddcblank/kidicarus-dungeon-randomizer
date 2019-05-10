@@ -170,7 +170,7 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
         }
 
         //fill in empty doors
-        for(var x = doorsToPlace.length; x < doorSlotsPerLevel[world]; x++) {
+        for(var x = numDoorsToPlace; x < doorSlotsPerLevel[world]; x++) {
             doorPatch.data.push(0xff);
             doorPatch.data.push(0xff);
             doorPatch.data.push(0xff);
