@@ -295,10 +295,6 @@ function radomizePlatforms(world, difficulty, plan) {
         removalPatch.data.push(0xff);
     }
 
-    if (world == 2 || world == 3) {
-        return removalPatch;
-    }
-
     let addPlatformsPatch = {name: "world " + world + " platforms", offset: PLATFORM_ADDRESS[world], data: []}
     
     let platformData = []

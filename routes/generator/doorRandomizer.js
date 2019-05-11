@@ -99,11 +99,15 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
     
     var doorsToPlacePerWorldLevel = [[],[0, 2, 2, 2], [0,3,3,3], [0,2,2,2]]
     const doorSlotsPerLevel = [0, 13, 23, 8]
-
-    var doorTypes = [POT_ROOM, NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA]    
+    const doorTypesPerWorld = [[],
+        [POT_ROOM, NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET],
+        [POT_ROOM, NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA],
+        [NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA]
+    ]
+      
     var randomWorldUpgrade = Math.floor(Math.random() * 3) + 1
     for (var world = 1; world < 4; world++) {
-
+        var doorTypes = doorTypesPerWorld[world]  
         //randomize world 1 doors
         var numDoorsToPlace = doorsToPlacePerWorldLevel[world][1] + 
                                 doorsToPlacePerWorldLevel[world][2] + 

@@ -1,0 +1,50 @@
+<html>
+    <head>
+
+        <script>
+            function changeImage(id, increment, display) {
+                let element = document.getElementById(id);
+                let currentSrc = element.src;
+                let dotIndex = currentSrc.lastIndexOf(".")
+                let imgPrefix = currentSrc.substring(0, dotIndex - 2)
+                var imageIndex = parseInt(currentSrc.substring(dotIndex -2, dotIndex))
+
+                let min = 1;
+                let max = 19;
+
+                imageIndex = (imageIndex + increment)%(max)
+                if (imageIndex == 0) {
+                    imageIndex = max
+                }
+                element.src = imgPrefix + imageIndex.toString().padStart(2, "0") + ".bmp"
+                document.getElementById(display).innerHTML = imageIndex.toString().padStart(2, "0")
+            }
+        </script>
+    </head>
+    <body>
+        <div class="screencomparer" style="display:grid; grid-template-rows: 240px 240px;">
+            <div class="controls"  style="margin-bottom:-4px; display:grid; grid-template-columns: 128px 256px 128px 128px">
+                <img src="left.png" onclick="javascript:changeImage('topimage', -1, 'screenIdTop')" />
+
+                <div class="screen" style="">
+                    <img src="grid.png" class="grid-image" style="z-index: 2; position: absolute; top: 8px; left:136px" />
+                    <img id="topimage" src="./01.bmp" />
+                </div>
+                <img src="right.png" onclick="javascript:changeImage('topimage', 1, 'screenIdTop')" />
+                <div id="screenIdTop">01</div>
+            </div>
+            <div class="controls" style="margin-bottom:-4px; display:grid; grid-template-columns: 128px 256px 128px 128px">
+
+                    <img src="left.png" onclick="javascript:changeImage('bottomimage', -1, 'screenIdBot')" />
+
+                    <div class="screen" style="display:">
+                        <img src="grid.png" class="grid-image" style="z-index: 2; position: absolute; top: 248px; left:136px" />
+                        <img id="bottomimage" src="./01.bmp" />
+                    </div>
+                    <img src="right.png" onclick="javascript:changeImage('bottomimage', 1, 'screenIdBot')" />
+                    <div id="screenIdBot">01</div>
+
+            </div>
+        </div>
+    </body>
+</html>

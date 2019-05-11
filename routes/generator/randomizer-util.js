@@ -5,7 +5,7 @@ let fs = require('fs')
 let fbs = require('./fbs-generator')
 let fbsf = require('./fbs-fortress-generator')
 let dr = require('./doorRandomizer')
-
+let ipc = require('./itemPriceChanger')
 
 const DOOR_FULL_RANDO_NO_REQS = 1;
 const UPGRADES_AT_END = 2;
@@ -420,7 +420,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
 
     // patchesToApply.push(getBossHealthPatch(100, 100, 100));
     patchesToApply.push(getTitleTextPatch(seed));
-
+    patchesToApply.push(ipc.getPricePatch())
     if(!spoilersOnly){
         rp.copyOriginalRom(romname, newFullFileName);
         writePatchFiles(patchesToApply, newFullFileName + ".patches.json");
