@@ -18,7 +18,7 @@ function getPricePatch() {
         name: "Adjusts shop prices",
         offset: CHALICE,
         data: [
-            0x02, 0x01, 0x05,   //chalice
+            0x04, 0x02, 0x05,   //chalice
             0x10, 0x05, 0x20,   //bottle
             0x01, 0x01, 0x02,   //hammer
             0x12, 0x07, 0x20,   //feather
