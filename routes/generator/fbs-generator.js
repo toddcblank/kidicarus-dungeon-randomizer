@@ -360,7 +360,7 @@ function getPatchForWorld2Items(difficulty) {
 
 function getPatchForWorld1Items(difficulty) { 
 
-    var itemlocations = [0x1a759, 0x1a75d, 0x1a761, 0x1a765,0x1a769, 0x1a76d]
+    var itemlocations = [0x1a759, 0x1a75d, 0x1a761, 0x1a765, 0x1a769, 0x1a76d]
     let patches = []
 
     for(var i = 0; i < 6; i = i + 2) {
@@ -375,8 +375,8 @@ function getPatchForWorld1Items(difficulty) {
         let coords2 = xOffset2 + 32;        
         let item2 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
 
-        let item1Patch = {name: "world 1 item 1", data: [screen, coords1, item1], offset: itemlocations[i]}
-        let item2Patch = {name: "world 1 item 2", data: [screen * 2, coords2, item2], offset: itemlocations[i+1]}
+        let item1Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 1", data: [screen, coords1, item1], offset: itemlocations[i]}
+        let item2Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 2", data: [screen * 2, coords2, item2], offset: itemlocations[i+1]}
 
         patches.push(item1Patch)
         patches.push(item2Patch)
