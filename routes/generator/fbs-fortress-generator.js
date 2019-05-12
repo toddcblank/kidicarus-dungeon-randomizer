@@ -561,7 +561,7 @@ function generateFortress(world, difficulty) {
         }
 
         //if 3-4, make sure there is a room in lower right that isn't boss
-        if(world == 3 && map[7,7] == 0 || map[7,7] == 3){
+        if(world == 3 && map[7][7] == 0 || map[7][7] == 3){
             fortress = 0
             // console.log("No Room in lower right!")
         }
