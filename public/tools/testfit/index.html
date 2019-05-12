@@ -1,0 +1,221 @@
+<html>
+    <head>
+        <link  rel="stylesheet" type="text/css" href="testfit.css"></script>
+        <script>
+            const maxScreens = [38, 41, 19]
+            function changeImage(id, increment, display) {
+                let element = document.getElementById(id);
+                let currentSrc = element.src;
+                let dotIndex = currentSrc.lastIndexOf(".")
+                
+                let selectedWorld = document.getElementById('worldSelect').value
+                let imgPrefix = currentSrc.substring(0, dotIndex - 5) + 'w' + selectedWorld + '/'
+                var imageIndex = parseInt(currentSrc.substring(dotIndex -2, dotIndex))
+
+                let min = 1;
+
+                let max = maxScreens[selectedWorld - 1];
+
+                imageIndex = (imageIndex + increment)%(max)
+                if (imageIndex == 0) {
+                    imageIndex = max
+                }
+                element.src = imgPrefix + imageIndex.toString().padStart(2, "0") + ".bmp"
+                document.getElementById(display).innerHTML = imageIndex.toString().padStart(2, "0")
+            }
+
+            function toggleShowGrid(value) {
+                var className = 'grid-image'
+                if (!value) {
+                    className = 'grid-image hidden'
+                }
+
+                grids = document.getElementsByClassName('grid-image')
+                for(var i = 0; i < grids.length; i++){
+                    grids[i].className = className
+                }
+            }
+            function updateWorld(world) {
+                changeImage('topimage', 0, 'screenIdTop')                
+                changeImage('bottomimage', 0, 'screenIdBot')
+
+                let horizontalClass = (world == 2 ? ' horizontal' : '')
+                let comparers = document.getElementsByClassName('controls')
+                let controls = document.getElementsByClassName('screencomparer')
+
+                if (world == 2) {
+                    for (var i = 0; i < comparers.length; i++) {
+                        comparers[i].classList.add('horizontal')
+                    }
+
+                    for (var i = 0; i < controls.length; i++) {
+                        controls[i].classList.add('horizontal')
+                    }
+                } else {
+                    for (var i = 0; i < comparers.length; i++) {
+                        comparers[i].classList.remove('horizontal')
+                    }
+
+                    for (var i = 0; i < controls.length; i++) {
+                        controls[i].classList.remove('horizontal')
+                    } 
+                }
+
+                document.getElementById('world1images').classList.add('hidden')
+                document.getElementById('world2images').classList.add('hidden')
+                document.getElementById('world3images').classList.add('hidden')
+                document.getElementById('world' + world + 'images').classList.remove('hidden')
+            }
+        </script>
+    </head>
+    <body>
+        <select id="worldSelect" onchange="javascript:updateWorld(this.value)">
+            <option value="1" >World 1</option>
+            <option value="2" >World 2</option>
+            <option value="3" selected>World 3</option>
+        </select>
+        <label for="showGrid">Show Grid on images</label>
+        <input id="showGrid" type="checkbox" checked onchange="javascript:toggleShowGrid(this.checked)" />
+        <div class="layout">
+            <div class="screencomparer" >
+                <div class="controls" >
+                    <img src="left.png" onclick="javascript:changeImage('topimage', -1, 'screenIdTop')" />
+
+                    <div class="screen">
+                        <img src="grid.png" class="grid-image" style="" />
+                        <img id="topimage" src="./w3/01.bmp" />
+                    </div>
+                    <img src="right.png" onclick="javascript:changeImage('topimage', 1, 'screenIdTop')" />
+                    <div id="screenIdTop">01</div>
+                </div>
+                <div class="controls">
+
+                        <img src="left.png" onclick="javascript:changeImage('bottomimage', -1, 'screenIdBot')" />
+
+                        <div class="screen" >
+                            <img src="grid.png" class="grid-image" />
+                            <img id="bottomimage" src="./w3/01.bmp" />
+                        </div>
+                        <img src="right.png" onclick="javascript:changeImage('bottomimage', 1, 'screenIdBot')" />
+                        <div id="screenIdBot">01</div>
+
+                </div>
+            </div>
+            <div class="screenList" id="world1images">
+                <div class="screenIndex">1</div><div><img class="worldlistImage" src="./w1/01.bmp" /></div>
+                <div class="screenIndex">2</div><div><img class="worldlistImage" src="./w1/02.bmp" /></div>
+                <div class="screenIndex">3</div><div><img class="worldlistImage" src="./w1/03.bmp" /></div>
+                <div class="screenIndex">4</div><div><img class="worldlistImage" src="./w1/04.bmp" /></div>
+                <div class="screenIndex">5</div><div><img class="worldlistImage" src="./w1/05.bmp" /></div>
+                <div class="screenIndex">6</div><div><img class="worldlistImage" src="./w1/06.bmp" /></div>
+                <div class="screenIndex">7</div><div><img class="worldlistImage" src="./w1/07.bmp" /></div>
+                <div class="screenIndex">8</div><div><img class="worldlistImage" src="./w1/08.bmp" /></div>
+                <div class="screenIndex">9</div><div><img class="worldlistImage" src="./w1/09.bmp" /></div>
+
+                <div class="screenIndex">10</div><div><img class="worldlistImage" src="./w1/10.bmp" /></div>
+                <div class="screenIndex">11</div><div><img class="worldlistImage" src="./w1/11.bmp" /></div>
+                <div class="screenIndex">12</div><div><img class="worldlistImage" src="./w1/12.bmp" /></div>
+                <div class="screenIndex">13</div><div><img class="worldlistImage" src="./w1/13.bmp" /></div>
+                <div class="screenIndex">14</div><div><img class="worldlistImage" src="./w1/14.bmp" /></div>
+                <div class="screenIndex">15</div><div><img class="worldlistImage" src="./w1/15.bmp" /></div>
+                <div class="screenIndex">16</div><div><img class="worldlistImage" src="./w1/16.bmp" /></div>
+                <div class="screenIndex">17</div><div><img class="worldlistImage" src="./w1/17.bmp" /></div>
+                <div class="screenIndex">18</div><div><img class="worldlistImage" src="./w1/18.bmp" /></div>
+                <div class="screenIndex">19</div><div><img class="worldlistImage" src="./w1/19.bmp" /></div>
+
+                <div class="screenIndex">20</div><div><img class="worldlistImage" src="./w1/20.bmp" /></div>
+                <div class="screenIndex">21</div><div><img class="worldlistImage" src="./w1/21.bmp" /></div>
+                <div class="screenIndex">22</div><div><img class="worldlistImage" src="./w1/22.bmp" /></div>
+                <div class="screenIndex">23</div><div><img class="worldlistImage" src="./w1/23.bmp" /></div>
+                <div class="screenIndex">24</div><div><img class="worldlistImage" src="./w1/24.bmp" /></div>
+                <div class="screenIndex">25</div><div><img class="worldlistImage" src="./w1/25.bmp" /></div>
+                <div class="screenIndex">26</div><div><img class="worldlistImage" src="./w1/26.bmp" /></div>
+                <div class="screenIndex">27</div><div><img class="worldlistImage" src="./w1/27.bmp" /></div>
+                <div class="screenIndex">28</div><div><img class="worldlistImage" src="./w1/28.bmp" /></div>
+                <div class="screenIndex">29</div><div><img class="worldlistImage" src="./w1/29.bmp" /></div>
+                
+                <div class="screenIndex">30</div><div><img class="worldlistImage" src="./w1/30.bmp" /></div>
+                <div class="screenIndex">31</div><div><img class="worldlistImage" src="./w1/31.bmp" /></div>
+                <div class="screenIndex">32</div><div><img class="worldlistImage" src="./w1/32.bmp" /></div>
+                <div class="screenIndex">33</div><div><img class="worldlistImage" src="./w1/33.bmp" /></div>
+                <div class="screenIndex">34</div><div><img class="worldlistImage" src="./w1/34.bmp" /></div>
+                <div class="screenIndex">35</div><div><img class="worldlistImage" src="./w1/35.bmp" /></div>
+                <div class="screenIndex">36</div><div><img class="worldlistImage" src="./w1/36.bmp" /></div>
+                <div class="screenIndex">37</div><div><img class="worldlistImage" src="./w1/37.bmp" /></div>
+                <div class="screenIndex">38</div><div><img class="worldlistImage" src="./w1/38.bmp" /></div>
+            </div>
+
+            <div class="screenList hidden" id="world2images">
+                <div class="screenIndex">1</div><div><img class="worldlistImage" src="./w2/01.bmp" /></div>
+                <div class="screenIndex">2</div><div><img class="worldlistImage" src="./w2/02.bmp" /></div>
+                <div class="screenIndex">3</div><div><img class="worldlistImage" src="./w2/03.bmp" /></div>
+                <div class="screenIndex">4</div><div><img class="worldlistImage" src="./w2/04.bmp" /></div>
+                <div class="screenIndex">5</div><div><img class="worldlistImage" src="./w2/05.bmp" /></div>
+                <div class="screenIndex">6</div><div><img class="worldlistImage" src="./w2/06.bmp" /></div>
+                <div class="screenIndex">7</div><div><img class="worldlistImage" src="./w2/07.bmp" /></div>
+                <div class="screenIndex">8</div><div><img class="worldlistImage" src="./w2/08.bmp" /></div>
+                <div class="screenIndex">9</div><div><img class="worldlistImage" src="./w2/09.bmp" /></div>
+
+                <div class="screenIndex">10</div><div><img class="worldlistImage" src="./w2/10.bmp" /></div>
+                <div class="screenIndex">11</div><div><img class="worldlistImage" src="./w2/11.bmp" /></div>
+                <div class="screenIndex">12</div><div><img class="worldlistImage" src="./w2/12.bmp" /></div>
+                <div class="screenIndex">13</div><div><img class="worldlistImage" src="./w2/13.bmp" /></div>
+                <div class="screenIndex">14</div><div><img class="worldlistImage" src="./w2/14.bmp" /></div>
+                <div class="screenIndex">15</div><div><img class="worldlistImage" src="./w2/15.bmp" /></div>
+                <div class="screenIndex">16</div><div><img class="worldlistImage" src="./w2/16.bmp" /></div>
+                <div class="screenIndex">17</div><div><img class="worldlistImage" src="./w2/17.bmp" /></div>
+                <div class="screenIndex">18</div><div><img class="worldlistImage" src="./w2/18.bmp" /></div>
+                <div class="screenIndex">19</div><div><img class="worldlistImage" src="./w2/19.bmp" /></div>
+
+                <div class="screenIndex">20</div><div><img class="worldlistImage" src="./w2/20.bmp" /></div>
+                <div class="screenIndex">21</div><div><img class="worldlistImage" src="./w2/21.bmp" /></div>
+                <div class="screenIndex">22</div><div><img class="worldlistImage" src="./w2/22.bmp" /></div>
+                <div class="screenIndex">23</div><div><img class="worldlistImage" src="./w2/23.bmp" /></div>
+                <div class="screenIndex">24</div><div><img class="worldlistImage" src="./w2/24.bmp" /></div>
+                <div class="screenIndex">25</div><div><img class="worldlistImage" src="./w2/25.bmp" /></div>
+                <div class="screenIndex">26</div><div><img class="worldlistImage" src="./w2/26.bmp" /></div>
+                <div class="screenIndex">27</div><div><img class="worldlistImage" src="./w2/27.bmp" /></div>
+                <div class="screenIndex">28</div><div><img class="worldlistImage" src="./w2/28.bmp" /></div>
+                <div class="screenIndex">29</div><div><img class="worldlistImage" src="./w2/29.bmp" /></div>
+                
+                <div class="screenIndex">30</div><div><img class="worldlistImage" src="./w2/30.bmp" /></div>
+                <div class="screenIndex">31</div><div><img class="worldlistImage" src="./w2/31.bmp" /></div>
+                <div class="screenIndex">32</div><div><img class="worldlistImage" src="./w2/32.bmp" /></div>
+                <div class="screenIndex">33</div><div><img class="worldlistImage" src="./w2/33.bmp" /></div>
+                <div class="screenIndex">34</div><div><img class="worldlistImage" src="./w2/34.bmp" /></div>
+                <div class="screenIndex">35</div><div><img class="worldlistImage" src="./w2/35.bmp" /></div>
+                <div class="screenIndex">36</div><div><img class="worldlistImage" src="./w2/36.bmp" /></div>
+                <div class="screenIndex">37</div><div><img class="worldlistImage" src="./w2/37.bmp" /></div>
+                <div class="screenIndex">38</div><div><img class="worldlistImage" src="./w2/38.bmp" /></div>
+                <div class="screenIndex">39</div><div><img class="worldlistImage" src="./w2/39.bmp" /></div>
+
+                <div class="screenIndex">40</div><div><img class="worldlistImage" src="./w2/40.bmp" /></div>
+                <div class="screenIndex">41</div><div><img class="worldlistImage" src="./w2/41.bmp" /></div>
+            </div>
+
+            <div class="screenList hidden" id="world3images">
+                <div class="screenIndex">1</div><div><img class="worldlistImage" src="./w3/01.bmp" /></div>
+                <div class="screenIndex">2</div><div><img class="worldlistImage" src="./w3/02.bmp" /></div>
+                <div class="screenIndex">3</div><div><img class="worldlistImage" src="./w3/03.bmp" /></div>
+                <div class="screenIndex">4</div><div><img class="worldlistImage" src="./w3/04.bmp" /></div>
+                <div class="screenIndex">5</div><div><img class="worldlistImage" src="./w3/05.bmp" /></div>
+                <div class="screenIndex">6</div><div><img class="worldlistImage" src="./w3/06.bmp" /></div>
+                <div class="screenIndex">7</div><div><img class="worldlistImage" src="./w3/07.bmp" /></div>
+                <div class="screenIndex">8</div><div><img class="worldlistImage" src="./w3/08.bmp" /></div>
+                <div class="screenIndex">9</div><div><img class="worldlistImage" src="./w3/09.bmp" /></div>
+
+                <div class="screenIndex">10</div><div><img class="worldlistImage" src="./w3/10.bmp" /></div>
+                <div class="screenIndex">11</div><div><img class="worldlistImage" src="./w3/11.bmp" /></div>
+                <div class="screenIndex">12</div><div><img class="worldlistImage" src="./w3/12.bmp" /></div>
+                <div class="screenIndex">13</div><div><img class="worldlistImage" src="./w3/13.bmp" /></div>
+                <div class="screenIndex">14</div><div><img class="worldlistImage" src="./w3/14.bmp" /></div>
+                <div class="screenIndex">15</div><div><img class="worldlistImage" src="./w3/15.bmp" /></div>
+                <div class="screenIndex">16</div><div><img class="worldlistImage" src="./w3/16.bmp" /></div>
+                <div class="screenIndex">17</div><div><img class="worldlistImage" src="./w3/17.bmp" /></div>
+                <div class="screenIndex">18</div><div><img class="worldlistImage" src="./w3/18.bmp" /></div>
+                <div class="screenIndex">19</div><div><img class="worldlistImage" src="./w3/19.bmp" /></div>
+            </div>
+        </div>
+    </body>
+
+</html>

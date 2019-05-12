@@ -1,0 +1,52 @@
+.screencomparer {
+    display: grid;
+    grid-template-rows: 240px 240px
+}
+
+.screencomparer.horizontal {
+    grid-template-columns: 256px 256px
+}
+
+.controls {
+    margin-bottom:-4px; 
+    display:grid; 
+    grid-template-columns: 128px 256px 128px 128px
+}
+
+.controls.horizontal {
+    grid-template-columns: unset
+}
+
+.grid-image {
+    z-index: 2; 
+    position: absolute; 
+    top: 0px; left:0px    
+}
+
+.screen {
+    position: relative;
+}
+
+.grid-image.hidden {
+    display: none
+}
+
+.screenList {
+    display: grid;
+    grid-template-columns: repeat(4, 22px 64px )
+}
+.screenList.hidden {
+    display: none;
+}
+
+.worldlistImage {
+    width: 64px;
+    height: 60px;
+}
+.screenIndex {
+    text-align: center
+}
+.layout {
+    display: grid;
+    grid-template-columns:600px 450px
+}
