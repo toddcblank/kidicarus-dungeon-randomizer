@@ -100,9 +100,9 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
     var doorsToPlacePerWorldLevel = [[],[0, 2, 2, 2], [0,3,3,3], [0,2,2,2]]
     const doorSlotsPerLevel = [0, 13, 23, 8]
     const doorTypesPerWorld = [[],
-        [POT_ROOM, NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET],
-        [POT_ROOM, NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA],
-        [NOSE_ROOM, NOSE_ROOM, TRAINING_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA]
+        [POT_ROOM, NOSE_ROOM, NOSE_ROOM, SHOP, SHOP, BLACK_MARKET],
+        [POT_ROOM, NOSE_ROOM, NOSE_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA],
+        [NOSE_ROOM, NOSE_ROOM, SHOP, SHOP, BLACK_MARKET, EMPTY_OR_SPA]
     ]
       
     var randomWorldUpgrade = Math.floor(Math.random() * 3) + 1
@@ -128,6 +128,14 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
             }
             doorsToPlace[randomUpgradeRoom] = UPGRADE_ROOM;
         }
+
+        //Place 1 upgrade room in world
+        var randomTrainingRoom = Math.floor(Math.random() * doorsToPlace.length)
+        //make sure we're not overwriting the current upgrade room
+        while (doorsToPlace[randomTrainingRoom] == UPGRADE_ROOM) {
+            randomTrainingRoom = Math.floor(Math.random() * doorsToPlace.length)
+        }
+        doorsToPlace[randomTrainingRoom] = TRAINING_ROOM;
 
         console.log("Placing doors on level " + world + ": " + doorsToPlace)
         for(var x = 1; x <= levels[world].length; x++){
