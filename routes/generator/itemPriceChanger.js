@@ -19,11 +19,11 @@ function getPricePatch() {
         offset: CHALICE,
         data: [
             0x04, 0x02, 0x05,   //chalice
-            0x10, 0x05, 0x20,   //bottle
+            0x16, 0x10, 0x24,   //bottle
             0x01, 0x01, 0x02,   //hammer
             0x12, 0x07, 0x20,   //feather
-            0x99, 0x01, 0x01,   //torch
-            0x99, 0x01, 0x01,   //pencil
+            0x99, 0x99, 0x99,   //torch
+            0x99, 0x99, 0x99,   //pencil
             //Black Market
             0x15,               //bottle
             0x20,               //barrel

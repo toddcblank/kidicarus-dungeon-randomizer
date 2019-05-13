@@ -3,8 +3,6 @@ function screenRules(previousScreen, nextScreen, world) {
     return screenRule[world][previousScreen][nextScreen];
 }
 
-//(May 7: this is just a test comment by FBS to make sure my edits are showing)
-
 //Screen rules
 const screenRule = [[], [], [], [], []];
 screenRule[0][0] =  []
@@ -310,28 +308,31 @@ for (var i = 1; i <= 3; i++){
     }
 }
 
-//World 1 Enemies
-let ENEMY_NONE = 0x0;           //Empty
-let ENEMY_MONOEYE = 0x08;       //Medium flying enemy
+//w1 enemies
+let ENEMY_NONE = 0x0;           //empty
+let ENEMY_MONOEYE = 0x08;       //medium flying enemy
 let ENEMY_NETTLER = 0x05;       //frogs
 let ENEMY_COMMYLOOSE = 0x0A;    //octopus
 let ENEMY_SHEMUN = 0x02;        //snakes
 let ENEMY_MCGOO = 0x03;         //slime
 let ENEMY_REAPER = 0x0D;        //reaper
 
+//w2 enemies
 let ENEMY_MICKS = 0x08;         //Flying mouths
 let ENEMY_MINOS = 0x0A;         //Rising faces
 let ENEMY_ROKMAN = 0x04;        //Rocks.  :eyeroll:
 let ENEMY_KERON = 0x05;         //Frogs
 let ENEMY_GIRIN = 0x03;         //Ground enemy
-let ENEMY_SNOWMAN = 0x09;       //snowman
+let ENEMY_SNOWMAN = 0x09;       //Snowman
+let ENEMY_PLUTON = 0x07;        //Pluton (thief)
 
 //w3 enemies
 let ENEMY_KOMAYTO = 0x08;       //Metroid <3
 let ENEMY_KEEPAH = 0x0C;        //Ridley
 let ENEMY_COLLIN = 0x0B;        //Patra
 let ENEMY_OCTOS = 0x0A;         //Octopus
-let ENEMY_HOLER = 0x03;         //slime
+let ENEMY_HOLER = 0x03;         //Slime
+let ENEMY_PLUTONFLY = 0x07;     //Pluton Fly (thief)
 
 //w4 enemies
 let ENEMY_TOTEM = 0x04;
@@ -404,7 +405,7 @@ const ENEMY_TABLE1 = [
             ENEMY_ROKMAN,
             ENEMY_ROKMAN,
             ENEMY_KERON,
-            ENEMY_NONE,
+            ENEMY_PLUTON,
             ENEMY_NONE,
             ENEMY_NONE
         ],[
@@ -417,7 +418,7 @@ const ENEMY_TABLE1 = [
             ENEMY_ROKMAN,
             ENEMY_KERON,
             ENEMY_KERON,
-            ENEMY_NONE            
+            ENEMY_PLUTON  
         ]
     ],[
         //WORLD3
@@ -438,7 +439,9 @@ const ENEMY_TABLE1 = [
             ENEMY_COLLIN,
             ENEMY_OCTOS,
             ENEMY_OCTOS,
-            ENEMY_NONE
+            ENEMY_PLUTONFLY,
+            ENEMY_NONE,
+            ENEMY_NONE            
         ],[            
             ENEMY_KOMAYTO,
             ENEMY_KOMAYTO,
@@ -449,6 +452,7 @@ const ENEMY_TABLE1 = [
             ENEMY_OCTOS,
             ENEMY_OCTOS,
             ENEMY_OCTOS,
+            ENEMY_PLUTONFLY            
         ]
     ],[
         //WORLD4
