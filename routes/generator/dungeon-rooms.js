@@ -88,7 +88,7 @@ rooms = [
         paths:	[(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
-        validEnemies: [0x10, 0x20, 0x10, 0x20, 0x10, 0x20, 0x60, 0x61, 0x62],
+        validEnemies: [0x10, 0x20, 0x31, 0x41, 0x60, 0x61, 0x62],
     },
     {
         roomId: '3',
@@ -130,7 +130,7 @@ rooms = [
         paths:	[(RIGHT | DOWN | LEFT), (RIGHT | DOWN), (RIGHT | DOWN), (RIGHT | DOWN | LEFT)],
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN), (RIGHT | DOWN), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
-        validEnemies:	[0x52],
+        validEnemies:	[0x10, 0x20, 0x31, 0x41, 0x60],
     },
     {
         roomId: '9',
@@ -144,7 +144,7 @@ rooms = [
         paths:	[(UP | RIGHT | LEFT), RIGHT, (RIGHT | DOWN), (UP | RIGHT | LEFT)],
         clipPaths: [ALL, (RIGHT | DOWN), (RIGHT | DOWN), ALL],
         validEntrances:	ALL,
-        validEnemies: [0x10, 0x20, 0x32, 0x42, 0x32, 0x42, 0x62],
+        validEnemies: [0x10, 0x20, 0x30, 0x40, 0x62],
     },
     {
         roomId: 'B',
@@ -298,7 +298,7 @@ rooms = [
         paths:	[ALL, ALL, ALL, ALL],
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
-        validEnemies: [0x10, 0x20, 0x10, 0x20, 0x61],
+        validEnemies: [0x52],
     },
     {
         roomId: '21',
@@ -383,5 +383,10 @@ module.exports = {
     rooms,
     UP, RIGHT, DOWN, LEFT, ALL, NONE, DIRECTIONS, DIR_INDEX,
     ENEMY_QUEUES_BY_WORLD_AND_DIFF,
-    ENEMY_FILLS_BY_DIFF
+    ENEMY_FILLS_BY_DIFF,
+    EGGPLANT,
+    FLYING_EASY,
+    FLYING_HARD,
+    RED,
+    BLUE    
 }

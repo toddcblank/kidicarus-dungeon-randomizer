@@ -65,13 +65,17 @@ roomenemy1[0x26] = 0x31;roomenemy2[0x26] = 0x41;
 roomenemy1[0x28] = 0x00;roomenemy2[0x28] = 0x00;
 roomenemy1[0x29] = 0x0F;roomenemy2[0x29] = 0x0F;
 
-const spikes = [0x07, 0x08, 0x13, 0x1c, 0x20]
+const spikes = [0x07, 0x13, 0x1c, 0x20]
 const spikeInfo = []
-spikeInfo[0x07] = [0, 0x51, 0, 0]
-spikeInfo[0x08] = [0, 0x52, 0, 0x52]
-spikeInfo[0x13] = [0, 0x50, 0x51, 0x53]
-spikeInfo[0x1c] = [0, 0, 0x52, 0x51]
-spikeInfo[0x20] = [0, 0, 0x53, 0x50]
+spikeInfo[0x07] = [0, 0x51, 0x51, 0x51]
+// spikeInfo[0x08] = [0, 0x52, 0x52, 0x52]
+spikeInfo[0x13] = [0, 0x50, 0x50, 0x50]
+spikeInfo[0x1c] = [0, 0x53, 0x53, 0x53]
+spikeInfo[0x20] = [0, 0x52, 0x52, 0x52]
+//I've standardized spikes so every spike room will have spikes.  this one
+//seemed to be least interesting, so it won't appear anymore.
+//instead it'll have enemies
+//spikeInfo[0x20] = [0, 0, 0, 0x50]
 
 function generatePatchForFortress(world, difficulty) {
     
@@ -172,7 +176,13 @@ function generatePatchForFortress(world, difficulty) {
     while (enemyQueue.length > 0) {
         let nextEnemeyMask = enemyQueue.pop();
         var placedEnemy = false;
+        var attempts = 0;
         while(!placedEnemy) {
+            attempts++;
+            if (attempts > 100) {
+                placedEnemy = true;
+                continue;
+            }
             //get random room
             let randomX = Math.floor(Math.random()*8);
             let randomY = Math.floor(Math.random()*8);
@@ -201,6 +211,15 @@ function generatePatchForFortress(world, difficulty) {
                     supportedEnemy = enemyId;
                 }
             })
+
+            //Explicit check to make sure eggplanters aren't in a room with a top or bottom opening
+            //they get cheap if they are
+            //commenting out for now, more thought needs to go into this.
+            // if (nextEnemeyMask == dr.EGGPLANT) {
+            //     if ((randomY > 0 && map[randomX][randomY-1] != 0) || (randomY < 7 && map[randomX][randomY + 1] != 0)){
+            //         roomSupportsEnemy = false;
+            //     }
+            // }
 
             if (roomSupportsEnemy) {
                 placedEnemy = true;

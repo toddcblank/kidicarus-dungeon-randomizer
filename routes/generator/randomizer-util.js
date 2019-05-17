@@ -26,17 +26,17 @@ let ADD_MAP_PATCH_D34 = {
 }
 
 let ENEMY_POSITION_PATCH_D1 = {
-    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 43 01 43 03 AB 00 AB 02 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 83 01 86 01 89 01 8C 01 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
     offset: 0x1B278
 }
 
 let ENEMY_POSITION_PATCH_D2 = {
-    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 43 01 43 03 AB 00 AB 02 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 83 01 86 01 89 01 8C 01 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
     offset: 0x1B56C
 }
 
 let ENEMY_POSITION_PATCH_D3 = {
-    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 43 01 43 03 AB 00 AB 02 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 83 01 86 01 89 01 8C 01 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
     offset: 0x1B840
 }
 
@@ -642,11 +642,6 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     
     }
 
-
-    // rp.patchRom(ADD_MAP_PATCH_D14, newFullFileName);
-    // rp.patchRom(ADD_MAP_PATCH_D24, newFullFileName);
-    // rp.patchRom(ADD_MAP_PATCH_D34, newFullFileName);
-
     var world1Patches = []
     var world2Patches = []
     var world3Patches = []
@@ -699,9 +694,13 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     // patchesToApply.push(ADD_STR_DOOR_TO_STAGE_1_1);
 
     // patchesToApply.push(getBossHealthPatch(100, 100, 100));
-    patchesToApply.push(getTitleTextPatch(seed));    
-    patchesToApply.push(getEndingTextPatch(seed));     
-    patchesToApply.push(ipc.getPricePatch())
+    patchesToApply.push(getTitleTextPatch(seed));
+    patchesToApply.push(getEndingTextPatch(seed));    
+    patchesToApply.push(ipc.getPricePatch());
+    patchesToApply.push(ENEMY_POSITION_PATCH_D1);
+    patchesToApply.push(ENEMY_POSITION_PATCH_D2);
+    patchesToApply.push(ENEMY_POSITION_PATCH_D3);
+
     if(!spoilersOnly){
         rp.copyOriginalRom(romname, newFullFileName);
         writePatchFiles(patchesToApply, newFullFileName + ".patches.json");
@@ -905,6 +904,7 @@ function printMaze(mazePatch) {
             imgName = mazeBytes[index].toString(16).padStart(2, "0") + ".png"            
             openings = mazeBytes[index+1];
         }
+
      
 
         line += '<div class="room open-' + openings.toString(16).padStart(2, "0") + '">'
@@ -923,7 +923,11 @@ function printMaze(mazePatch) {
         if ((openings & 0x08) == 0x08) {
             line += '<img class="opening-img" src="../images/open-left.png" />';
         }
-
+        
+        var enemy = mazeBytes[Math.floor(index/2) + 128];
+        if (enemy != 0x00 && ((enemy & 0xf0) != 0x50)) {
+            line += '<img class="opening-img" src="../images/enemies/' + enemy.toString(16) + '.png" />';
+        }
         line += '<img class="roomImage" src="../images/' + imgName + '"/></div>'
 
     }
