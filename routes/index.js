@@ -46,34 +46,17 @@ router.post('/generate-maps-only', function(req, res, next) {
   let fortressesToRandomize = []
   let levelsToRandomize = []
   let useFbsLogic = []
-  if (req.body.randomizeWorld1) {
-    levelsToRandomize.push(1)
-  }
-  if (req.body.randomizeWorld2) {
-    levelsToRandomize.push(2)
-  }
-  if (req.body.randomizeWorld3) {
-    levelsToRandomize.push(3)
-  }
-  if (req.body.randomizeWorld4) {
-    levelsToRandomize.push(4);    
-  }
-  if (req.body.randomizeFortress1) {
-    fortressesToRandomize.push(1)
-  }
-  if (req.body.randomizeFortress2) {
-    fortressesToRandomize.push(2)
-  }
-  if (req.body.randomizeFortress3) {
-    fortressesToRandomize.push(3)
-  }
-  if (req.body.useFbsLogic1) {
-    useFbsLogic.push(1)
-  }
-  if (req.body.useFbsLogic2) {
-    useFbsLogic.push(2)
-  }
-  if (req.body.useFbsLogic3) {
+  levelsToRandomize.push(1)
+  levelsToRandomize.push(2)
+  levelsToRandomize.push(3)
+  levelsToRandomize.push(4);    
+  fortressesToRandomize.push(1)
+  fortressesToRandomize.push(2)
+  fortressesToRandomize.push(3)
+  
+  if (req.body.useFbsLogic == 1) {
+    useFbsLogic.push(1)    
+    useFbsLogic.push(2)    
     useFbsLogic.push(3)
   }
 
