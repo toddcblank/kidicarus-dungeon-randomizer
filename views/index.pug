@@ -3,8 +3,10 @@ extends layout
 block content
   - var formLocation = "generate-seed"
   script(src="javascripts/util.js")
-  h1 Kid Icarus Randomizer
-  h2 Click here to get a new seed:
+
+ 
+    
+    
   p 
     if(hasRom || spoilersOnly)
       
@@ -23,17 +25,17 @@ block content
           label(for="skipSpoilers") Skip Spoilers
           input(type="checkbox", name="skipSpoilers")
         div.form-group.seed  
-          label(for="doors") Randomize All Doors, remove upgrade room requirements
+          label(for="doors") Randomize all doors &amp; remove upgrade room requirements
           input(type="radio", name="doors", value="1", checked=true) 
-          label(for="doors") Put Upgrades at end of 1-2, 2-1, 2-2, and 3-2, keep requirements
+          label(for="doors") Put Upgrades at end of 1-2, 2-1, 2-2, and 3-1, keep requirements
           input(type="radio", name="doors", value="2")
 
         div.form-group.seed
-          label(for="useFbsLogic") Use fruitbatsalad fortress logic (more linear)      
+          label(for="useFbsLogic") Use fruitbatsalad's fortress logic (more linear)      
           input(type="radio", name="useFbsLogic",  value="1", checked)
-          label(for="useFbsLogic") Use Rumbleminze fortress logic (more mazey, bigger)  
+          label(for="useFbsLogic") Use Rumbleminze's fortress logic (more mazey, bigger)  
           input(type="radio", name="useFbsLogic", value="2")
-        div.form-group.seed
+        div.form-group.submit
           input(type="submit", value="submit")
 
 

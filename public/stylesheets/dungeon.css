@@ -150,7 +150,7 @@
     grid-template-rows: repeat(4, 29px);
     grid-template-columns: 2fr .1fr 8fr;
     border-style: solid;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     padding-top: 5px;
     grid-gap: 3px;
 }
@@ -158,6 +158,16 @@
 .form-group.seed {
     grid-template-columns: 460px 158px;
     grid-template-rows: 29px 29px;
+    text-align: left;
+    padding-left: 5%;
+    background: black;
+}
+
+.form-group.submit {
+    grid-template-columns: 1fr;
+    grid-template-rows: 29px;
+    padding-left: 20%;
+    padding-right: 20%;
     text-align: left;
 }
 
@@ -188,3 +198,4 @@
     grid-template-columns: repeat(35, 128px);
     padding-bottom: 8px;
 }
+

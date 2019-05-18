@@ -12,7 +12,7 @@ const EMPTY_OR_SPA = 0x27;
 
 function addUpgradeDoorsToEndOfLevels() {
     let doorPatch = {
-        name: "Adds Str upgrades to end of 1-2, 2-1, 2-2, and 3-2",
+        name: "Adds Str upgrades to end of 1-2, 2-1, 2-2, and 3-1",
         data: [],
         offset: 0x1efd9
     }
@@ -55,8 +55,8 @@ function addUpgradeDoorsToEndOfLevels() {
     doorPatch.data.push(0xff);
 
     //World 3
-    doorPatch.data.push(01); //stage 3-2
-    doorPatch.data.push(13); //screen 14
+    doorPatch.data.push(00); //stage 3-1
+    doorPatch.data.push(10); //screen 11
     doorPatch.data.push(0x9a); //coords, I think this works for all 3 options
     doorPatch.data.push(UPGRADE_ROOM); //..upgrade room...thought that was clear.
 

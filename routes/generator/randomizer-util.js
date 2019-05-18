@@ -25,18 +25,38 @@ let ADD_MAP_PATCH_D34 = {
     offset: 0x1B88C
 }
 
+const ENEMY_POSITION_DATA = [
+    0x44, 0x74, 0xA8, 0x7C,                                    //Red/Blue Ground enemies 30 - 38, 40 - 48
+    0x44, 0x6D, 0xA2, 0xAA, 
+    0x74, 0x56, 0x5A, 0x7B, 
+    0x73, 0x77, 0x7D, 0xAA, 
+    0x44, 0x72, 0x19, 0xAD, 
+    0xA2, 0x54, 0x49, 0xAC, 
+    0x48, 0x77, 0x73, 0x7A, 
+    0x56, 0x5A, 0xA5, 0xAD, 
+    0x4C, 0x64, 0x8C, 0xA4, 
+    0x43, 0x01, 0x4C, 0x01, 0x76, 0x00, 0x8D, 0x00,             //Spikes
+    0x75, 0x02, 0x75, 0x00, 0x75, 0x03, 0x8A, 0x00, 
+    0x83, 0x01, 0x86, 0x01, 0x89, 0x01, 0x8C, 0x01, 
+    0x35, 0x03, 0x65, 0x03, 0x86, 0x03, 0x8A, 0x02, 
+    0x44, 0xA6,                                                 //Eggplant Wizards 60-63
+    0xA5, 0xAA,     //Good for rooms with flat bottom
+    0x35, 0x87, 
+    0x78, 0x78
+]
+
 let ENEMY_POSITION_PATCH_D1 = {
-    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 83 01 86 01 89 01 8C 01 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    data: ENEMY_POSITION_DATA,
     offset: 0x1B278
 }
 
 let ENEMY_POSITION_PATCH_D2 = {
-    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 83 01 86 01 89 01 8C 01 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    data: ENEMY_POSITION_DATA,
     offset: 0x1B56C
 }
 
 let ENEMY_POSITION_PATCH_D3 = {
-    data: "44 74 A8 7C 44 6D A2 AA 74 56 5A 7B 73 77 7D AA 44 72 19 AD A2 54 49 AC 48 77 73 7A 56 5A A5 AD 4C 64 8C A4 43 01 4C 01 76 00 8D 00 75 02 75 00 75 03 8A 00 83 01 86 01 89 01 8C 01 35 03 65 03 86 03 8A 02 44 A6 A4 A8 36 87 36 87".split(" "),
+    data: ENEMY_POSITION_DATA,
     offset: 0x1B840
 }
 
@@ -905,30 +925,28 @@ function printMaze(mazePatch) {
             openings = mazeBytes[index+1];
         }
 
-     
-
         line += '<div class="room open-' + openings.toString(16).padStart(2, "0") + '">'
         if ((openings & 0x01) == 1) {
-            line += '<img class="opening-img" src="../images/open-up.png" />';
+            line += '<img class="opening-img" src="../images/fortresses/open-up.png" />';
         }
 
         if ((openings & 0x02) == 0x02) {
-            line += '<img class="opening-img" src="../images/open-right.png" />';
+            line += '<img class="opening-img" src="../images/fortresses/open-right.png" />';
         }
 
         if ((openings & 0x04) == 0x04) {
-            line += '<img class="opening-img" src="../images/open-down.png" />';
+            line += '<img class="opening-img" src="../images/fortresses/open-down.png" />';
         }
 
         if ((openings & 0x08) == 0x08) {
-            line += '<img class="opening-img" src="../images/open-left.png" />';
+            line += '<img class="opening-img" src="../images/fortresses/open-left.png" />';
         }
         
         var enemy = mazeBytes[Math.floor(index/2) + 128];
         if (enemy != 0x00 && ((enemy & 0xf0) != 0x50)) {
             line += '<img class="opening-img" src="../images/enemies/' + enemy.toString(16) + '.png" />';
         }
-        line += '<img class="roomImage" src="../images/' + imgName + '"/></div>'
+        line += '<img class="roomImage" src="../images/fortresses/' + imgName + '"/></div>'
 
     }
     htmlSpoiler += line;
