@@ -102,21 +102,21 @@ rooms = [
         paths:	[ALL, ALL, ALL, ALL],
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
-        validEnemies: [0x10, 0x20, 0x30, 0x32, 0x40, 0x42, 0x61],
+        validEnemies: [0x10, 0x20, 0x32, 0x42, 0x61],
     },
     {
         roomId: '5',
         paths:	[ALL, ALL, ALL, ALL],
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
-        validEnemies: [0x10, 0x20, 0x30, 0x32, 0x40, 0x42, 0x61],
+        validEnemies: [0x10, 0x20, 0x32, 0x42, 0x61],
     },
     {
         roomId: '6',
         paths:	[ALL, ALL, ALL, ALL],
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
-        validEnemies: [0x10, 0x20, 0x30, 0x32, 0x40, 0x42, 0x61],
+        validEnemies: [0x10, 0x20, 0x32,0x42, 0x61],
     },
     {
         roomId: '7',
@@ -179,7 +179,7 @@ rooms = [
         paths:	[(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), NONE],
         clipPaths: [(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), NONE],
         validEntrances:	(UP | RIGHT | DOWN),
-        validEnemies: [0x10, 0x20, 0x30, 0x40, 0x61],
+        validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
     },
     {
         roomId: '10',
@@ -193,7 +193,7 @@ rooms = [
         paths:	[(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), NONE],
         clipPaths: [(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), NONE],
         validEntrances:	(UP | RIGHT | DOWN),
-        validEnemies: [0x10, 0x20, 0x30, 0x40, 0x61],
+        validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
     },
     {
         roomId: '12',
