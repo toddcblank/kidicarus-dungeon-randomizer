@@ -26,6 +26,6 @@ function processsMap() {
         }
 
 
-        placeMacro(parseInt(pieces[0], 16), parseInt(pieces[1], 16), pieces[2])
+        placeMacro(parseInt(pieces[0], 16), parseInt(pieces[1], 16), pieces[2].toLowerCase())
     };
 }
