@@ -17,6 +17,7 @@ const POINTERS_TO_OVERWRITE = [
     0x1b17a  //0x27
 ]
 
+//Fortress 2 has a copy of the pointers, they're all identical, so we just need to offset the locations
 const POINTERS_TO_OVERWRITE_F2 = [
     0x1b13a + 0x2f2, //0x05
     0x1b13c + 0x2f2, //0x06
@@ -33,6 +34,8 @@ const POINTERS_TO_OVERWRITE_F2 = [
     0x1b178 + 0x2f2, //0x25
     0x1b17a + 0x2f2  //0x27
 ]
+
+//Fortress 3 also has a copy of the pointers, they're all identical, so we just need to offset the locations
 const POINTERS_TO_OVERWRITE_F3 = [
     0x1b13a + 0x5c8, //0x05
     0x1b13c + 0x5c8, //0x06
@@ -79,7 +82,7 @@ const ROOM_START_REAL_ADDR= 0xa4f0;
 const MAX_ROOM_DATA_LENGTH = 0x310;
 
 const FBS_ROOM1_DATA = [
-    0x01,
+    0x01,               //I don't know what this 0x01 byte is for, but all the rooms have it.
     0x10, 0x04, 0x01,
     0x60, 0x04, 0x01,
     0x1f, 0x04, 0x01,
@@ -103,7 +106,7 @@ const FBS_ROOM1_DATA = [
     0x17, 0x0d, 0x01,
     0x91, 0x0d, 0x01,
     0x9d, 0x0d, 0x01,                
-    0xFD, 0xFF
+    0xFD, 0xFF          //All rooms end in 0xFD, 0xFF
 ]
 
 const RUMBLE_ROOM1_DATA = [
@@ -148,6 +151,9 @@ const DOWN = 0x4;
 const LEFT = 0x8;
 const ALL = UP | RIGHT | DOWN | LEFT;
 const NONE = 0x0;
+
+//This room info is passed to the dungeon randomizer so it knows how to use the new rooms.
+//roomokay, validEnemies, and roomIdNum is used by fbs's generator, the rest is used by rumbleminze's
 const NEW_ROOM_INFO = [
     {
         roomIdNum: overwrittenRooms[0],
@@ -159,7 +165,7 @@ const NEW_ROOM_INFO = [
         roomokay: 0b1110
     },{
         roomIdNum: overwrittenRooms[1],
-        roomId: overwrittenRooms[1],
+        roomId: overwrittenRooms[1].toString(16),
         paths: [(RIGHT|DOWN|UP),(RIGHT|DOWN|UP),NONE,(RIGHT|DOWN|LEFT)],
         clipPaths: [(RIGHT|DOWN|UP),(RIGHT|DOWN|UP),NONE,(RIGHT|DOWN|LEFT)],
         validEntrances: (RIGHT|DOWN|UP),
@@ -168,17 +174,18 @@ const NEW_ROOM_INFO = [
     },
 ]
 
-//data for points to the new room locations
+//data for points to the new room locations, these are "real" addresses
 let roomPointers = []
 roomPointers[0] = ROOM_START_REAL_ADDR;
 roomPointers[1] = ROOM_START_REAL_ADDR + rooms[0].length
 
-//Locations in the rom of the room info
+//Locations in the rom of the room info, these are "rom" addresses
 let roomDataLocations = [];
 roomDataLocations[0] = ROOM_START;
 roomDataLocations[1] = ROOM_START + rooms[0].length
 
-//Converts a 2-byte hex number from, say 9AC3 to C39A
+//Converts a 2-byte hex number to an array in reverse order, which is how the pointers
+// are stored in the ROM (from 9AC3 to [C3,9A])
 function littleEndien(value) {
     let lowerByte = (value & (0x00ff));
     let higherByte = ((value & 0xff00)) >> 8;
@@ -187,7 +194,10 @@ function littleEndien(value) {
 }
 
 function getRoomPatches(){
+
+
     let ROOM_PATCHES = [];
+    var totalRoomPatchSize = 0;
     for (var i = 0; i < rooms.length; i++) {
         console.log("New pointer: " + littleEndien(roomPointers[i])[0].toString(16) + " " + littleEndien(roomPointers[i])[1].toString(16))
         let pointer = littleEndien(roomPointers[i]);
@@ -213,6 +223,17 @@ function getRoomPatches(){
             name: "Room Data for room " + (i+1),
             offset: roomDataLocations[i],
             data: rooms[i]
+        }
+
+        totalRoomPatchSize += roomDataPatch.length;
+
+        if (totalRoomPatchSize > MAX_ROOM_DATA_LENGTH) {
+            console.log("********************************************************")
+            console.log("********************************************************")
+            console.log("NOT PROCESSING ANY FURTHER ROOM PATCHES, WE'RE OVER SIZE")
+            console.log("********************************************************")
+            console.log("********************************************************")
+            continue;
         }
 
         ROOM_PATCHES.push(pointerPatch);
