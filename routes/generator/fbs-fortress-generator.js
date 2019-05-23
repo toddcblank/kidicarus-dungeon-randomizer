@@ -77,8 +77,14 @@ spikeInfo[0x20] = [0, 0x52, 0x52, 0x52]
 //instead it'll have enemies
 //spikeInfo[0x20] = [0, 0, 0, 0x50]
 
-function generatePatchForFortress(world, difficulty) {
+function generatePatchForFortress(world, difficulty, newrooms = []) {
     
+    if (newrooms) {
+        for (var i = 0; i < newrooms.length; i++) {
+            roomokay[newrooms[i].roomIdNum] = newrooms[i].roomokay
+        }
+    }
+
     let map = generateFortress(world, difficulty);
 
     let roomData = []
