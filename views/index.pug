@@ -115,9 +115,9 @@ block content
           option(value="4")
           option(value="5" label="5")
     else
-      p Please provide a vanilla, unheadered Kid Icarus ROM to patch:
+      h3 Please provide a vanilla, unheadered Kid Icarus ROM to patch:
       form(action="./upload-rom-for-patch" method="POST" encType="multipart/form-data")
         input(type='file' name='rom') 
         input(type='submit' name='submit' value='upload') 
       p 
-        a(href="/generate-maps-only") Or click here if you just want to generate dungeon spoilers without an actual NES file
+        a(href="/generate-maps-only") Or click here if you just want to generate spoiler images without an actual NES file

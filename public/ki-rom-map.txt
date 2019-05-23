@@ -1,0 +1,257 @@
+
+
+KID ICARUS ROM MAP
+
+
+========================================================================
+Acknowledgement:
+========================================================================
+We learned most of this from posts on the Dabit site, which was written 
+by David S.  That site doesn't exist anymore, so we decided to write 
+this ROM map which also includes some of our own discoveries.
+--fruitbatsalad and Rumbleminze, 2019
+
+
+========================================================================
+Preliminary notes:
+========================================================================
+Kid Icarus uses the MMC1 mapper.  It is 128K, which is organized as 
+eight consecutive banks of 16K each.
+
+We'll use 1-x, 2-x, and 3-x to refer to stages that are not fortresses.
+We'll refer to fortresses as x-4.
+
+KI is broken up into four worlds, which are made up of stages.  The 
+stages are NOT stored "tile by tile."  Instead, each stage is stored as 
+a sequence of screens which can be reused.  For example, at the start of 
+2-2, the same screen is used several times in a row.  Each unique screen 
+is composed of structures.  Structures are chunks of bricks, big clouds 
+Pit can walk on, etc.  These structures are made of macros, which are 
+16x16 pixels.  Each macro is really a 2x2 block of tiles, which are 8x8 
+pixels each.
+
+In the rom map below, anything with an asterix* next to it means there 
+are additional notes at the bottom of this page.
+
+This is all a work in progress.  We'll keep adding to this with new
+discoveries.
+
+
+========================================================================
+ROM Bank 0: 00000-03FFF
+========================================================================
+Stored in this bank: 
+  Graphics (tiles)
+
+01170-xxxxx: Graphics for the letter A
+01310-xxxxx: Graphics for the letter a
+
+
+========================================================================
+ROM Bank 1: 04000-07FFF
+========================================================================
+Stored in this bank: 
+  Graphics (tiles)
+  Text for title screen, start/continue screen, and password screen
+  
+06167-0616C: Code for initializing Pit's stats/inventory when the game
+             starts (e.g., try changing 06169 from 08 to 0D).  This code 
+             runs a loop backwards from 156 to 13E, setting these RAM 
+             addresses to the current value of the accumulator (zero).
+062F8-xxxxx: Text: PUSH START BUTTON (on title screen)
+063C4-xxxxx: Text: ANGEL LAND STORY
+067E4-xxxxx: Text: START CONTINUE
+06B6F-xxxxx: Text: ENTER SACRED WORDS
+
+
+========================================================================
+ROM Bank 2: 08000-0BFFF
+========================================================================
+Stored in this bank: 
+  Code for gameplay
+  Data for 2-x
+When this bank is used: 
+  Almost always  
+
+08000-xxxxx: Code for 1-x
+..0952B-xxxxx: Code for writing data to VRAM
+..095D4-xxxxx: Code for determining what needs to be written to VRAM      
+09C30-xxxxx: Code for 2-x
+0B04A-0B82C: 2-x Screen data
+0B82D-0B93F: 2-x Structure data  
+0B940-0BB03: 2-x Macros          
+0BB04-0BB13: 2-x 5th FFFF line   
+0BB14-0BBF1: 2-x Screen pointers 
+0BBF2-0BC39: 2-x Structure pointers 
+0BC3A-0BC4E: 2-x Items table*
+0BC4F-0BDC2: 2-x Enemy tables
+0BDC3-0BE42: 2-x Platforms 
+0BE43-0BE45: 2-x Palettes info?      
+0BE46-0BEA5: 2-x Palettes            
+0BEA6-0BED2: 2-x Enemy property table
+
+
+========================================================================
+ROM Bank 3: 0C000-0FFFF
+========================================================================
+Stored in this bank: 
+  Data for stage 4-1    
+When this bank is used: 
+  During 3-x and 4-1
+  
+0ED26-xxxxx: Text for the cutscene after 3-4 (PIT EQUIPPED HIMSELF...)
+0FA8C-0FBFC: 4-1 Screen data
+0FBFD-0FCB7: 4-1 Structure data
+0FCB8-0FE7B: 4-1 Macros
+0FEB6-xxxxx: 4-1 Screen pointers
+0FEFA-xxxxx: 4-1 Items table*
+0FF07-xxxxx: 4-1 Enemy table
+0FF34-0FF53: 4-1 Palettes
+0FF54-xxxxx: 4-1 Enemy property table
+
+
+========================================================================
+ROM Bank 4: 10000-13FFF
+========================================================================
+Stored in this bank: 
+  Code for gameplay
+  Text for the ending and credits
+When this bank is used: 
+  Game ending (and when else?)
+
+010264-xxxxx: Text for the ending (MEDUSA WAS DESTROYED...)
+010E25-xxxxx: Text for the ending (THANK-YOU,PIT)
+010F8D-xxxxx: Text for credits (STAFF...)
+
+
+========================================================================
+ROM Bank 5: 14000-17FFF
+========================================================================
+Stored in this bank: 
+  Data for x-4 (see also: bank 6)
+When this bank is used:
+  During x-4
+
+15127-15129: Three bytes are boss 1 HP, boss 2 HP, boss 3 HP.
+1524C-xxxxx: Code for checking whether or not Pit has the pencil
+15BF5-1626C: x-4 Screen data
+1626D-1631D: x-4 Structure data
+1631E-164E1: x-4 Macros
+1E21B-xxxxx: Code for checking whether or not Pit has the map
+1E27B-xxxxx: Code for checking whether or not Pit has the torch
+    
+
+========================================================================
+ROM Bank 6: 18000-1BFFF
+========================================================================
+Stored in this bank: 
+  Data for 1-x and 3-x
+  Data for x-4 (see also: bank 5)
+Note:
+  This data gets loaded into offset 7000 in the cartridge's expansion 
+  RAM.  So, this bank is doesn't actually get mapped during gameplay, 
+  but the data is always available.
+  
+19950-1A1B9: 1-x Screen data
+1A1BA-1A2EB: 1-x Structure data
+1A2EC-1A4AF: 1-x Macros        
+1A4B0-1A52F: 1-x Platforms
+1A530-1A53F: 1-x 5th “FFFF” unknown 
+1A540-1A5CB: 1-x Screen pointers   
+1A5CC-1A61F: 1-x Structure pointers
+1A620-1A6F3: 1-x Enemy tables      
+1A6F4-1A6F6: 1-x Palettes info?    
+1A6F7-1A756: 1-x Palettes          
+1A757-1A76F: 1-x Items table*
+1A770-1A79F: 1-x Enemy property table 
+1A7A0-1ABC5: 3-x Screen data          
+1ABC6-1AC76: 3-x Structure data       
+1AC77-1AE3A: 3-x Macros               
+1AE3B-1AEBA: 3-x Platforms            
+1AEBB-1AECA: 3-x 5th FFFF line        
+1AECB-1AF4C: 3-x Screen Pointers      
+1AF4D-1AF80: 3-x Structure pointers   
+1AF81-1B068: 3-x Enemy tables         
+1B069-1B06B: 3-x Palette info?        
+1B06C-1B0CB: 3-x Palettes             
+1B0CC-1B0D8: 3-x Item table*          
+1B0D9-1B108: 3-x Enemy property table     
+1B109-1B12F: 1-4 Header block         
+1B130-1B183: 1-4 Screen pointers      
+1B184-1B1B7: 1-4 Structure pointers   
+1B1B8-1B237: 1-4 Rooms map            
+1B238-1B277: 1-4 Room enemy table     
+1B278-1B2C3: 1-4 Enemy position table 
+1B2C4-1B306: 1-4 Map+Centurion table  
+1B307-1B309: 1-4 Palettes info?       
+1B30A-1B329: 1-4 Palettes (32 bytes)  
+1B30A-1B35B: 1-4 Enemy property table     
+1B35C-1B3F9: 1-4 Enemy animations     
+1B3FD-1B423: 2-4 Header block         
+1B424-1B477: 2-4 Screen pointers      
+1B478-1B4AB: 2-4 Structure pointers   
+1B4AC-1B52B: 2-4 Rooms map            
+1B52C-1B56B: 2-4 Room enemy table     
+1B56C-1B5B7: 2-4 Enemy position table 
+1B5B8-1B5FA: 2-4 Map+Centurion table  
+1B5FB-1B5FD: 2-4 Palettes info?       
+1B5FE-1B61D: 2-4 Palettes (32 bytes)  
+1B61E-1B64D: 2-4 Enemy property table     
+1B64E-1B6D0: 2-4 Enemy animations     
+1B6D1-1B6F7: 3-4 Header block        
+1B6F8-1B74B: 3-4 Screen pointers     
+1B74C-1B7A7: 3-4 Structure pointers  
+1B780-1B7FF: 3-4 Rooms map           
+1B800-1B83F: 3-4 Room enemy table    
+1B840-1B88B: 3-4 Enemy position table 
+1B88C-1B8CE: 3-4 Centurion/map table  
+1B8CF-1B8D1: 3-4 Palettes info?       
+1B8D2-1B8FE: 3-4 Palettes (32 bytes)  
+1B8FF-1B91E: 3-4 Enemy property table     
+1B91F-1B9E4: 3-4 Enemy animations     
+
+
+========================================================================
+ROM Bank 7: 1C000-1FFFF
+========================================================================
+Stored in this bank:
+  Code for gameplay
+When this bank is used:
+  Always accessible  
+  
+1C32A-xxxxx: Text: SACRED WORDS (when Pit has died)
+1CF74-xxxxx: Code for healing pools
+1E706-xxxxx: Text for pause screen (HEART, ENDURANCE, etc.)
+1E755-1E756: Which RAM address to use on the pause screen for hearts x1.  
+             This is 4A01.  Change it to something else to display a 
+             different stat on the pause screen.
+1EABA-xxxxx: Code involved with reseting Pit's stats upon death.
+1ED45-xxxxx: Code and data for displaying the HUD
+..1ED45-1ED48: Four byte block for the heart icon displayed in the HUD
+               for non-fortress stages.  The four bytes are: 
+               y coord, sprite number, palette, x coord.
+               Sprite number 27 is the heart; try 43 or A8 for fun.
+..1ED49-1ED4C: Bytes for the heart shown in fortress HUD (see above).
+..1ED4E-1ED4F: Which RAM address to use in the HUD for hearts x1.  This 
+               is 4A01.  Change it to something like 1400 to display the 
+               lava timer instead.
+..1ED53-1ED54: Which RAM address to use in the HUD for hearts x256.
+..1EBFC-xxxxx: Change this byte from 05 to 0D for a crazy graphics
+               glitch that lets you see reaper projectiles.
+1EFB9-xxxxx: x-x Door data
+
+
+========================================================================
+*Some notes about how things are stored
+========================================================================
+
+Item Tables
+  Each item is a 4-byte block: Stage, Screen, Position, Type
+  The types are 0=Harp, 1=Chalice.
+  For some reason, there are extra items stored in the ROM that don't 
+  show up in the game.  For example, the data shows two harps in 1-3, 
+  but only one of them actually appears in the game.  We don't know why.
+
+More info coming soon
+
+
