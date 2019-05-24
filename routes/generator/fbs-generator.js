@@ -176,12 +176,6 @@ function randomizeWorld(world, difficulty) {
 
         let enemyChoice = ENEMY_TABLE1[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[world][difficulty].length)]        
         let enemy3Choice = ENEMY_TABLE3[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE3[world][difficulty].length)]
-                
-        //If a thief was chosen, roll the dice again
-        //This makes thieves less likely without having to change anything else
-        if enemyChoice == sr.ENEMY_PLUTON && world < 4 {
-          enemyChoice = ENEMY_TABLE1[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[world][difficulty].length)]
-        }        
 
         enemyTable1Data.push(enemyChoice);
         
