@@ -35,7 +35,14 @@ romPath = './public/generated-seeds/'
 
 
 //Generates a random dungeon and returns the 64 * 3 bytes for the dungeon and enemies for the dungeon
-function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29, minimumDistanceToBoss=0) {    
+function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29, minimumDistanceToBoss=0, newrooms = []) {    
+
+    if (newrooms) {
+        for (var i = 0; i < newrooms.length; i++) {
+            dr.rooms[newrooms[i].roomIdNum] = newrooms[i];
+        }
+    }
+
     let xsize = 8;
     let ysize = 8;
     while(true){
