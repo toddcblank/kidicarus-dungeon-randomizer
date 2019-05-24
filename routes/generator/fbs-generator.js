@@ -174,8 +174,14 @@ function randomizeWorld(world, difficulty) {
             continue;
         }
 
-        let enemyChoice = ENEMY_TABLE1[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[world][difficulty].length)]
+        let enemyChoice = ENEMY_TABLE1[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[world][difficulty].length)]        
         let enemy3Choice = ENEMY_TABLE3[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE3[world][difficulty].length)]
+                
+        //If a thief was chosen, roll the dice again
+        //This makes thieves less likely without having to change anything else
+        if enemyChoice == sr.ENEMY_PLUTON && world < 4 {
+          enemyChoice = ENEMY_TABLE1[world][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[world][difficulty].length)]
+        }        
 
         enemyTable1Data.push(enemyChoice);
         
@@ -199,19 +205,19 @@ function randomizeWorld(world, difficulty) {
     if (world == 2) {
         //2-1
         for(var i = 0; i < stageLength[world][1]; i++) {
-            if ([1,4,6,7,24,26,27,28].indexOf(stagePlans[1][i]) > -1) {
+            if ([1,4,6,7,24,26,27,28,40].indexOf(stagePlans[1][i]) > -1) {
                 enemyTable3Data[i] = 0x02;
             }
         }
         //2-2
         for(var i = 0; i < stageLength[world][2]; i++) {
-            if ([1,4,6,7,24,26,27,28].indexOf(stagePlans[2][i]) > -1) {
+            if ([1,4,6,7,24,26,27,28,40].indexOf(stagePlans[2][i]) > -1) {
                 enemyTable3Data[stageLength[world][1] + i] = 0x02;
             } 
         }
         //2-3
         for(var i = 0; i < stageLength[world][3]; i++) {
-            if ([1,4,6,7,24,26,27,28].indexOf(stagePlans[3][i]) > -1) {
+            if ([1,4,6,7,24,26,27,28,40].indexOf(stagePlans[3][i]) > -1) {
                 enemyTable3Data[stageLength[world][1] + stageLength[world][2] + i] = 0x02;
             }
         }

@@ -6,12 +6,12 @@
 
 .leftcol {
     display: grid;
-    grid-template-rows: 300px 1fr;
+    grid-template-rows: 256px 1fr;
 }
 
 .editor {
     display: grid;
-    grid-template-columns: 300px 128px
+    grid-template-columns: 300px 140px 140px
 }
 
 .room {
