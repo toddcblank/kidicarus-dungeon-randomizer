@@ -154,7 +154,7 @@ function getBossHealthPatch(boss1, boss2, boss3) {
 }
 
 
-function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false, doors=DOOR_FULL_RANDO_NO_REQS) {
+function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false, doors=DOOR_FULL_RANDO_NO_REQS, useNewRooms = false) {
 
     console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
     console.log("------------------ Testing RNG for seed in Randomization function " + seed + " ------------------------")
@@ -167,16 +167,20 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     let newFullFileName = romPath + newFilename + ".nes";
     
     let patchesToApply = []
+    var roomInfo = [];
+    if (useNewRooms) {
+        roomInfo = newrooms.NEW_ROOM_INFO;
+    }
 
     if (fortressesToRandomize.indexOf(1) > -1){        
         console.log("Generating dungeon 1") 
         var dungeon1Patch = []
         var dungeon1Data = [];
         if (useFbsLogic.indexOf(1) > -1) {
-            dungeon1Patch = fbsf.generatePatchForFortress(1, difficulty, newrooms.NEW_ROOM_INFO);
+            dungeon1Patch = fbsf.generatePatchForFortress(1, difficulty, roomInfo);
             dungeon1Data = dungeon1Patch[0].data
         } else {
-            let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5, newrooms.NEW_ROOM_INFO);
+            let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5, roomInfo);
             dungeon1Patch = {
                 data: dungeon1,
                 offset: dungeonLevelOffsets[1]
@@ -198,10 +202,10 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
         var dungeon2Data = [];
         var dungeon2Patch = [];
         if(useFbsLogic.indexOf(2) > -1) {
-            dungeon2Patch = fbsf.generatePatchForFortress(2, difficulty, newrooms.NEW_ROOM_INFO);
+            dungeon2Patch = fbsf.generatePatchForFortress(2, difficulty, roomInfo);
             dungeon2Data = dungeon2Patch[0].data
         } else {
-            let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7, newrooms.NEW_ROOM_INFO);
+            let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7, roomInfo);
             dungeon2Patch = {
                 data: dungeon2,
                 offset: dungeonLevelOffsets[2]
@@ -223,10 +227,10 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
         var dungeon3Patch = [];
         var dungeon3Data;
         if(useFbsLogic.indexOf(3) > -1) {
-            dungeon3Patch = fbsf.generatePatchForFortress(3, difficulty, newrooms.NEW_ROOM_INFO);
+            dungeon3Patch = fbsf.generatePatchForFortress(3, difficulty, roomInfo);
             dungeon3Data = dungeon3Patch[0].data
         } else {
-            let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10, newrooms.NEW_ROOM_INFO)
+            let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10, roomInfo)
             dungeon3Patch = {
                 data: dungeon3,
                 offset: dungeonLevelOffsets[3]
@@ -250,8 +254,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     //world 1 randomization
     if (levelsToRandomized.indexOf(1) > -1){
         world1Patches = fbs.randomizeWorld(1, difficulty);
-        patchesToApply.push(world1Patches);
-       
+        patchesToApply.push(world1Patches);       
     }
 
     //world 2 randomization
@@ -301,7 +304,9 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     patchesToApply.push(ENEMY_POSITION_PATCH_D1);
     patchesToApply.push(ENEMY_POSITION_PATCH_D2);
     patchesToApply.push(ENEMY_POSITION_PATCH_D3);
-    patchesToApply.push(newrooms.getRoomPatches())
+    if (useNewRooms){
+        patchesToApply.push(newrooms.getRoomPatches())
+    }
 
     if(!spoilersOnly){
         rp.copyOriginalRom(romname, newFullFileName);

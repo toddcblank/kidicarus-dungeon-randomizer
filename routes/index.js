@@ -122,9 +122,16 @@ router.post('/generate-seed', function(req, res, next) {
     useFbsLogic.push(3)
   }
 
+  var useNewRooms = true;
+  if (req.body.useNewRooms == 2) {
+    useNewRooms = false;
+  }
+
+  console.log("Use new rooms: " + useNewRooms)
+
   let doors = req.body.doors;
 
-  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false, doors)
+  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false, doors, useNewRooms)
 
   res.render('generated', { title: 'Kid Icarus Randomizer' , seed: generatedSeed, spoilers: !skipSpoilers});
 });
