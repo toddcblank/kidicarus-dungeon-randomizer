@@ -138,10 +138,13 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
         doorsToPlace[randomTrainingRoom] = TRAINING_ROOM;
 
         console.log("Placing doors on level " + world + ": " + doorsToPlace)
+        var doorsPlaced = 0;
         for(var x = 1; x <= levels[world].length; x++){
             var screensWithDoors = [];
         
-            while (screensWithDoors.length < doorsToPlacePerWorldLevel[world][x]) {
+            var attempts = 0;
+            while (screensWithDoors.length < doorsToPlacePerWorldLevel[world][x] && attempts < 100) {
+                attempts++;
                 //pick a random screen
                 let randomScreen = Math.floor((Math.random() * levels[world][x].length)/2)
                 
@@ -178,11 +181,12 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
                 doorPatch.data.push(randomScreen);          //screen
                 doorPatch.data.push(screen.door);           //door coords
                 doorPatch.data.push(doorsToPlace.pop());    //door type
+                doorsPlaced++;
             }
         }
 
         //fill in empty doors
-        for(var x = numDoorsToPlace; x < doorSlotsPerLevel[world]; x++) {
+        for(var x = doorsPlaced; x < doorSlotsPerLevel[world]; x++) {
             doorPatch.data.push(0xff);
             doorPatch.data.push(0xff);
             doorPatch.data.push(0xff);

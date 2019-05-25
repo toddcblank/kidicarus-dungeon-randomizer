@@ -10,12 +10,14 @@ Deployed at https://ki-rando.herokuapp.com
 * randomizes enemies
 * randomizes doors
 * can adjust boss's health
+* updates the price of items
 * updates the title screen a bit with a call out to Rumble and fbs, along with the seed of the patch
 * requires a vanilla KI rom be uploaded in order to patch
+* updates the ending credits a bit
+* adds some custom rooms
 
 # running
 * install node/npm
-* cd labryinth
 * npm install
 * npm start
 

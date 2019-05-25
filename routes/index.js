@@ -17,27 +17,11 @@ router.get('/generate-maps-only', function(req, res, next) {
 
 router.post('/generate-maps-only', function(req, res, next) {
   let difficulty = req.body.difficulty
-  var rngSeed = new Date().getTime().toString(16);
-  if (req.body.seed && req.body.seed != 0) {
-    rngSeed = req.body.seed;
-  }
-
-  rngSeed = DIFF_ABBREV[difficulty] + rngSeed;
-
-  console.log("Using seed " + rngSeed)
-
+  var rngSeed = getRngSeed(req);
   let rng = seedrandom(rngSeed);
   Math.random = () => {
     return rng();
   }
-
-  console.log("------------------ Testing RNG for seed " + rngSeed + " ------------------------")
-  console.log(Math.random())
-  console.log(Math.random())
-  console.log(Math.random())
-  console.log(Math.random())
-  console.log("-----------------------------------------------------------------")
-
 
   //this would be pointless.
   let skipSpoilers = false;
@@ -72,14 +56,7 @@ router.get('/generate-seed', function(req, res, next) {
 router.post('/generate-seed', function(req, res, next) {
 
   let difficulty = req.body.difficulty
-  var rngSeed = new Date().getTime().toString(16).substr(5).toUpperCase();
-  if (req.body.seed && req.body.seed != 0) {
-    rngSeed = req.body.seed;
-  }
-
-  rngSeed = DIFF_ABBREV[difficulty] + rngSeed;
-
-  console.log("Using seed " + rngSeed)
+  var rngSeed = getRngSeed(req);
 
   let rom = req.session.uploadedrom
   let romFullPath = './uploaded-roms/' + rom
@@ -89,7 +66,7 @@ router.post('/generate-seed', function(req, res, next) {
     res.redirect("/")
     return;
   }
-
+  
   let rng = seedrandom(rngSeed);
   Math.random = () => {
     return rng();
@@ -137,6 +114,7 @@ router.post('/generate-seed', function(req, res, next) {
 });
 
 
+
 // router.get('/existing-seeds', (req, res, next) => {
 //     fs.readdir('./public/generated-seeds', function(err, items) {
 //       res.render('existing', {items: items})
@@ -152,5 +130,20 @@ router.post('/upload-rom-for-patch', (req, res, next) => {
     res.redirect("/")
 
 })
+
+function getRngSeed(req) {  
+    let difficulty = req.body.difficulty
+    var rngSeed = new Date().getTime().toString(16).substr(5).toUpperCase();
+
+    if (req.body.seed && req.body.seed != 0) {
+      rngSeed = req.body.seed;
+    }
+
+    rngSeed = DIFF_ABBREV[difficulty] + rngSeed;
+
+    console.log("Using seed " + rngSeed)
+
+    return rngSeed;
+}
 
 module.exports = router;
