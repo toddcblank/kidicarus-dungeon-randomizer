@@ -14,6 +14,18 @@
     grid-template-columns: 300px 140px 140px
 }
 
+.itemDescription {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    width: 256px;
+    text-align: center;
+}
+
 .room {
     border-style: solid;
     border-color: black;

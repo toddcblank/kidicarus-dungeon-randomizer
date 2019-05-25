@@ -115,8 +115,8 @@ const RUMBLE_ROOM1_DATA = [
     0x05, 0x05, 0x01,
     0x09, 0x05, 0x01,
     0x0c, 0x05, 0x01,
-    0x0f, 0x04, 0x01,
-    0x00, 0x04, 0x01,    
+    0x1f, 0x04, 0x01,
+    0x10, 0x04, 0x01,    
     0x70, 0x04, 0x01,
     0x7f, 0x04, 0x01,    
     0xb1, 0x01, 0x04,
@@ -200,7 +200,7 @@ const ANGRY_IRISH_SNAKE_ROOM2 = [
     0xFD, 0xFF  
 ]
 
-FBS_ROOM2_DATA = [
+const FBS_ROOM2_DATA = [
     0x01,
     0xB1, 0x01, 0x04, 
     0xB8, 0x01, 0x04,               
@@ -242,7 +242,7 @@ const NEW_ROOM_INFO = [
         paths: [(NONE),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT)],
         clipPaths: [(NONE),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT)],
         validEntrances: (RIGHT|DOWN|LEFT),
-        validEnemies: [0x10, 0x20, 0x61],
+        validEnemies: [0x10, 0x20, 0x32, 0x42, 0x61],
         roomokay: 0b1110
     },{
         roomIdNum: overwrittenRooms[1],
@@ -258,7 +258,7 @@ const NEW_ROOM_INFO = [
         paths: [ALL,ALL,ALL,ALL],
         clipPaths:  [ALL,ALL,ALL,ALL],
         validEntrances: ALL,
-        validEnemies: [0x10, 0x20, 0x35, 0x45, 0x61],
+        validEnemies: [0x10, 0x20, 0x34, 0x44],
         roomokay: 0b1111
     },{
         roomIdNum: overwrittenRooms[3],
@@ -266,7 +266,7 @@ const NEW_ROOM_INFO = [
         paths: [ALL,ALL,ALL,ALL],
         clipPaths:  [ALL,ALL,ALL,ALL],
         validEntrances: ALL,
-        validEnemies: [0x10, 0x20, 0x37, 0x45, 0x61],
+        validEnemies: [0x10, 0x20, 0x34, 0x44, 61],
         roomokay: 0b1111
     },{
         roomIdNum: overwrittenRooms[4],

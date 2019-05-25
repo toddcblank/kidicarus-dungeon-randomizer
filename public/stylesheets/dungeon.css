@@ -1,3 +1,16 @@
+.enemyImage {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 256px;
+}
+
+.roomImage.full {
+    width: 256px;
+    height: 192px;
+}
+
 .room {
     width: 128px;
     height: 96px;

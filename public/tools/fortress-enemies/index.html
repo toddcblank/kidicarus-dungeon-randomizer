@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/dungeon.css" />
+        <link rel="stylesheet" type="text/css" href="/stylesheets/roomeditor.css" />
+        <script src="./enemy-placer.js"></script>
+    </head>
+    <body>
+            <div class="room">
+                <img class="roomImage full" id="roomImage" index="0" src="/images/fortresses/01.png"/>
+                <img class="enemyImage" id="enemyImage" index="0" src="/images/enemies/10.png" />
+            </div>            
+            <div class="controls">
+                <img src="../testfit/left.png" onclick="javascript:changeRoom(-1);" />
+                <div class="itemDescription">RoomId: </div>     
+                <div class="itemDescription" id="roomId">01</div>     
+                <img src="../testfit/right.png" onclick="javascript:changeRoom(1);" />             
+            </div>
+            <div class="controls">
+                    <img src="../testfit/left.png" onclick="javascript:changeEnemy(-1);" /> 
+                    <div class="itemDescription">EnemyId: </div>                   
+                <div class="itemDescription" id="enemyId">10</div>
+                <img src="../testfit/right.png" onclick="javascript:changeEnemy(1);" />             
+            </div>
+    </body>
+</html>
+
+               
