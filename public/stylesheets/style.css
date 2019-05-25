@@ -18,3 +18,15 @@ h1 {
 a {
   color: #00B7FF;
 }
+
+.spoilerList {
+  display: grid;
+  width: 50%;
+  grid-template-columns: 1fr 1fr;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

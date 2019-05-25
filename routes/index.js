@@ -56,7 +56,8 @@ router.get('/generate-seed', function(req, res, next) {
 router.post('/generate-seed', function(req, res, next) {
 
   let difficulty = req.body.difficulty
-  var rngSeed = getRngSeed(req);
+  let raceMode = req.body.skipSpoilers;
+  var rngSeed = getRngSeed(req, raceMode);
 
   let rom = req.session.uploadedrom
   let romFullPath = './uploaded-roms/' + rom
@@ -67,6 +68,9 @@ router.post('/generate-seed', function(req, res, next) {
     return;
   }
   
+  //If we're in race mode, make the RNG Seed different than the seed that's displayed
+
+
   let rng = seedrandom(rngSeed);
   Math.random = () => {
     return rng();
@@ -79,7 +83,7 @@ router.post('/generate-seed', function(req, res, next) {
   console.log(Math.random())
   console.log("-----------------------------------------------------------------")
 
-  let skipSpoilers = req.body.skipSpoilers;
+  
 
   //There's definitely a better way to do this, but I'll save that for another day.
   let fortressesToRandomize = []
@@ -108,9 +112,9 @@ router.post('/generate-seed', function(req, res, next) {
 
   let doors = req.body.doors;
 
-  let generatedSeed = generator.createNewRandomizedRom((skipSpoilers ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false, doors, useNewRooms)
+  let generatedSeed = generator.createNewRandomizedRom((raceMode ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false, doors, useNewRooms)
 
-  res.render('generated', { title: 'Kid Icarus Randomizer' , seed: generatedSeed, spoilers: !skipSpoilers});
+  res.render('generated', { title: 'Kid Icarus Randomizer' , seed: generatedSeed, spoilers: !raceMode});
 });
 
 
@@ -131,15 +135,20 @@ router.post('/upload-rom-for-patch', (req, res, next) => {
 
 })
 
-function getRngSeed(req) {  
+function getRngSeed(req, raceMode) {  
     let difficulty = req.body.difficulty
     var rngSeed = new Date().getTime().toString(16).substr(5).toUpperCase();
 
-    if (req.body.seed && req.body.seed != 0) {
+    if (req.body.seed && req.body.seed != 0 && !raceMode) {
       rngSeed = req.body.seed;
     }
-
+    
     rngSeed = DIFF_ABBREV[difficulty] + rngSeed;
+
+    if (raceMode) {
+      //ignore any seed passed in
+      rngSeed = "R" + rngSeed;
+    }
 
     console.log("Using seed " + rngSeed)
 

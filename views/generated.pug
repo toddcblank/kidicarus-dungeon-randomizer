@@ -2,38 +2,38 @@ extends layout
 block content
   head
     link(rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css")
-  p Here's your seed!
+  h2 Here's your seed!    
+    a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      
   if(!spoilersOnly)
     p Things you should know:
       ul
-        li Theres 1 strength upgrade in each world, plus one more randomly placed (unless you chose the other option).  It's possible that it will be inaccessible due to being in the same level as another upgrade.
-        li No wall clips are necessary, although it is randomly possible to wall clip out of the lower right hand corner in 3-4 and skip the boss 
+        li Theres 1 strength upgrade in each world, plus one more randomly placed (unless you chose the other option).
+        li Wall clips are not necessary, although it is randomly possible to wall clip out of the lower right hand corner in 3-4 and skip the boss 
         li The logic for maps, torches, and pencils are inverted so that if you don't have them, you'll get their benefit.  This is to aid you in the randomized fortresses.  If you buy one, they'll stop working
-        li some screens look weird because of palette differences
+        li some screens look weird because of palette/spritemap differences
         li All prices are adjusted way down because those shop keepers were too greedy
-        li All vanilla Kid Icarus passwords should work
-        li This is a beta, so bugs are likely, if you find any, or want to provide feedback message Rumbleminze on discord (Rumbleminze#7132)
-        
-
-    p Link to seed: 
-      a(href='generated-seeds/ki-' + seed + '.nes') ki-#{seed}      
-    p Patches (useful for debugging, ignore if you don't like hex numbers): 
-      a(href='generated-seeds/ki-' + seed + '.nes.patches.json') Patch JSON    
+        li All vanilla Kid Icarus passwords should work (unless you're using race mode)
+        li This is a beta, so bugs are likely, if you find any, or want to provide feedback message Rumbleminze on discord (Rumbleminze#7132)    
+      
   if(spoilers)
-    p
-      a(href='generated-seeds/ki-' + seed + '-w1.html') World 1 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-1-4.html') dungeon 1 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-w2.html') World 2 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-2-4.html') dungeon 2 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-w3.html') World 3 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-3-4.html') dungeon 3 spoiler
-    p
-      a(href='generated-seeds/ki-' + seed + '-w4.html') World 4 spoiler
+    h2 Spoiler Maps:
+    .spoilerList
+      p
+        a(href='generated-seeds/ki-' + seed + '-w1.html') World 1 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-1-4.html') dungeon 1 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-w2.html') World 2 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-2-4.html') dungeon 2 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-w3.html') World 3 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-3-4.html') dungeon 3 spoiler
+      p
+        a(href='generated-seeds/ki-' + seed + '-w4.html') World 4 spoiler
+  //- p Patches (useful for debugging, ignore if you don't like hex numbers): 
+  //-   a(href='generated-seeds/ki-' + seed + '.nes.patches.json') Patch JSON    
 
   //- p This code is useful to start at 1-4 with stuff 
   //- p  
