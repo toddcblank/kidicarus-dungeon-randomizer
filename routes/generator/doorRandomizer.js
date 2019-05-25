@@ -119,19 +119,30 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
         }
 
         //Place 1 upgrade room in world
-        doorsToPlace[Math.floor(Math.random() * doorsToPlace.length)] = UPGRADE_ROOM;
+        let worldUpgradeIndex = Math.floor(Math.random() * doorsToPlace.length);
+        doorsToPlace[worldUpgradeIndex] = UPGRADE_ROOM;
         if (randomWorldUpgrade == world) {
             var randomUpgradeRoom = Math.floor(Math.random() * doorsToPlace.length)
-            //make sure we're not overwriting the current upgrade room
-            while (doorsToPlace[randomUpgradeRoom] == UPGRADE_ROOM) {
+
+            //make sure we're in a different level.  for 
+            //levels 1 & 3 that means random room and current room/2 are equal
+            //for level 2 it's /3
+            var doorsPerLevel = 2;
+            if (world == 2) {
+                doorsPerLevel = 3;
+            }
+
+            //make sure we're not overwriting the current upgrade room, checking that we're on the same level covers this
+            while (Math.floor(randomUpgradeRoom/doorsPerLevel) == Math.floor(worldUpgradeIndex/doorsPerLevel)) {
                 randomUpgradeRoom = Math.floor(Math.random() * doorsToPlace.length)
             }
+
             doorsToPlace[randomUpgradeRoom] = UPGRADE_ROOM;
         }
 
-        //Place 1 upgrade room in world
+        //Place 1 training room in world
         var randomTrainingRoom = Math.floor(Math.random() * doorsToPlace.length)
-        //make sure we're not overwriting the current upgrade room
+        //make sure we're not overwriting an upgrade room
         while (doorsToPlace[randomTrainingRoom] == UPGRADE_ROOM) {
             randomTrainingRoom = Math.floor(Math.random() * doorsToPlace.length)
         }
