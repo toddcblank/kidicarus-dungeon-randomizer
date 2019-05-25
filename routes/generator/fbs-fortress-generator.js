@@ -2,6 +2,7 @@ let dr = require('./dungeon-rooms')
 
 const dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 const centurionOffsets = [0, 0x1b2c4, 0x1b5b8, 0x1b88c]
+const bossMusicOffsets = [0, 0x1cba0, 0x1cba1, 0x1cba2]
 const ROOM_NORMAL = 1;
 const ROOM_START = 2;
 const ROOM_BOSS = 3;
@@ -122,6 +123,7 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
 
     let roomData = []
     let enemyData = []
+    var bossRoomIndex = 0;
 
     for (var y = 0; y < 8; y++) {
         for (var x = 0; x < 8; x++) {
@@ -159,6 +161,7 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
                     roomId = 0x01;
                     break;
                 case ROOM_BOSS:
+                    bossRoomIndex = x + (y * 8)
                     if (world == 2) {
                         roomId = 0x0b;
                     } else {
@@ -345,6 +348,10 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
         name: "world " + world + " fortress centurion data", 
         data: centurionData,
         offset: centurionOffsets[world]
+    },{
+        name: "world " + world + " boss music patch",
+        data: [bossRoomIndex],
+        offset: bossMusicOffsets[world]
     }]
 }
 
