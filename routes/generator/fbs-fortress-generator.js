@@ -9,6 +9,39 @@ const ROOM_NURSE = 5;
 const ROOM_SPA = 6;
 const ROOM_SHOP = 7;
 
+//Number of rooms that will have centurions.  In the vanilla game,
+//1-4 has 28, 2-4 has 32, and 3-4 has 19.
+//I chose lower numbers here because our dungeons have fewer
+//screens compared to the vanilla game (especially in 1-4).
+const centurionAmount = [0, 10, 15, 19]
+
+const centurionValidLocation = []
+centurionValidLocation[0x01]=0x7B
+centurionValidLocation[0x02]=0xAD
+centurionValidLocation[0x03]=0xA4
+centurionValidLocation[0x04]=0xA1
+centurionValidLocation[0x07]=0xAD
+centurionValidLocation[0x08]=0xA1
+centurionValidLocation[0x0A]=0xAD
+centurionValidLocation[0x0B]=0x76
+centurionValidLocation[0x0C]=0x75
+centurionValidLocation[0x0E]=0x83
+centurionValidLocation[0x0F]=0x44
+centurionValidLocation[0x12]=0x79
+centurionValidLocation[0x13]=0x84
+centurionValidLocation[0x14]=0x8C
+centurionValidLocation[0x15]=0xAE
+centurionValidLocation[0x16]=0x8D
+centurionValidLocation[0x19]=0xAA
+centurionValidLocation[0x1B]=0xAC
+centurionValidLocation[0x1C]=0x3A
+centurionValidLocation[0x1E]=0xA4
+centurionValidLocation[0x20]=0x85
+centurionValidLocation[0x21]=0x49
+centurionValidLocation[0x26]=0x86
+centurionValidLocation[0x28]=0x7C
+centurionValidLocation[0x29]=0x55
+
 const roomokay = []
 roomokay[0x01]=0b0000
 roomokay[0x02]=0b1110
@@ -89,7 +122,6 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
 
     let roomData = []
     let enemyData = []
-    let centurionData = [0x1a, 0x00, 0xff]
 
     for (var y = 0; y < 8; y++) {
         for (var x = 0; x < 8; x++) {
@@ -157,7 +189,7 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
             //Push the roomId and the openings
             roomData.push(roomId);
             roomData.push(openings);
-
+            
             //fill enemies with "empty to start"
             var enemy = 0x0;           
 
@@ -174,8 +206,29 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
             enemyData.push(enemy);            
         }
     }
-
     
+    //Place centurions
+    let centurionData = [0x1a, 0x00] //start out with just this (map)
+    let numCenturions = 0;
+    while (numCenturions < centurionAmount[world]) {
+        //get random room
+        let randomX = Math.floor(Math.random()*8);
+        let randomY = Math.floor(Math.random()*8);        
+        let roomIndex = randomY*8+randomX;        
+        //check to see if it is a valid room
+        let room = map[randomX][randomY];
+        if (room == 0) {
+        } else {            
+            roomId = roomData[roomIndex*2]            
+            if (!(centurionValidLocation[roomId] === undefined)) {
+              centurionData.push(roomIndex);            
+              centurionData.push(centurionValidLocation[roomId]);   
+              numCenturions++;
+            }                       
+        }              
+    }             
+    centurionData.push(0xff); //End of centurion table
+        
     //Queues by difficulty to ensure we get X number of eggplant/hard flyers.  After this is empty we fill with other enemies
     let enemyQueue = [].concat(dr.ENEMY_QUEUES_BY_WORLD_AND_DIFF[world][difficulty])    
 
