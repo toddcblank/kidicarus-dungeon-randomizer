@@ -21,7 +21,7 @@ screenRule[1][2] =  [0,  1, -1,  1, -1, -1, -1,  4,  1, -1, -1,  1,  1,  1, -1, 
 screenRule[1][3] =  [0,  1,  4,  1,  1,  1, -1, -1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1, -1,  1,  1,  4,  1,  1,  1,  1,  1,  3, -1, -1, -1, -1,  4,  1, -1,  2,  1,  1,  1];
 screenRule[1][4] =  [0,  2, -1,  1, -1,  1, -1,  1,  1,  4,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1,  1, -1,  1,  2, -1,  1, -1,  1, -1, -1, -1, -1, -1, -1, -1,  1, -1, -1, -1];
 screenRule[1][5] =  [0, -1, -1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3,  1,  1,  1, -1,  1,  1,  1,  1, -1,  1, -1,  3, -1, -1, -1, -1, -1, -1, -1,  1,  1,  1,  1];
-screenRule[1][6] =  [0,  1, -1,  1, -1,  1, -1,  1,  1, -1,  1,  1,  1,  1, -1,  1,  1,  1,  1,  1,  1, -1,  1, -1,  1,  1, -1,  1, -1, -1, -1, -1,  1, -1,  1,  1,  1,  1,  1];
+screenRule[1][6] =  [0,  1, -1,  1, -1,  1, -1,  1,  1, -1,  1,  1,  1,  1, -1,  1,  1,  1,  1,  1,  1, -1,  1, -1, -1,  1, -1,  1, -1, -1, -1, -1,  1, -1,  1,  1,  1,  1,  1];
 screenRule[1][7] =  [0, -1, -1, -1, -1, -1, -1, -1,  1, -1, -1, -1, -1, -1, -1,  1, -1, -1, -1, -1, -1, -1, -1,  4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  2, -1, -1, -1];
 screenRule[1][8] =  [0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1, -1, -1, -1,  1,  4,  1,  1,  1,  1,  1];
 screenRule[1][9] =  [0, -1, -1, -1, -1,  1,  1,  1,  1, -1,  4, -1,  1,  1,  1,  1,  4, -1,  4, -1,  1, -1,  1,  1, -1, -1, -1, -1, -1, -1, -1,  1, -1, -1, -1,  2,  1, -1, -1];
@@ -408,7 +408,6 @@ const ENEMY_TABLE1 = [
             ENEMY_ROKMAN,
             ENEMY_ROKMAN,
             ENEMY_KERON,
-            ENEMY_PLUTON,
             ENEMY_NONE,
             ENEMY_NONE
         ],[
@@ -420,8 +419,7 @@ const ENEMY_TABLE1 = [
             ENEMY_ROKMAN,
             ENEMY_ROKMAN,
             ENEMY_KERON,
-            ENEMY_KERON,
-            ENEMY_PLUTON  
+            ENEMY_KERON
         ]
     ],[
         //WORLD3
@@ -444,7 +442,6 @@ const ENEMY_TABLE1 = [
             ENEMY_COLLIN,
             ENEMY_OCTOS,
             ENEMY_OCTOS,
-            ENEMY_PLUTONFLY,
             ENEMY_NONE,
             ENEMY_NONE            
         ],[            
@@ -456,8 +453,7 @@ const ENEMY_TABLE1 = [
             ENEMY_OCTOS,
             ENEMY_OCTOS,
             ENEMY_OCTOS,
-            ENEMY_OCTOS,
-            ENEMY_PLUTONFLY            
+            ENEMY_OCTOS          
         ]
     ],[
         //WORLD4
@@ -658,4 +654,4 @@ const ENEMY_TABLE3 = [
     ]
 ]
 
-module.exports = {screenRules, screens, ENEMY_TABLE1, ENEMY_TABLE3, ENEMY_REAPER, screensByWorldAndAddress}
+module.exports = {screenRules, screens, ENEMY_TABLE1, ENEMY_TABLE3, ENEMY_REAPER, screensByWorldAndAddress, ENEMY_PLUTON, ENEMY_PLUTONFLY}

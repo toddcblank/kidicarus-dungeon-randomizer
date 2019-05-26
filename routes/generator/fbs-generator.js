@@ -195,6 +195,20 @@ function randomizeWorld(world, difficulty) {
         
     }
 
+    if (world == 2 || world == 3) {
+        //place 1 thief in each level
+        var offset = 0;
+        for (var i = 1; i <= 3; i++) {
+            let thiefLocation = Math.floor(Math.random() * stageLength[world][i]) + offset;
+
+            //Technically this should be ENEMY_PLUTON_FLY for World 3, but they're the same id
+            enemyTable1Data[thiefLocation] = sr.ENEMY_PLUTON;
+
+            offset = offset + stageLength[world][i]
+        }        
+    }
+
+
     //2nd table, snakes in W2, reapers in 1&3    
     if (world == 2) {
         //2-1
