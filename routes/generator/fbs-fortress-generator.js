@@ -14,34 +14,34 @@ const ROOM_SHOP = 7;
 //1-4 has 28, 2-4 has 32, and 3-4 has 19.
 //I chose lower numbers here because our dungeons have fewer
 //screens compared to the vanilla game (especially in 1-4).
-const centurionAmount = [0, 10, 15, 19]
+const centurionAmount = [0, 19, 19, 19]
 
-const centurionValidLocation = []
-centurionValidLocation[0x01]=0x7B
-centurionValidLocation[0x02]=0xAD
-centurionValidLocation[0x03]=0xA4
-centurionValidLocation[0x04]=0xA1
-centurionValidLocation[0x07]=0xAD
-centurionValidLocation[0x08]=0xA1
-centurionValidLocation[0x0A]=0xAD
-centurionValidLocation[0x0B]=0x76
-centurionValidLocation[0x0C]=0x75
-centurionValidLocation[0x0E]=0x83
-centurionValidLocation[0x0F]=0x44
-centurionValidLocation[0x12]=0x79
-centurionValidLocation[0x13]=0x84
-centurionValidLocation[0x14]=0x8C
-centurionValidLocation[0x15]=0xAE
-centurionValidLocation[0x16]=0x8D
-centurionValidLocation[0x19]=0xAA
-centurionValidLocation[0x1B]=0xAC
-centurionValidLocation[0x1C]=0x3A
-centurionValidLocation[0x1E]=0xA4
-centurionValidLocation[0x20]=0x85
-centurionValidLocation[0x21]=0x49
-centurionValidLocation[0x26]=0x86
-centurionValidLocation[0x28]=0x7C
-centurionValidLocation[0x29]=0x55
+const centurionValidLocations = []
+centurionValidLocations[0x01]=[0x7B,0x46,0xa4]
+centurionValidLocations[0x02]=[0xAE,0xA1,0x83]
+centurionValidLocations[0x03]=[0xA4,0x56,0x69]
+centurionValidLocations[0x04]=[0xA1,0x44,0x91]
+centurionValidLocations[0x07]=[0xAD,0x79,0x4D]
+centurionValidLocations[0x08]=[0xA1,0xAE,0x8C]
+centurionValidLocations[0x0A]=[0xAD,0x7D,0xA6]
+centurionValidLocations[0x0B]=[0x76,0x68,0x73]
+centurionValidLocations[0x0C]=[0x75,0x7A,0x48]
+centurionValidLocations[0x0E]=[0x83,0xA6,0x7C]
+centurionValidLocations[0x0F]=[0x44,0x75,0x7B]
+centurionValidLocations[0x12]=[0x79,0x76,0x68]
+centurionValidLocations[0x13]=[0x84,0x85,0xA9]
+centurionValidLocations[0x14]=[0x8C,0x85,0x47]
+centurionValidLocations[0x15]=[0xAE,0xA1,0x81]
+centurionValidLocations[0x16]=[0x8D,0x82,0xAD]
+centurionValidLocations[0x19]=[0xAA,0xA1,0xAE]
+centurionValidLocations[0x1B]=[0xAE,0x78,0x3D]
+centurionValidLocations[0x1C]=[0x3A,0x33,0xA5]
+centurionValidLocations[0x1E]=[0xA4,0xA5,0xAB]
+centurionValidLocations[0x20]=[0x85,0x8A,0x46]
+centurionValidLocations[0x21]=[0x49,0xAC,0x76]
+centurionValidLocations[0x26]=[0x8D,0xAE,0x8E]
+centurionValidLocations[0x28]=[0x7C,0x73,0x85]
+centurionValidLocations[0x29]=[0x55,0x37,0x77]
 
 const roomokay = []
 roomokay[0x01]=0b0000
@@ -224,9 +224,9 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
         if (room == 0) {
         } else {            
             roomId = roomData[roomIndex*2]            
-            if (!(centurionValidLocation[roomId] === undefined)) {
+            if (centurionValidLocations[roomId] !== undefined) {
               centurionData.push(roomIndex);            
-              centurionData.push(centurionValidLocation[roomId]);   
+              centurionData.push(centurionValidLocations[roomId][Math.floor(Math.random()*3)]);   
               numCenturions++;
             }                       
         }              
