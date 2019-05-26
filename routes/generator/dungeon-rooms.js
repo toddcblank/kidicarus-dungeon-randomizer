@@ -102,7 +102,7 @@ rooms = [
         paths:	[ALL, ALL, ALL, ALL],
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
-        validEnemies: [0x10, 0x20, 0x38, 0x48, 0x61],
+        validEnemies: [0x10, 0x20, 0x38, 0x48],
     },
     {
         roomId: '5',
