@@ -57,12 +57,12 @@ const overwrittenRooms = [
     0x05,
     0x06, 
     0x09,
-    0x0d,
+    0x0D,
     0x11,
     0x17,
     0x18,
-    0x1d,
-    0x1f,
+    0x1D,
+    0x1F,
     0x22,
     0x23,
     0x24,
@@ -238,7 +238,7 @@ const NONE = 0x0;
 const NEW_ROOM_INFO = [
     {
         roomIdNum: overwrittenRooms[0],
-        roomId: overwrittenRooms[0].toString(16),
+        roomId: overwrittenRooms[0].toString(16).toUpperCase(),
         paths: [(NONE),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT)],
         clipPaths: [(NONE),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT)],
         validEntrances: (RIGHT|DOWN|LEFT),
@@ -246,7 +246,7 @@ const NEW_ROOM_INFO = [
         roomokay: 0b1110
     },{
         roomIdNum: overwrittenRooms[1],
-        roomId: overwrittenRooms[1].toString(16),
+        roomId: overwrittenRooms[1].toString(16).toUpperCase(),
         paths: [(RIGHT|LEFT|UP),(RIGHT|LEFT|UP),NONE,(RIGHT|UP|LEFT)],
         clipPaths:[(RIGHT|LEFT|UP),(RIGHT|LEFT|UP),NONE,(RIGHT|UP|LEFT)],
         validEntrances: (RIGHT|LEFT|UP),
@@ -254,7 +254,7 @@ const NEW_ROOM_INFO = [
         roomokay: 0b1011
     },{
         roomIdNum: overwrittenRooms[2],
-        roomId: overwrittenRooms[2].toString(16),
+        roomId: overwrittenRooms[2].toString(16).toUpperCase(),
         paths: [ALL,ALL,ALL,ALL],
         clipPaths:  [ALL,ALL,ALL,ALL],
         validEntrances: ALL,
@@ -262,15 +262,15 @@ const NEW_ROOM_INFO = [
         roomokay: 0b1111
     },{
         roomIdNum: overwrittenRooms[3],
-        roomId: overwrittenRooms[3].toString(16),
+        roomId: overwrittenRooms[3].toString(16).toUpperCase(),
         paths: [ALL,ALL,ALL,ALL],
         clipPaths:  [ALL,ALL,ALL,ALL],
         validEntrances: ALL,
-        validEnemies: [0x10, 0x20, 0x34, 0x44, 61],
+        validEnemies: [0x10, 0x20, 0x34, 0x44, 0x61],
         roomokay: 0b1111
     },{
         roomIdNum: overwrittenRooms[4],
-        roomId: overwrittenRooms[4].toString(16),
+        roomId: overwrittenRooms[4].toString(16).toUpperCase(),
         paths: [(RIGHT|LEFT),(RIGHT|LEFT),NONE,(RIGHT|LEFT)],
         clipPaths:[(RIGHT|LEFT),(RIGHT|LEFT),NONE,(RIGHT|LEFT)],
         validEntrances: (RIGHT|LEFT),
@@ -310,7 +310,6 @@ function getRoomPatches(){
     let ROOM_PATCHES = [];
     var totalRoomPatchSize = 0;
     for (var i = 0; i < rooms.length; i++) {
-        console.log("New pointer: " + littleEndien(roomPointers[i])[0].toString(16) + " " + littleEndien(roomPointers[i])[1].toString(16))
         let pointer = littleEndien(roomPointers[i]);
         let pointerPatch = {
             name: "Pointer Update for new room " + (i+1),
@@ -352,8 +351,6 @@ function getRoomPatches(){
         ROOM_PATCHES.push(pointerPatch3);
         ROOM_PATCHES.push(roomDataPatch);
     }
-
-    console.log(JSON.stringify(ROOM_PATCHES))
 
     return ROOM_PATCHES;
 }

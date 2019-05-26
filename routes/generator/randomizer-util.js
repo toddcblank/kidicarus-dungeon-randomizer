@@ -28,6 +28,20 @@ let ADD_MAP_PATCH_D34 = {
     offset: 0x1B88C
 }
 
+//This causes the password checking algorithm to just look at fake data, and error out.
+let BREAK_PASSWORDS = [
+    {
+        name: "Break passwords 1",
+        data: [0x00, 0x20],
+        offset: 0x6c03
+    },
+    {
+        name: "Break passwords 2",
+        data: [0x00, 0x20],
+        offset: 0x6c19
+    }
+]
+
 const ENEMY_POSITION_DATA = [
     0x44, 0x74, 0xA8, 0x7C,                                    //Red/Blue Ground enemies 30 - 38, 40 - 48
     0x44, 0x6D, 0xA2, 0xAA, 
@@ -154,7 +168,7 @@ function getBossHealthPatch(boss1, boss2, boss3) {
 }
 
 
-function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false, doors=DOOR_FULL_RANDO_NO_REQS, useNewRooms = false) {
+function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false, doors=DOOR_FULL_RANDO_NO_REQS, useNewRooms = false) {
 
     console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
     console.log("------------------ Testing RNG for seed in Randomization function " + seed + " ------------------------")
@@ -190,8 +204,8 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
         }
 
         let htmlSpoiler = printMaze(dungeon1Data);
-        if(!skipSpoilers){        
-            writeHtmlSpoiler(htmlSpoiler, romPath + newFilename + "-1-4.html");
+        if(!raceMode){        
+            writeHtmlSpoiler(htmlSpoiler, romPath + newFilename + "-1-4.html", raceMode);
         }
        patchesToApply.push(dungeon1Patch);        
     }
@@ -216,8 +230,8 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
         
         let htmlSpoiler2 = printMaze(dungeon2Data);   
         patchesToApply.push(dungeon2Patch);   
-        if(!skipSpoilers){        
-            writeHtmlSpoiler(htmlSpoiler2, romPath + newFilename + "-2-4.html");
+        if(!raceMode){        
+            writeHtmlSpoiler(htmlSpoiler2, romPath + newFilename + "-2-4.html", raceMode);
         }
     }
 
@@ -240,8 +254,8 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
         }
     
         let htmlSpoiler3 = printMaze(dungeon3Data);
-        if(!skipSpoilers){        
-            writeHtmlSpoiler(htmlSpoiler3, romPath + newFilename + "-3-4.html");
+        if(!raceMode){        
+            writeHtmlSpoiler(htmlSpoiler3, romPath + newFilename + "-3-4.html", raceMode);
         }
         patchesToApply.push(dungeon3Patch);
     
@@ -273,9 +287,9 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     if (doors == DOOR_FULL_RANDO_NO_REQS){
         let doorPatch = dr.generateRandomizedDoorPatchForLevels(world1Patches, world2Patches, world3Patches)
         
-        writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1, doorPatch), romPath + newFilename + "-w1.html");        
-        writeHtmlSpoiler(writeWorld2Spoilers(world2Patches, doorPatch), romPath + newFilename + "-w2.html");
-        writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3, doorPatch), romPath + newFilename + "-w3.html");  
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world1Patches, 1, doorPatch), romPath + newFilename + "-w1.html", raceMode);        
+        writeHtmlSpoiler(writeWorld2Spoilers(world2Patches, doorPatch), romPath + newFilename + "-w2.html", raceMode);
+        writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3, doorPatch), romPath + newFilename + "-w3.html", raceMode);  
 
 
         patchesToApply.push(doorPatch);
@@ -289,7 +303,7 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
     if (levelsToRandomized.indexOf(4) > -1){
         let world4Patches = fbs.randomizeWorld(4, difficulty);
         patchesToApply.push(world4Patches);
-        writeHtmlSpoiler(writeWorld4Spoilers(world4Patches), romPath + newFilename + "-w4.html");    
+        writeHtmlSpoiler(writeWorld4Spoilers(world4Patches), romPath + newFilename + "-w4.html", raceMode);    
     }
 
     //minor patches
@@ -308,11 +322,15 @@ function createNewRandomizedRom(skipSpoilers=false, romname, seed = 0, levelsToR
         patchesToApply.push(newrooms.getRoomPatches())
     }
 
+    if (raceMode) {
+        patchesToApply.push(BREAK_PASSWORDS);
+    }
+
     if(!spoilersOnly){
         rp.copyOriginalRom(romname, newFullFileName);
         writePatchFiles(patchesToApply, newFullFileName + ".patches.json");
         rp.patchRom(patchesToApply, newFullFileName)
-    }
+    } 
 
     return seed;   
 }
@@ -336,7 +354,10 @@ function writePatchFiles(patches, filename) {
     })
 }
 
-function writeHtmlSpoiler(html, filename) {
+function writeHtmlSpoiler(html, filename, raceMode) {
+    if (raceMode) {
+        return;
+    }
     console.log("Writing html spoiler: " + filename)
     if (fs.existsSync(filename)) {
         return;

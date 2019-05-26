@@ -116,6 +116,7 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
     if (newrooms) {
         for (var i = 0; i < newrooms.length; i++) {
             roomokay[newrooms[i].roomIdNum] = newrooms[i].roomokay
+            dr.rooms[newrooms[i].roomIdNum] = newrooms[i];
         }
     }
 

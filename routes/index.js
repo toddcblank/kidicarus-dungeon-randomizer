@@ -108,8 +108,6 @@ router.post('/generate-seed', function(req, res, next) {
     useNewRooms = false;
   }
 
-  console.log("Use new rooms: " + useNewRooms)
-
   let doors = req.body.doors;
 
   let generatedSeed = generator.createNewRandomizedRom((raceMode ? true : false), romFullPath, rngSeed, levelsToRandomize, fortressesToRandomize, difficulty, useFbsLogic, false, doors, useNewRooms)
