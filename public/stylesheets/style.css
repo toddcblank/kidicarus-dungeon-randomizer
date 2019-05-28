@@ -26,7 +26,9 @@ a {
 }
 
 .footer {
-  position: fixed;
-  bottom: 0;
+  /*I'm commenting this out because it causes 
+    problems on lower resolution screens  
+    position: fixed;
+    bottom: 0; */
   width: 100%;
 }
