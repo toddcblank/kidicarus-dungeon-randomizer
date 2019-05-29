@@ -241,11 +241,11 @@ function randomizeWorld(world, difficulty) {
         patches.push({name: "Enemy Table 2 for world " + world, data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[world][1]});               
     }
     if (world == 1) {
-        patches.push(getPatchForWorld1Items(difficulty))
+        patches.push(getPatchForWorld1Items(difficulty, stagePlans))
     } else if (world == 2) {
-        patches.push(getPatchForWorld2Items(difficulty))
+        patches.push(getPatchForWorld2Items(difficulty, stagePlans))
     } else if (world == 3) {
-        patches.push(getPatchForWorld3Items(difficulty))
+        patches.push(getPatchForWorld3Items(difficulty, stagePlans))
     }
     patches.push(radomizePlatforms(world, difficulty, stagePlans));
 
@@ -263,7 +263,7 @@ function pickScreen(world) {
 }
 
 
-function getPatchForWorld3Items(difficulty) {
+function getPatchForWorld3Items(difficulty, stagePlans) {
     //     'Write items
     // '-----------------------------------------------------------------------
     // print "World 3... "
@@ -362,7 +362,7 @@ function radomizePlatforms(world, difficulty, plan) {
     return addPlatformsPatch;
 }
 
-function getPatchForWorld2Items(difficulty) {        
+function getPatchForWorld2Items(difficulty, stagePlans) {        
     let item1 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
     let item2 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
     return {
@@ -372,7 +372,7 @@ function getPatchForWorld2Items(difficulty) {
     }
 }
 
-function getPatchForWorld1Items(difficulty) { 
+function getPatchForWorld1Items(difficulty, stagePlans) { 
 
     var itemlocations = [0x1a759, 0x1a75d, 0x1a761, 0x1a765, 0x1a769, 0x1a76d]
     let patches = []
@@ -380,17 +380,22 @@ function getPatchForWorld1Items(difficulty) {
     for(var i = 0; i < 6; i = i + 2) {
         let screen = Math.floor(stageLength[1][(i+2)/2] / 3);
         
-        //Y offset is 0x20, which is 32 in decimal
-        let xOffset1 = Math.floor(Math.random() * 12) + 2;
-        let coords1 = xOffset1 + 32;        
+        let screen1Type = stagePlans[(Math.floor(i/2) + 1)][screen]
+        let screen2Type = stagePlans[(Math.floor(i/2) + 1)][screen*2]
+                       
         let item1 = Math.floor(Math.random()* 2);
+        let screen1 = sr.screens[1][screen1Type]
+        coords1 = screen1.item
 
-        let xOffset2 = Math.floor(Math.random() * 12) + 2;
-        let coords2 = xOffset2 + 32;        
         let item2 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
+        let screen2 = sr.screens[1][screen2Type]
+        coords2 = screen2.item
 
         let item1Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 1", data: [screen, coords1, item1], offset: itemlocations[i]}
         let item2Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 2", data: [screen * 2, coords2, item2], offset: itemlocations[i+1]}
+        
+        console.log("ITEM: 1-" + (Math.floor(i/2) + 1) + " item 1 on screen " + screen + " (type " + screen1Type + ") COORDS: " + coords1)
+        console.log("ITEM: 1-" + (Math.floor(i/2) + 1) + " item 2 on screen " + screen*2+" (type " + screen2Type + ") COORDS: " + coords2)
 
         patches.push(item1Patch)
         patches.push(item2Patch)
