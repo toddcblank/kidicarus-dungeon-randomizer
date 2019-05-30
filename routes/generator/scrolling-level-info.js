@@ -201,90 +201,90 @@ screens = [
             
     ],
     [
-        {id:00, address1: 0x00, address2: 0x00, door: 0x0},
-        {id:01, address1: 0x1B, address2: 0xB1, door: 0xa3},
-        {id:02, address1: 0x3F, address2: 0xB1, door: 0xaa},
-        {id:03, address1: 0x63, address2: 0xB1, door: 0xab},
-        {id:04, address1: 0x8D, address2: 0xB1, door: 0xa4},
-        {id:05, address1: 0xBD, address2: 0xB1, door: 0xa9},
-        {id:06, address1: 0xD5, address2: 0xB1, door: 0x76},
-        {id:07, address1: 0x08, address2: 0xB2, door: 0xad},
-        {id:08, address1: 0x3E, address2: 0xB2, door: 0xa8},
-        {id:09, address1: 0x65, address2: 0xB2, door: 0xa5},
-        {id:10, address1: 0x89, address2: 0xB2, door: 0x1e},
-        {id:11, address1: 0xB3, address2: 0xB2, door: 0xae},
-        {id:12, address1: 0x0A, address2: 0xB3, door: 0xaa},
-        {id:13, address1: 0x28, address2: 0xB3, door: 0x6a},
-        {id:14, address1: 0x52, address2: 0xB3, door: 0xaa},
-        {id:15, address1: 0x7C, address2: 0xB3, door: 0x89},
-        {id:16, address1: 0xAC, address2: 0xB3, door: 0x68},
-        {id:17, address1: 0xD0, address2: 0xB3, door: 0x8a},
-        {id:18, address1: 0xEE, address2: 0xB3, door: 0x87},
-        {id:19, address1: 0x1E, address2: 0xB4, door: 0x7c},
-        {id:20, address1: 0x45, address2: 0xB4, door: 0x9a},
-        {id:21, address1: 0x78, address2: 0xB4, door: 0x5a},
-        {id:22, address1: 0xB7, address2: 0xB4, door: 0x9c},
-        {id:23, address1: 0xDB, address2: 0xB4, door: 0x96},
-        {id:24, address1: 0x3E, address2: 0xB5, door: 0xaa},
-        {id:25, address1: 0x62, address2: 0xB5, door: 0xa8},
-        {id:26, address1: 0xB0, address2: 0xB5, door: 0x2b},
-        {id:27, address1: 0x0A, address2: 0xB6, door: 0x00},
-        {id:28, address1: 0x43, address2: 0xB6, door: 0x9e},
-        {id:29, address1: 0x9D, address2: 0xB6, door: 0xa6},
-        {id:30, address1: 0xCD, address2: 0xB6, door: 0x4b},
-        {id:31, address1: 0x00, address2: 0xB7, door: 0xa5},
-        {id:32, address1: 0x27, address2: 0xB7, door: 0x9a},
-        {id:33, address1: 0xE5, address2: 0xB0, door: 0xaa},
-        {id:34, address1: 0xD4, address2: 0xB2, door: 0xa5},
-        {id:35, address1: 0x05, address2: 0xB5, door: 0xa8},
-        {id:36, address1: 0x3A, address2: 0xB0, door: 0x0}, //end of stage
-        {id:37, address1: 0x70, address2: 0xB0, door: 0x0}, //end of stage
-        {id:38, address1: 0xAC, address2: 0xB0, door: 0x0}, //end of stage
+        {id:00, address1: 0x00, address2: 0x00, door: 0x0, item: 0x00},
+        {id:01, address1: 0x1B, address2: 0xB1, door: 0xa3, item: 0x92},
+        {id:02, address1: 0x3F, address2: 0xB1, door: 0xaa, item: 0x63},
+        {id:03, address1: 0x63, address2: 0xB1, door: 0xab, item: 0x95},
+        {id:04, address1: 0x8D, address2: 0xB1, door: 0xa4, item: 0x92},
+        {id:05, address1: 0xBD, address2: 0xB1, door: 0xa9, item: 0x94},
+        {id:06, address1: 0xD5, address2: 0xB1, door: 0x76, item: 0x52},
+        {id:07, address1: 0x08, address2: 0xB2, door: 0xad, item: 0x9A},
+        {id:08, address1: 0x3E, address2: 0xB2, door: 0xa8, item: 0x83},
+        {id:09, address1: 0x65, address2: 0xB2, door: 0xa5, item: 0x92},
+        {id:10, address1: 0x89, address2: 0xB2, door: 0x1e, item: 0x94},
+        {id:11, address1: 0xB3, address2: 0xB2, door: 0xae, item: 0x76},
+        {id:12, address1: 0x0A, address2: 0xB3, door: 0xaa, item: 0x84},
+        {id:13, address1: 0x28, address2: 0xB3, door: 0x6a, item: 0x66},
+        {id:14, address1: 0x52, address2: 0xB3, door: 0xaa, item: 0x97},
+        {id:15, address1: 0x7C, address2: 0xB3, door: 0x89, item: 0x82},
+        {id:16, address1: 0xAC, address2: 0xB3, door: 0x68, item: 0x74},
+        {id:17, address1: 0xD0, address2: 0xB3, door: 0x8a, item: 0x54},
+        {id:18, address1: 0xEE, address2: 0xB3, door: 0x87, item: 0x52},
+        {id:19, address1: 0x1E, address2: 0xB4, door: 0x7c, item: 0x75},
+        {id:20, address1: 0x45, address2: 0xB4, door: 0x9a, item: 0x83},
+        {id:21, address1: 0x78, address2: 0xB4, door: 0x5a, item: 0x42},
+        {id:22, address1: 0xB7, address2: 0xB4, door: 0x9c, item: 0x56},
+        {id:23, address1: 0xDB, address2: 0xB4, door: 0x96, item: 0x85},
+        {id:24, address1: 0x3E, address2: 0xB5, door: 0xaa, item: 0x86},
+        {id:25, address1: 0x62, address2: 0xB5, door: 0xa8, item: 0x82},
+        {id:26, address1: 0xB0, address2: 0xB5, door: 0x2b, item: 0x46},
+        {id:27, address1: 0x0A, address2: 0xB6, door: 0x00, item: 0x92},
+        {id:28, address1: 0x43, address2: 0xB6, door: 0x9e, item: 0x75},
+        {id:29, address1: 0x9D, address2: 0xB6, door: 0xa6, item: 0x92},
+        {id:30, address1: 0xCD, address2: 0xB6, door: 0x4b, item: 0x65},
+        {id:31, address1: 0x00, address2: 0xB7, door: 0xa5, item: 0x82},
+        {id:32, address1: 0x27, address2: 0xB7, door: 0x9a, item: 0x76},
+        {id:33, address1: 0xE5, address2: 0xB0, door: 0xaa, item: 0x97},
+        {id:34, address1: 0xD4, address2: 0xB2, door: 0xa5, item: 0x98},
+        {id:35, address1: 0x05, address2: 0xB5, door: 0xa8, item: 0x99},
+        {id:36, address1: 0x3A, address2: 0xB0, door: 0x0, item: 0x48}, //end of stage
+        {id:37, address1: 0x70, address2: 0xB0, door: 0x0, item: 0x5B}, //end of stage
+        {id:38, address1: 0xAC, address2: 0xB0, door: 0x0, item: 0x85}, //end of stage
 
-        {id:39, address1: 0xa5, address2: 0xb4, door:0x0, platforms: [
+        {id:39, address1: 0xa5, address2: 0xb4, door:0x0, item: 0x48, platforms: [
             {location: 0x26, offset: 0},
             {location: 0x76, offset: 0},
             {location: 0xb6, offset: 0}]
         },
-        {id:40, address1: 0x6d, address2: 0xb6, door:0x0, platforms: [            
+        {id:40, address1: 0x6d, address2: 0xb6, door:0x0, item: 0x81, platforms: [            
             {location: 0xB6, offset: 0}
             ]
         },
-        {id:41, address1: 0x86, address2: 0xb5, door:0x0, platforms: [
+        {id:41, address1: 0x86, address2: 0xb5, door:0x0, item: 0x36, platforms: [
             {location: 0x46, offset: 0},
             {location: 0xC6, offset: 0}]
         },
     ],
     [
-        {id:00, address1: 0x00, address2: 0x00, door: 0x0},
-        {id:01, address1: 0xf3, address2: 0x70, door: 0x64},
-        {id:02, address1: 0x0e, address2: 0x71, door: 0x0},
-        {id:03, address1: 0x4d, address2: 0x71, door: 0xab},
-        {id:04, address1: 0x86, address2: 0x71, door: 0x16, platforms: [
+        {id:00, address1: 0x00, address2: 0x00, door: 0x0, item: 0x00},
+        {id:01, address1: 0xf3, address2: 0x70, door: 0x64, item: 0xB7},
+        {id:02, address1: 0x0e, address2: 0x71, door: 0x0, item: 0x59},
+        {id:03, address1: 0x4d, address2: 0x71, door: 0xab, item: 0x9A},
+        {id:04, address1: 0x86, address2: 0x71, door: 0x16, item: 0xB8, platforms: [
             {location: 0xe7, offset: 0}]},
-        {id:05, address1: 0xad, address2: 0x71, door: 0x7c},
-        {id:06, address1: 0x16, address2: 0x72, door: 0x88},
-        {id:07, address1: 0x46, address2: 0x72, door: 0x88},
-        {id:08, address1: 0xaf, address2: 0x72, door: 0x9c},
-        {id:09, address1: 0x06, address2: 0x73, door: 0x78},
-        {id:10, address1: 0x3f, address2: 0x73, door: 0x5e}, 
-        {id:11, address1: 0xb7, address2: 0x70, door: 0xbe},
-        {id:12, address1: 0x79, address2: 0x72, door: 0x5f},
-        {id:13, address1: 0x00, address2: 0x70, door: 0x9a},
-        {id:14, address1: 0x2d, address2: 0x70, door: 0xc0},
-        {id:15, address1: 0x66, address2: 0x70, door: 0xb2},        
+        {id:05, address1: 0xad, address2: 0x71, door: 0x7c, item: 0x67},
+        {id:06, address1: 0x16, address2: 0x72, door: 0x88, item: 0x8A},
+        {id:07, address1: 0x46, address2: 0x72, door: 0x88, item: 0x86},
+        {id:08, address1: 0xaf, address2: 0x72, door: 0x9c, item: 0x8A},
+        {id:09, address1: 0x06, address2: 0x73, door: 0x78, item: 0x9B},
+        {id:10, address1: 0x3f, address2: 0x73, door: 0x5e, item: 0x96}, 
+        {id:11, address1: 0xb7, address2: 0x70, door: 0xbe, item: 0xAD},
+        {id:12, address1: 0x79, address2: 0x72, door: 0x5f, item: 0x86},
+        {id:13, address1: 0x00, address2: 0x70, door: 0x9a, item: 0xA7},
+        {id:14, address1: 0x2d, address2: 0x70, door: 0xc0, item: 0xB2},
+        {id:15, address1: 0x66, address2: 0x70, door: 0xb2, item: 0xA4},        
 
-        {id:16, address1: 0x2f, address2: 0x71, door: 0x0, platforms: [
+        {id:16, address1: 0x2f, address2: 0x71, door: 0x0, item: 0x85, platforms: [
             {location: 0xb7, offset: 0}]},        
-        {id:17, address1: 0xda, address2: 0x71, door: 0x0, platforms: [
+        {id:17, address1: 0xda, address2: 0x71, door: 0x0, item: 0x5B, platforms: [
             {location: 0x77, offset: 0},
             {location: 0xd7, offset: 0}]},        
-        {id:18, address1: 0xf8, address2: 0x71, door: 0x0, platforms: [
+        {id:18, address1: 0xf8, address2: 0x71, door: 0x0, item: 0x6C, platforms: [
             {location: 0xC7, offset: 0},
             {location: 0x97, offset: 0},
             {location: 0x37, offset: 0},
             {location: 0x07, offset: 0}]},        
-        {id:19, address1: 0xdc, address2: 0x72, door: 0x0, platforms: [
+        {id:19, address1: 0xdc, address2: 0x72, door: 0x0, item: 0x97, platforms: [
             {location: 0x07, offset: 0}]}
     ],
     [

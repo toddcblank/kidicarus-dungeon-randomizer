@@ -98,6 +98,13 @@ function randomizeWorld(world, difficulty) {
                         } 
                     }
 
+                    //Make the 3-x start screens possible, but rare
+                    if (world == 3 && (screenChoice == 11 || screenChoice == 12)) {
+                        if (Math.random() < .75) {
+                            allowed = SCREEN_NOT_ALLOWED;
+                        } 
+                    }                    
+
                     if (allowed == SCREEN_NOT_ALLOWED || allowed == SCREEN_UGLY) {
                         screenChoice = 0;
                     } else if (allowed == SCREEN_HARD && difficulty < DIFF_HARD) {
@@ -270,7 +277,6 @@ function getPatchForWorld3Items(difficulty, stagePlans) {
     // f = freefile
     // open fn for binary as #f
 
-
     // 'World 3 items
     let startlocation = 0x1B0CD 
     let patch = {name: "world 3 items", offset: startlocation, data: []}
@@ -279,13 +285,18 @@ function getPatchForWorld3Items(difficulty, stagePlans) {
     // put #f, startlocation+1, cubyte("&h01")
     patch.data.push(0x01);
 
+    let itemscreen = 0x07     
+    let screenType = stagePlans[2][itemscreen]    
+    let screen = sr.screens[3][screenType]
+    let coords = screen.item
+    
     // '3-3 item 1 screen
     // put #f, startlocation+2, cubyte("07") '1/2 into stage
-    patch.data.push(0x07);
+    patch.data.push(itemscreen);
 
     // '3-3 item 1 Y,X
     // put #f, startlocation+3, cubyte("&h2"+hex(int(rnd*12)+2))
-    patch.data.push(Math.floor(Math.random() * 12) + 2);
+    patch.data.push(coords);
 
     // '3-3 item 1 type (0=harp; 1=chalice)    
     if(difficulty == DIFF_EASY) {
@@ -365,11 +376,23 @@ function radomizePlatforms(world, difficulty, plan) {
 function getPatchForWorld2Items(difficulty, stagePlans) {        
     let item1 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
     let item2 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
+    let item1screen = 0x0D //in stage 2-1
+    let item2screen = 0x0F //in stage 2-2
+    
+    let screen1Type = stagePlans[1][item1screen]
+    let screen2Type = stagePlans[2][item2screen]
+    
+    let screen1 = sr.screens[2][screen1Type]
+    let screen2 = sr.screens[2][screen2Type]    
+    
+    let coords1 = screen1.item
+    let coords2 = screen2.item    
+    
     return {
         name: "world 2 items",
-        data: [0x13, 0x9e, item1, 0x01, 0x15, 0x9e, item2],
+        data: [item1screen, coords1, item1, 0x01, item2screen, coords2, item2],
         offset: 0xbc3c
-    }
+    }    
 }
 
 function getPatchForWorld1Items(difficulty, stagePlans) { 
@@ -385,11 +408,11 @@ function getPatchForWorld1Items(difficulty, stagePlans) {
                        
         let item1 = Math.floor(Math.random()* 2);
         let screen1 = sr.screens[1][screen1Type]
-        coords1 = screen1.item
+        let coords1 = screen1.item
 
         let item2 = difficulty == DIFF_EASY ? 0 : Math.floor(Math.random()* 2);
         let screen2 = sr.screens[1][screen2Type]
-        coords2 = screen2.item
+        let coords2 = screen2.item
 
         let item1Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 1", data: [screen, coords1, item1], offset: itemlocations[i]}
         let item2Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 2", data: [screen * 2, coords2, item2], offset: itemlocations[i+1]}
