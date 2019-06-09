@@ -75,16 +75,7 @@ router.post('/generate-seed', function(req, res, next) {
   Math.random = () => {
     return rng();
   }
-
-  console.log("------------------ Testing RNG for seed " + rngSeed + " ------------------------")
-  console.log(Math.random())
-  console.log(Math.random())
-  console.log(Math.random())
-  console.log(Math.random())
-  console.log("-----------------------------------------------------------------")
-
   
-
   //There's definitely a better way to do this, but I'll save that for another day.
   let fortressesToRandomize = []
   let levelsToRandomize = []

@@ -9,24 +9,10 @@ let ipc = require('./itemPriceChanger')
 let textPatches = require('./textPatches')
 
 let newrooms = require('./new-rooms')
+let fortressPatchGenerator = require('./fortress-patch-generator')
 
 const DOOR_FULL_RANDO_NO_REQS = 1;
 const UPGRADES_AT_END = 2;
-
-let ADD_MAP_PATCH_D14 = {
-    data: ["1b", "88", 'FF'],
-    offset: 0x1b2c4
-}
-
-let ADD_MAP_PATCH_D24 = {
-    data: ["1b", "88", 'FF'],
-    offset: 0x1b5b8
-}
-
-let ADD_MAP_PATCH_D34 = {
-    data: ["1b", "88", 'FF'],
-    offset: 0x1B88C
-}
 
 //This causes the password checking algorithm to just look at fake data, and error out.
 let BREAK_PASSWORDS = [
@@ -63,36 +49,27 @@ const ENEMY_POSITION_DATA = [
 ]
 
 let ENEMY_POSITION_PATCH_D1 = {
+    name: "Fortress 1 Enemy Position",
     data: ENEMY_POSITION_DATA,
     offset: 0x1B278
 }
 
 let ENEMY_POSITION_PATCH_D2 = {
+    name: "Fortress 2 Enemy Position",
     data: ENEMY_POSITION_DATA,
     offset: 0x1B56C
 }
 
-let ENEMY_POSITION_PATCH_D3 = {
+let ENEMY_POSITION_PATCH_D3 = {    
+    name: "Fortress 3 Enemy Position",
     data: ENEMY_POSITION_DATA,
     offset: 0x1B840
-}
-
-let REMOVE_DOOR_PATCH = {
-    name: "Remove Doors",
-    data: [],
-    offset: 0x1efd8
 }
 
 let REMOVE_HIDDEN_SCORE_REQ = {
     name: "Removes hidden score requirement from upgrade rooms",
     data: [0xE9, 0x00, 0xAD, 0x35, 0x01, 0xE9, 0x00],
     offset: 0x18ABE
-}
-
-let ADD_STR_DOOR_TO_STAGE_1_1 = {
-    name: "Adds str upgrade to first screen of 1-1",
-    data: [0x00, 0x00, 0x9D, 0x24, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF],
-    offset: 0x1efd9
 }
 
 let ADD_FORTRESS_ITEMS = [
@@ -114,50 +91,9 @@ let ADD_FORTRESS_ITEMS = [
     },
 ]
 
-let STR_2_PATCH = [
-    {data: [0xee, 0x52, 0x01], offset: 0x6170},
-    {data: [0xa9, 0x01, 0x8d, 0x52, 0x01], offset: 0x1eac3},
-]
-
-for (var i = 0; i < 181; i++) {
-    REMOVE_DOOR_PATCH.data.push("0xff")
-}
 
 dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 
-let settings = {
-    seed: 0,
-    randomizeFortresses1: true,
-    randomizeFortresses2: true,
-    randomizeFortresses3: true,
-
-    fortress1MinSize: 20,
-    fortress1MaxSize: 35,
-    fortress1WallChance: 60,
-    fortress1MaxUnvisitable: 0,
-    fortress1Shops: 1,
-    fortress1Hospitals: 1, 
-    fortress1Spas: 1,
-    fortress1MinimumDistanceToBoss: 5,
-
-    fortress2MinSize: 35,
-    fortress2MaxSize: 45,
-    fortress2WallChance: 30,
-    fortress2MaxUnvisitable: 8,
-    fortress2Shops: 2,
-    fortress2Hospitals: 1, 
-    fortress2Spas: 1,
-    fortress2MinimumDistanceToBoss: 7,
-
-    fortress3MinSize: 50,
-    fortress3MaxSize: 64,
-    fortress3WallChance: 20,
-    fortress3MaxUnvisitable: 8,
-    fortress3Shops: 3,
-    fortress3Hospitals: 1, 
-    fortress3Spas: 1,
-    fortress3MinimumDistanceToBoss: 10,
-}
 
 function getBossHealthPatch(boss1, boss2, boss3) {
     return {
@@ -171,12 +107,6 @@ function getBossHealthPatch(boss1, boss2, boss3) {
 function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false, doors=DOOR_FULL_RANDO_NO_REQS, useNewRooms = false) {
 
     console.log("Randomizing " + levelsToRandomized + " levels, " + fortressesToRandomize + " fortresses, with seed " + seed + ", on difficulty " + difficulty)
-    console.log("------------------ Testing RNG for seed in Randomization function " + seed + " ------------------------")
-    console.log(Math.random())
-    console.log(Math.random())
-    console.log(Math.random())
-    console.log(Math.random())
-    console.log("-----------------------------------------------------------------")
     let newFilename = 'ki-' + seed;    
     let newFullFileName = romPath + newFilename + ".nes";
     
@@ -191,16 +121,13 @@ function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRando
         var dungeon1Patch = []
         var dungeon1Data = [];
         if (useFbsLogic.indexOf(1) > -1) {
-            dungeon1Patch = fbsf.generatePatchForFortress(1, difficulty, roomInfo);
+            
+            dungeon1Patch = fortressPatchGenerator.generateFortressPatch(1, roomInfo, "FBS", difficulty)
+            // dungeon1Patch = fbsf.generatePatchForFortress(1, difficulty, roomInfo);
             dungeon1Data = dungeon1Patch[0].data
         } else {
-            let dungeon1 = dg.kiDungeonGen(20, 35, 60, 0, 1, 1, 1, 0x29, 5, roomInfo);
-            dungeon1Patch = {
-                data: dungeon1,
-                offset: dungeonLevelOffsets[1]
-            }
-            dungeon1Data = dungeon1;
-            patchesToApply.push(ENEMY_POSITION_PATCH_D1);
+            dungeon1Patch = fortressPatchGenerator.generateFortressPatch(1, roomInfo, "RUMBLE", difficulty)
+            dungeon1Data = dungeon1Patch[0].data;
         }
 
         let htmlSpoiler = printMaze(dungeon1Data);
@@ -216,16 +143,11 @@ function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRando
         var dungeon2Data = [];
         var dungeon2Patch = [];
         if(useFbsLogic.indexOf(2) > -1) {
-            dungeon2Patch = fbsf.generatePatchForFortress(2, difficulty, roomInfo);
+            dungeon2Patch = fortressPatchGenerator.generateFortressPatch(2, roomInfo, "FBS", difficulty);
             dungeon2Data = dungeon2Patch[0].data
         } else {
-            let dungeon2 = dg.kiDungeonGen(35, 45, 30, 8, 2, 1, 1, 0x0b, 7, roomInfo);
-            dungeon2Patch = {
-                data: dungeon2,
-                offset: dungeonLevelOffsets[2]
-            }
-            dungeon2Data = dungeon2;
-            patchesToApply.push(ENEMY_POSITION_PATCH_D2);
+            dungeon2Patch = fortressPatchGenerator.generateFortressPatch(2, roomInfo, "RUMBLE", difficulty)
+            dungeon2Data = dungeon2Patch[0].data;
         }       
         
         let htmlSpoiler2 = printMaze(dungeon2Data);   
@@ -241,16 +163,12 @@ function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRando
         var dungeon3Patch = [];
         var dungeon3Data;
         if(useFbsLogic.indexOf(3) > -1) {
-            dungeon3Patch = fbsf.generatePatchForFortress(3, difficulty, roomInfo);
+            dungeon3Patch = fortressPatchGenerator.generateFortressPatch(3, roomInfo, "FBS", difficulty)
+            // dungeon3Patch = fbsf.generatePatchForFortress(3, difficulty, roomInfo);
             dungeon3Data = dungeon3Patch[0].data
         } else {
-            let dungeon3 = dg.kiDungeonGen(50, 64, 20, 8, 3, 1, 1, 0x29, 10, roomInfo)
-            dungeon3Patch = {
-                data: dungeon3,
-                offset: dungeonLevelOffsets[3]
-            }
-            dungeon3Data = dungeon3;
-            patchesToApply.push(ENEMY_POSITION_PATCH_D3);
+            dungeon3Patch = fortressPatchGenerator.generateFortressPatch(3, roomInfo, "RUMBLE", difficulty)
+            dungeon3Data = dungeon3Patch[0].data;
         }
     
         let htmlSpoiler3 = printMaze(dungeon3Data);
@@ -291,7 +209,6 @@ function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRando
         writeHtmlSpoiler(writeWorld2Spoilers(world2Patches, doorPatch), romPath + newFilename + "-w2.html", raceMode);
         writeHtmlSpoiler(writeVerticalWorldSpoilers(world3Patches, 3, doorPatch), romPath + newFilename + "-w3.html", raceMode);  
 
-
         patchesToApply.push(doorPatch);
         patchesToApply.push(REMOVE_HIDDEN_SCORE_REQ);
     } else if (doors = UPGRADES_AT_END){
@@ -308,9 +225,8 @@ function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRando
 
     //minor patches
     patchesToApply.push(ADD_FORTRESS_ITEMS);
-    // patchesToApply.push(STR_2_PATCH);
-    // patchesToApply.push(ADD_STR_DOOR_TO_STAGE_1_1);
 
+    // If we want to adjust boss health, we can do so here.
     // patchesToApply.push(getBossHealthPatch(100, 100, 100));
     patchesToApply.push(textPatches.getTitleTextPatch(seed));
     patchesToApply.push(textPatches.getEndingTextPatch(seed));    

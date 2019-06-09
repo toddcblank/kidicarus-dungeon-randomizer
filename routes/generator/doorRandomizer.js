@@ -164,12 +164,10 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
 
                 var nextScreenKey = undefined;
                 var nextScreen = {}
-                console.log("randomScreen: " + randomScreen)
                 if((randomScreen+1) * 2 + 1 < Math.floor(levels[world][x].length)){
                     nextScreenKey = (levels[world][x][(randomScreen+1) * 2] + (levels[world][x][((randomScreen+1)*2)+1]  << 8)).toString(16)
                     
                     nextScreen = sr.screensByWorldAndAddress[world][nextScreenKey]
-                    console.log("Checking " + nextScreenKey + " for platforms: " + JSON.stringify(nextScreen))
                 }
 
                 if (!screen.door || screen.door == 0x0 || screensWithDoors.indexOf(randomScreen) > -1 || nextScreen.platforms != undefined) {
