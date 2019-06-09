@@ -1,5 +1,4 @@
 let dr = require('./dungeon-rooms')
-
 const UP = dr.UP;
 const RIGHT = dr.RIGHT;
 const DOWN = dr.DOWN;
@@ -31,20 +30,14 @@ oppositeDir[UP] = DOWN;
 oppositeDir[DOWN] = UP;
 oppositeDir[LEFT] = RIGHT;
 oppositeDir[RIGHT] = LEFT;
-romPath = './public/generated-seeds/'
 
 
 //Generates a random dungeon and returns the 64 * 3 bytes for the dungeon and enemies for the dungeon
-function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29, minimumDistanceToBoss=0, newrooms = []) {    
-
-    if (newrooms) {
-        for (var i = 0; i < newrooms.length; i++) {
-            dr.rooms[newrooms[i].roomIdNum] = newrooms[i];
-        }
-    }
+function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvisitableRoomsLimit = 5, numShops = 2, numSpa = 1, numHospital = 1, bossRoomId=0x29, minimumDistanceToBoss=0, roomList = dr.rooms) {    
 
     let xsize = 8;
     let ysize = 8;
+
     while(true){
         maze = [];
         for (var x = 0; x < xsize; x++) {
@@ -67,15 +60,15 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
 
         startingRoom.openings = openings;
         if (openings & UP) {
-            propogate(startx, starty - 1, wallChance, maximumSize)
+            propogate(startx, starty - 1, wallChance, roomList)
         }
         
         if (openings & DOWN) {
-            propogate(startx, starty + 1, wallChance, maximumSize)
+            propogate(startx, starty + 1, wallChance, roomList)
         }
 
         if (openings & RIGHT) {
-            propogate(startx + 1, starty, wallChance, maximumSize)
+            propogate(startx + 1, starty, wallChance, roomList)
         }
 
         //Add Boss Room
@@ -87,21 +80,21 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         let bossCoords = getBossRoom();
         let bossx = bossCoords[0];
         let bossy = bossCoords[1];
+
         let bossRoom = maze[bossx][bossy];
-        
         //populate all the distances from Boss Room
         if ((bossRoom.openings & UP) == UP) {
             bossRoom.distanceFromBoss = [0,-1,-1,-1]
-            getDistanceFromBossRoom(bossx, bossy-1, DOWN, 0)
+            getDistanceFromBossRoom(bossx, bossy-1, DOWN, 0, roomList)
         } else if ((bossRoom.openings & DOWN) == DOWN) {
             bossRoom.distanceFromBoss = [-1,-1,0,-1]
-            getDistanceFromBossRoom(bossx, bossy+1, UP, 0)
+            getDistanceFromBossRoom(bossx, bossy+1, UP, 0, roomList)
         } else if ((bossRoom.openings & RIGHT) == RIGHT) {
             bossRoom.distanceFromBoss = [-1,0,-1,-1]
-            getDistanceFromBossRoom(bossx+1, bossy, LEFT, 0)
+            getDistanceFromBossRoom(bossx+1, bossy, LEFT, 0, roomList)
         } else if ((bossRoom.openings & LEFT) == LEFT) {
             bossRoom.distanceFromBoss = [-1,-1,-1,0]
-            getDistanceFromBossRoom(bossx-1, bossy, RIGHT, 0)
+            getDistanceFromBossRoom(bossx-1, bossy, RIGHT, 0, roomList)
         }
 
         //check for illegal paths
@@ -110,19 +103,23 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         }
 
         var meetsMinimumBossDistance = true;
+        var startingDistance;
         startingRoom.distanceFromBoss.forEach((x) => {
             if (x < minimumDistanceToBoss && x != -1) {
+                startingDistance = x;
                 meetsMinimumBossDistance = false;                
             }
         })
 
-        if (!meetsMinimumBossDistance) {                    
+        if (!meetsMinimumBossDistance) {      
+            // console.log("Too close to boss (" + startingDistance + ")")              
             continue;
         }
 
-        let unvisitableRooms = checkPathFromStart();
+        let unvisitableRooms = checkPathFromStart(roomList);
         
         if(unvisitableRooms > unvisitableRoomsLimit) {
+            // console.log("Too many unvisitable rooms (" + unvisitableRooms + ")")
             continue;
         }
 
@@ -136,7 +133,6 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         for (var i = 0; i < numSpa; i++) {
             placeRoom(0x28, [roomDefined, notStartingRoom, roomNotOpensUp, roomNotOpensDown, roomVisitable, notBossRoom])
         }
-        placeEnemies();
 
         //Lock Boss Room
         maze[bossx][bossy].openings = NONE;
@@ -144,72 +140,15 @@ function kiDungeonGen(minimumSize = 15, maximumSize = 64, wallChance = 35, unvis
         let size = getMazeSize();
 
         if (size >= minimumSize && size <= maximumSize) {         
-            // printAllRooms()           
-            return printHex();
-        }   
-
-    }
-}
-
-function generateLinearDungeon(minimumDistanceToBoss=10, bossRoomId=0x29) {
-    
-}
-
-function printHex() {
-    
-    var row = ""
-    var enemies = "";
-    for (var y = 0; y < maze[0].length; y++) {
-        for (var x = 0; x < maze.length; x++) {
-            let room = maze[x][y];
-            if (room == undefined) {
-                row = row + "00 00 "
-                enemies = enemies + "00 "
-            } else {
-                row = row + paddedHex(room.roomId) + " " + paddedHex(room.openings) + " "
-                enemies = enemies + paddedHex(room.enemyId) + " "
-            }
+            // printAllRooms()   
+            return maze;
+        } else {
+            // console.log("Maze (size " + size + ") too small or too big...")
         }
-    }
-    
-    let response = (row + enemies).split(" ")
-    while (response.length < 128) {
-        response.push("00")
-    }
-    //console.log(row + enemies)
-    //console.log(response)
-    return response
-}
 
-function paddedHex(intValue) {
-    if (intValue == 0) {
-        return "00"
-    }
-    let hexValue = intValue.toString(16);
-    if (hexValue.length == 1) {
-        hexValue = "0" + hexValue;
-    }
-    return hexValue;
-}
 
-function placeEnemies() {
-    for (var x = 0; x < maze.length; x++){
-        for (var y = 0; y < maze[0].length; y++) {
-            let room = maze[x][y];
-            if (room == undefined || room.enemyId != 0) {
-                continue;
-            }
-
-            roomLayout = rooms[room.roomId];
-            //console.log(roomLayout)
-            if (roomLayout.validEnemies.length == 0) {
-                continue;
-            }
-
-            let enemy = roomLayout.validEnemies[Math.floor(Math.random()*roomLayout.validEnemies.length)]
-            room.enemyId = enemy
-        }
     }
+
 }
 
 function notBossRoom(room) {
@@ -294,14 +233,14 @@ function shuffle(arra1) {
     return arra1;
 }
 
-function checkPathFromStart() {
+function checkPathFromStart(roomList) {
     let startRoom = maze[3][3];
     DIRECTIONS.forEach((dir) => {
         
         if (startRoom.openings & dir) {
             startRoom.distanceFromStart[DIR_INDEX[dir]] = 0;
             
-            traverseMaze(3 + xOffSet[dir], 3 + yOffSet[dir], 0, dir)
+            traverseMaze(3 + xOffSet[dir], 3 + yOffSet[dir], 0, dir, roomList)
         } else {
             startRoom.distanceFromStart[DIR_INDEX[dir]] = -1;
         }
@@ -330,11 +269,10 @@ function checkPathFromStart() {
 }
 
 
-function traverseMaze(x, y, distance, directionFrom) {
-    // console.log("Traversing from " + x + ", " + y)
+function traverseMaze(x, y, distance, directionFrom, roomList) {
 
     let room = maze[x][y];    
-    let roomLayout = rooms[room.roomId]
+    let roomLayout = roomList[room.roomId]
     let roomExitDir = oppositeDir[directionFrom];
     room.distanceFromStart[DIR_INDEX[roomExitDir]] = distance
 
@@ -343,15 +281,13 @@ function traverseMaze(x, y, distance, directionFrom) {
     let allDirs = [UP, DOWN, LEFT, RIGHT];
     allDirs.forEach((dir) => {
         if (room.distanceFromStart[DIR_INDEX[dir]] <= distance + 1) {
-            // console.log("room.distanceFromStart[" + DIR_INDEX[dir] + "] is already done")
             return;
         }
 
         if (room.openings & dir){
-            // console.log(room.openings + " is open in " + dir)
             if(roomLayout.paths[DIR_INDEX[roomExitDir]] & dir){ 
                 room.distanceFromStart[DIR_INDEX[dir]] = distance + 1;
-                traverseMaze(x + xOffSet[dir], y + yOffSet[dir], distance + 1, dir);
+                traverseMaze(x + xOffSet[dir], y + yOffSet[dir], distance + 1, dir, roomList);
             } else {
                 // console.log("roomlayout " + roomLayout.paths[DIR_INDEX[roomExitDir]] + " cant get to " + dir)
             }
@@ -384,8 +320,8 @@ function checkPathsToBoss() {
             }
 
             if (room.distanceFromBoss.indexOf(999) > -1) {
-                // console.log("No route to boss from [" + x + "][" + y + "]")
-                // console.log(room)
+                // console.log("No route to boss from [" + x + "][" + y + "]: " + JSON.stringify(room)) 
+                printMaze(maze)               
                 return false;
             }
         }
@@ -403,17 +339,17 @@ function getBossRoom() {
     }
 }
 
-function getDistanceFromBossRoom(x, y, exit, distance) {
+function getDistanceFromBossRoom(x, y, exit, distance, roomList) {
     // console.log("checking [" + x + "][" + y + "] for distance " + distance + " to exit " + exit)
     let room = maze[x][y];
    
     DIRECTIONS.forEach((dir) => {
         if (room.openings & dir) {
             if (room.distanceFromBoss[DIR_INDEX[dir]] > distance + 1) {
-                layout = rooms[room.roomId];
+                layout = roomList[room.roomId];
                 if(layout.paths[DIR_INDEX[dir]] & exit) {
                     room.distanceFromBoss[DIR_INDEX[dir]] = distance + 1;
-                    getDistanceFromBossRoom(x + xOffSet[dir], y + yOffSet[dir], oppositeDir[dir], distance + 1);       
+                    getDistanceFromBossRoom(x + xOffSet[dir], y + yOffSet[dir], oppositeDir[dir], distance + 1, roomList);       
                 }
             }
 
@@ -451,11 +387,10 @@ function placeBossRoom(bossRoomId) {
                 if (roomToCheck.roomId == 0x01) {
                     continue;
                 }
-                // console.log("Checking [" + xCheck + "][" + yCheck + "] for possible Boss Room");
                 if ([1,2,8].indexOf(roomToCheck.openings) > -1) {
-                    // console.log("Using [" + xCheck + "][" + yCheck + "] for boss room!");
                     roomToCheck.roomId = bossRoomId;
                     roomToCheck.enemyId = 0xF0;
+                    // console.log("Placing boss in " + xCheck + "," + yCheck + ": " + JSON.stringify(roomToCheck))
                     return true;
                 }
                 
@@ -465,12 +400,13 @@ function placeBossRoom(bossRoomId) {
     }
 
     //super unlikely but could happen
-   //console.log("No possible boss rooms found")
+    // console.log("No boss room placable")
     return false;
 }
 
 
-function propogate(startx, starty, wallChance) {
+function propogate(startx, starty, wallChance, roomList) {
+    // console.log("Propogating to " + startx + ", " + starty + " with " + roomList.length + " rooms")
     //look and see if the surrounding ones are already populated
     //for any not populated determine if we want 
     var currentRoom = maze[startx][starty];
@@ -485,9 +421,6 @@ function propogate(startx, starty, wallChance) {
 
     var roomOpenings = 0    
 
-    //for now just make it all the same rooms.    
-    // startingRoom.roomId = 0x0D;
-    currentRoom.roomId = Math.floor(Math.random() * 0x29)
     leftRoomConnected = false;
     rightRoomConnected = false;
     upRoomConnected = false;
@@ -523,11 +456,15 @@ function propogate(startx, starty, wallChance) {
     }
 
     currentRoom.roomId = Math.floor(Math.random() * 0x29)
-    while (RESERVED_ROOMS.indexOf(currentRoom.roomId) > -1 ||  (rooms[currentRoom.roomId].validEntrances & neededConnections) != neededConnections) {
+    while (roomList[currentRoom.roomId] === undefined) {
+        // console.log("No room info for room Id " + currentRoom.roomId)
+        currentRoom.roomId = Math.floor(Math.random() * 0x29)
+    }
+    while (RESERVED_ROOMS.indexOf(currentRoom.roomId) > -1 ||  (roomList[currentRoom.roomId].validEntrances & neededConnections) != neededConnections) {
         currentRoom.roomId = Math.floor(Math.random() * 0x29)
     }
 
-    let roomLayout = rooms[currentRoom.roomId]
+    let roomLayout = roomList[currentRoom.roomId]
 
     DIRECTIONS.forEach((dir) => {
         //ensure there's a valid room that direction
@@ -553,7 +490,7 @@ function propogate(startx, starty, wallChance) {
 
     DIRECTIONS.forEach((dir) => {
         if (roomOpenings & dir) {
-            propogate(startx + xOffSet[dir], starty + yOffSet[dir], wallChance)
+            propogate(startx + xOffSet[dir], starty + yOffSet[dir], wallChance, roomList)
         }
     })
 }
@@ -585,5 +522,77 @@ function makeRoom() {
     return room;
 }
 
+// function printMaze(maze) {
+//     for(var y = 0; y < 8 ; y++) {
+//         line = ""
+//         for(var x = 0; x < 8; x++) {
+//             room = maze[x][y]
+//             if (room === undefined) {
+//                 line += "(00, 0, 0) "
+//             } else {
+//                 line += "(" + room.roomId.toString(16).padStart(2, "0") + ", " + room.openings.toString(16) + ", " + minPositive(room.distanceFromBoss) + ") ";
+//             }
+//         }
+//         console.log(line)
+//     }
+// }
+
+function minPositive(arr) {
+    var min = 9;
+    for (var x = 0; x < arr.length; x++) {
+        if (arr[x] > 0 && arr[x] < min) {
+            min = arr[x];
+        }
+    }
+
+    return min;
+}
+
+function printMaze(maze) {
+    var htmlSpoiler = '<html><head><link rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css" /></head><body>'
+    htmlSpoiler += '<div class="maze">'
+
+    var line = ""
+    for (var y = 0; y < 8; y++) {
+        for (var x = 0; x < 8; x++){    
+            room = maze[x][y]
+            var imgName = "00.png";
+            var openings = 0x0;
+            if (room !== undefined){
+                imgName = room.roomId.toString(16).padStart(2, "0") + ".png"      
+                openings = room.openings;  
+            }           
+        
+            line += '<div class="room open-' + openings.toString(16).padStart(2, "0") + '">'
+            if ((openings & 0x01) == 1) {
+                line += '<img class="opening-img" src="../images/fortresses/open-up.png" />';
+            }
+
+            if ((openings & 0x02) == 0x02) {
+                line += '<img class="opening-img" src="../images/fortresses/open-right.png" />';
+            }
+
+            if ((openings & 0x04) == 0x04) {
+                line += '<img class="opening-img" src="../images/fortresses/open-down.png" />';
+            }
+
+            if ((openings & 0x08) == 0x08) {
+                line += '<img class="opening-img" src="../images/fortresses/open-left.png" />';
+            }
+            
+            // var enemy = mazeBytes[Math.floor(index/2) + 128];
+            // if (enemy != 0x00 && ((enemy & 0xf0) != 0x50)) {
+                // line += '<img class="opening-img" src="../images/enemies/' + enemy.toString(16) + '.png" />';
+            // }
+            line += '<img class="roomImage" src="../images/fortresses/' + imgName + '"/></div>'
+
+        }
+    }
+    htmlSpoiler += line;
+    htmlSpoiler += "<div></body></html>";
+    // console.log(htmlSpoiler)
+    return htmlSpoiler;
+
+}
 
 module.exports = {kiDungeonGen};

@@ -75,6 +75,8 @@ rooms = [
         clipPaths: [NONE, NONE, NONE, NONE],
         validEntrances:	NONE,
         validEnemies: [],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0000,
     },
     {
         roomId: '1',
@@ -82,6 +84,8 @@ rooms = [
         clipPaths: [(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), NONE],
         validEntrances:	(UP | RIGHT | DOWN),
         validEnemies: [],
+        centurionValidLocations: [0x7B,0x46,0xa4],
+        twoWayPaths: 0b0000,
     },
     {
         roomId: '2',
@@ -89,6 +93,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [0xAE,0xA1,0x83],
+        twoWayPaths: 0b1110,
     },
     {
         roomId: '3',
@@ -96,6 +102,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
+        centurionValidLocations: [0xA4,0x56,0x69],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '4',
@@ -103,6 +111,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x38, 0x48],
+        centurionValidLocations: [0xA1,0x44,0x91],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '5',
@@ -110,6 +120,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x32, 0x42, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '6',
@@ -117,6 +129,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x32,0x42, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '7',
@@ -124,6 +138,8 @@ rooms = [
         clipPaths: [NONE, (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	(RIGHT | DOWN | LEFT),
         validEnemies: [0x51],
+        centurionValidLocations: [0xAD,0x79,0x4D],
+        twoWayPaths: 0b1110,
     },
     {
         roomId: '8',
@@ -131,6 +147,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN), (RIGHT | DOWN), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies:	[0x10, 0x20, 0x37, 0x47, 0x61],
+        centurionValidLocations: [0xA1,0xAE,0x8C],
+        twoWayPaths: 0b0110,
     },
     {
         roomId: '9',
@@ -138,6 +156,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN), (RIGHT | DOWN), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies:	[0x52],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0110,
     },    
     {
         roomId: 'A',
@@ -145,6 +165,8 @@ rooms = [
         clipPaths: [ALL, (RIGHT | DOWN), (RIGHT | DOWN), ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x35, 0x45, 0x63],
+        centurionValidLocations: [0xAD,0x7D,0xA6],
+        twoWayPaths: 0b1011,
     },
     {
         roomId: 'B',
@@ -152,6 +174,8 @@ rooms = [
         clipPaths: [(RIGHT | LEFT), (RIGHT | LEFT), NONE, (RIGHT | LEFT)],
         validEntrances:	(UP | RIGHT | LEFT),
         validEnemies: [0x10, 0x20],
+        centurionValidLocations: [0x76,0x68,0x73],
+        twoWayPaths: 0b0000,
     },
     {
         roomId: 'C',
@@ -159,6 +183,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x36, 0x46, 0x63],
+        centurionValidLocations: [0x75,0x7A,0x48],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: 'D',
@@ -166,6 +192,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x36, 0x46, 0x60],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: 'E',
@@ -173,6 +201,8 @@ rooms = [
         clipPaths: [ALL, ALL, (DOWN, LEFT), (DOWN, LEFT)],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [0x83,0xA6,0x7C],
+        twoWayPaths: 0b1100,
     },
     {
         roomId: 'F',
@@ -180,6 +210,8 @@ rooms = [
         clipPaths: [(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), NONE],
         validEntrances:	(UP | RIGHT | DOWN),
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [0x44,0x75,0x7B],        
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '10',
@@ -187,6 +219,8 @@ rooms = [
         clipPaths: [NONE, NONE, NONE, NONE],
         validEntrances:	NONE,
         validEnemies: [],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0000,
     },
     {
         roomId: '11',
@@ -194,6 +228,8 @@ rooms = [
         clipPaths: [(UP | RIGHT | DOWN), (UP | RIGHT | DOWN), (UP | RIGHT | DOWN), NONE],
         validEntrances:	(UP | RIGHT | DOWN),
         validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '12',
@@ -201,6 +237,8 @@ rooms = [
         clipPaths: [(RIGHT | LEFT), (RIGHT | LEFT), NONE, (RIGHT | LEFT)],
         validEntrances:	(UP | RIGHT | LEFT),
         validEnemies: [0x10, 0x20, 0x32, 0x42, 0x63],
+        centurionValidLocations: [0x79,0x76,0x68],
+        twoWayPaths: 0b1010,
     },
     {
         roomId: '13',
@@ -208,6 +246,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [0x50],
+        centurionValidLocations: [0x84,0x85,0xA9],
+        twoWayPaths: 0b1110,        
     },
     {
         roomId: '14',
@@ -215,6 +255,8 @@ rooms = [
         clipPaths: [(UP | RIGHT | LEFT), (UP | RIGHT | LEFT), NONE, (UP | RIGHT | LEFT)],
         validEntrances:	(UP | RIGHT | LEFT),
         validEnemies: [0x10, 0x20, 0x36, 0x46],
+        centurionValidLocations: [0x8C,0x85,0x47],
+        twoWayPaths: 0b1011,
     },
     {
         roomId: '15',
@@ -222,6 +264,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [],
+        centurionValidLocations: [0xAE,0xA1,0x81],
+        twoWayPaths: 0b1110,
     },
     {
         roomId: '16',
@@ -229,6 +273,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [],
+        centurionValidLocations: [0x8D,0x82,0xAD],
+        twoWayPaths: 0b1110,
     },
     {
         roomId: '17',
@@ -236,6 +282,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1110,
     },
     {
         roomId: '18',
@@ -243,6 +291,8 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1110,
     },
     {
         roomId: '19',
@@ -250,6 +300,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
+        centurionValidLocations: [0xAA,0xA1,0xAE],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '1A',
@@ -257,6 +309,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '1B',
@@ -264,6 +318,8 @@ rooms = [
         clipPaths: [LEFT, (RIGHT | DOWN), DOWN, LEFT],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x33, 0x43, 0x61],
+        centurionValidLocations: [0xAE,0x78,0x3D],
+        twoWayPaths: 0b1000,
     },
     {
         roomId: '1C',
@@ -271,6 +327,8 @@ rooms = [
         clipPaths: [(UP | DOWN), NONE, (UP | DOWN), NONE],
         validEntrances:	(UP | DOWN),
         validEnemies: [0x53],
+        centurionValidLocations: [0x3A,0x33,0xA5],
+        twoWayPaths: 0b0101,
     },
     {
         roomId: '1D',
@@ -278,6 +336,8 @@ rooms = [
         clipPaths: [(UP | DOWN), NONE, (UP | DOWN), NONE],
         validEntrances:	(UP | DOWN),
         validEnemies: [0x53],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0101,
     },
     {
         roomId: '1E',
@@ -285,6 +345,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, LEFT],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x35, 0x45, 0x61],
+        centurionValidLocations: [0xA4,0xA5,0xAB],
+        twoWayPaths: 0b1000,
     },
     {
         roomId: '1F',
@@ -292,6 +354,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, LEFT],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x35, 0x45, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b1000,
     },
     {
         roomId: '20',
@@ -299,6 +363,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x52],
+        centurionValidLocations: [0x85,0x8A,0x46],
+        twoWayPaths: 0b1111,
     },
     {
         roomId: '21',
@@ -306,6 +372,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [0x49,0xAC,0x76],
+        twoWayPaths: 0b0111,
     },
     {
         roomId: '22',
@@ -313,6 +381,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0111,
     },
     {
         roomId: '23',
@@ -320,6 +390,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0111,
     },
     {
         roomId: '24',
@@ -327,6 +399,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0111,
     },
     {
         roomId: '25',
@@ -334,6 +408,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x31, 0x41, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0111,
     },
     {
         roomId: '26',
@@ -341,6 +417,8 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
+        centurionValidLocations: [0x8D,0xAE,0x8E],
+        twoWayPaths: 0b0110,
     },
     {
         roomId: '27',
@@ -348,13 +426,17 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x37, 0x47, 0x61],
+        centurionValidLocations: [],
+        twoWayPaths: 0b0110,
     },
     {
         roomId: '28',
-        paths:	[(UP | RIGHT | LEFT), (UP | RIGHT | LEFT), NONE, (UP | RIGHT | LEFT)],
-        clipPaths: [(UP | RIGHT | LEFT), (UP | RIGHT | LEFT), NONE, (UP | RIGHT | LEFT)],
+        paths:	[(RIGHT | LEFT), (RIGHT | LEFT), NONE, (RIGHT | LEFT)],
+        clipPaths: [(RIGHT | LEFT), (RIGHT | LEFT), NONE, (RIGHT | LEFT)],
         validEntrances:	(UP | RIGHT | LEFT),
         validEnemies: [],
+        centurionValidLocations: [0x7C,0x73,0x85],
+        twoWayPaths: 0b1010,
     },
     {
         //Boss Room
@@ -362,7 +444,9 @@ rooms = [
         paths:	[NONE, NONE, NONE, NONE],
         clipPaths: [NONE, NONE, NONE, NONE],
         validEntrances:	NONE,
-        validEnemies: [0xF0]
+        validEnemies: [0xF0],
+        centurionValidLocations: [0x55,0x37,0x77],
+        twoWayPaths: 0b0000,
     },
 ]
 

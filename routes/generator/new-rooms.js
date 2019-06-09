@@ -235,7 +235,7 @@ const ALL = UP | RIGHT | DOWN | LEFT;
 const NONE = 0x0;
 
 //This room info is passed to the dungeon randomizer so it knows how to use the new rooms.
-//roomokay, validEnemies, and roomIdNum is used by fbs's generator, the rest is used by rumbleminze's
+//twoWayPaths, validEnemies, and roomIdNum is used by fbs's generator, the rest is used by rumbleminze's
 const NEW_ROOM_INFO = [
     {
         roomIdNum: overwrittenRooms[0],
@@ -244,7 +244,7 @@ const NEW_ROOM_INFO = [
         clipPaths: [(NONE),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT),(RIGHT|DOWN|LEFT)],
         validEntrances: (RIGHT|DOWN|LEFT),
         validEnemies: [0x10, 0x20, 0x32, 0x42, 0x61],
-        roomokay: 0b1110
+        twoWayPaths: 0b1110
     },{
         roomIdNum: overwrittenRooms[1],
         roomId: overwrittenRooms[1].toString(16).toUpperCase(),
@@ -252,7 +252,7 @@ const NEW_ROOM_INFO = [
         clipPaths:[(RIGHT|LEFT|UP),(RIGHT|LEFT|UP),NONE,(RIGHT|UP|LEFT)],
         validEntrances: (RIGHT|LEFT|UP),
         validEnemies: [0x10, 0x20, 0x35, 0x45],
-        roomokay: 0b1011
+        twoWayPaths: 0b1011
     },{
         roomIdNum: overwrittenRooms[2],
         roomId: overwrittenRooms[2].toString(16).toUpperCase(),
@@ -260,7 +260,7 @@ const NEW_ROOM_INFO = [
         clipPaths:  [ALL,ALL,ALL,ALL],
         validEntrances: ALL,
         validEnemies: [0x10, 0x20, 0x34, 0x44],
-        roomokay: 0b1111
+        twoWayPaths: 0b1111
     },{
         roomIdNum: overwrittenRooms[3],
         roomId: overwrittenRooms[3].toString(16).toUpperCase(),
@@ -268,7 +268,7 @@ const NEW_ROOM_INFO = [
         clipPaths:  [ALL,ALL,ALL,ALL],
         validEntrances: ALL,
         validEnemies: [0x10, 0x20, 0x34, 0x44, 0x61],
-        roomokay: 0b1111
+        twoWayPaths: 0b1111
     },{
         roomIdNum: overwrittenRooms[4],
         roomId: overwrittenRooms[4].toString(16).toUpperCase(),
@@ -276,7 +276,7 @@ const NEW_ROOM_INFO = [
         clipPaths:[(RIGHT|LEFT),(RIGHT|LEFT),NONE,(RIGHT|LEFT)],
         validEntrances: (RIGHT|LEFT),
         validEnemies: [0x10, 0x20, 0x61],
-        roomokay: 0b1010
+        twoWayPaths: 0b1010
     },
 ]
 

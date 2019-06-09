@@ -417,8 +417,8 @@ function getPatchForWorld1Items(difficulty, stagePlans) {
         let item1Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 1", data: [screen, coords1, item1], offset: itemlocations[i]}
         let item2Patch = {name: "world 1-" + (Math.floor(i/2) + 1) + " item 2", data: [screen * 2, coords2, item2], offset: itemlocations[i+1]}
         
-        console.log("ITEM: 1-" + (Math.floor(i/2) + 1) + " item 1 on screen " + screen + " (type " + screen1Type + ") COORDS: " + coords1)
-        console.log("ITEM: 1-" + (Math.floor(i/2) + 1) + " item 2 on screen " + screen*2+" (type " + screen2Type + ") COORDS: " + coords2)
+        console.log("ITEM: 1-" + (Math.floor(i/2) + 1) + " item 1 on screen " + screen + " (type " + screen1Type + ") COORDS: " + coords1.toString(16))
+        console.log("ITEM: 1-" + (Math.floor(i/2) + 1) + " item 2 on screen " + screen*2+" (type " + screen2Type + ") COORDS: " + coords2.toString(16))
 
         patches.push(item1Patch)
         patches.push(item2Patch)

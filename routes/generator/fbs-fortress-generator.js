@@ -1,8 +1,3 @@
-let dr = require('./dungeon-rooms')
-
-const dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
-const centurionOffsets = [0, 0x1b2c4, 0x1b5b8, 0x1b88c]
-const bossMusicOffsets = [0, 0x1cba0, 0x1cba1, 0x1cba2]
 const ROOM_NORMAL = 1;
 const ROOM_START = 2;
 const ROOM_BOSS = 3;
@@ -10,127 +5,33 @@ const ROOM_NURSE = 5;
 const ROOM_SPA = 6;
 const ROOM_SHOP = 7;
 
-//Number of rooms that will have centurions.  In the vanilla game,
-//1-4 has 28, 2-4 has 32, and 3-4 has 19.
-//I chose lower numbers here because our dungeons have fewer
-//screens compared to the vanilla game (especially in 1-4).
-const centurionAmount = [0, 19, 19, 19]
+function generatePatchForFortress(world, difficulty, rooms) {
 
-const centurionValidLocations = []
-centurionValidLocations[0x01]=[0x7B,0x46,0xa4]
-centurionValidLocations[0x02]=[0xAE,0xA1,0x83]
-centurionValidLocations[0x03]=[0xA4,0x56,0x69]
-centurionValidLocations[0x04]=[0xA1,0x44,0x91]
-centurionValidLocations[0x07]=[0xAD,0x79,0x4D]
-centurionValidLocations[0x08]=[0xA1,0xAE,0x8C]
-centurionValidLocations[0x0A]=[0xAD,0x7D,0xA6]
-centurionValidLocations[0x0B]=[0x76,0x68,0x73]
-centurionValidLocations[0x0C]=[0x75,0x7A,0x48]
-centurionValidLocations[0x0E]=[0x83,0xA6,0x7C]
-centurionValidLocations[0x0F]=[0x44,0x75,0x7B]
-centurionValidLocations[0x12]=[0x79,0x76,0x68]
-centurionValidLocations[0x13]=[0x84,0x85,0xA9]
-centurionValidLocations[0x14]=[0x8C,0x85,0x47]
-centurionValidLocations[0x15]=[0xAE,0xA1,0x81]
-centurionValidLocations[0x16]=[0x8D,0x82,0xAD]
-centurionValidLocations[0x19]=[0xAA,0xA1,0xAE]
-centurionValidLocations[0x1B]=[0xAE,0x78,0x3D]
-centurionValidLocations[0x1C]=[0x3A,0x33,0xA5]
-centurionValidLocations[0x1E]=[0xA4,0xA5,0xAB]
-centurionValidLocations[0x20]=[0x85,0x8A,0x46]
-centurionValidLocations[0x21]=[0x49,0xAC,0x76]
-centurionValidLocations[0x26]=[0x8D,0xAE,0x8E]
-centurionValidLocations[0x28]=[0x7C,0x73,0x85]
-centurionValidLocations[0x29]=[0x55,0x37,0x77]
+    let map = generateMap(world, difficulty, rooms);
 
-const roomokay = []
-roomokay[0x01]=0b0000
-roomokay[0x02]=0b1110
-roomokay[0x03]=0b1111
-roomokay[0x04]=0b1111
-roomokay[0x07]=0b1110
-roomokay[0x08]=0b0110
-roomokay[0x0A]=0b1011
-roomokay[0x0B]=0b0000
-roomokay[0x0C]=0b1111
-roomokay[0x0E]=0b1100
-roomokay[0x0F]=0b1111
-roomokay[0x12]=0b1010
-roomokay[0x13]=0b1110
-roomokay[0x14]=0b1011
-roomokay[0x15]=0b0000
-roomokay[0x16]=0b0000
-roomokay[0x19]=0b1111
-roomokay[0x1B]=0b1000
-roomokay[0x1C]=0b0101
-roomokay[0x1E]=0b1000
-roomokay[0x20]=0b1111
-roomokay[0x21]=0b0111
-roomokay[0x26]=0b0110
-roomokay[0x28]=0b0000
-roomokay[0x29]=0b0000
-
-let roomenemy1 = [];
-let roomenemy2 = [];
-roomenemy1[0x00] = 0x00;roomenemy2[0x00] = 0x00;
-roomenemy1[0x01] = 0x00;roomenemy2[0x01] = 0x00;
-roomenemy1[0x02] = 0x61;roomenemy2[0x02] = 0x61;
-roomenemy1[0x03] = 0x37;roomenemy2[0x03] = 0x10;
-roomenemy1[0x04] = 0x38;roomenemy2[0x04] = 0x10;
-roomenemy1[0x07] = 0x51;roomenemy2[0x07] = 0x51;
-roomenemy1[0x08] = 0x52;roomenemy2[0x08] = 0x52;
-roomenemy1[0x0A] = 0x35;roomenemy2[0x0A] = 0x10;
-roomenemy1[0x0B] = 0x0F;roomenemy2[0x0B] = 0x0F;
-roomenemy1[0x0C] = 0x36;roomenemy2[0x0C] = 0x10;
-roomenemy1[0x0E] = 0x31;roomenemy2[0x0E] = 0x41;
-roomenemy1[0x0F] = 0x10;roomenemy2[0x0F] = 0x10;
-roomenemy1[0x12] = 0x30;roomenemy2[0x12] = 0x40;
-roomenemy1[0x13] = 0x50;roomenemy2[0x13] = 0x50;
-roomenemy1[0x14] = 0x38;roomenemy2[0x14] = 0x10;
-roomenemy1[0x15] = 0x00;roomenemy2[0x15] = 0x00;
-roomenemy1[0x16] = 0x00;roomenemy2[0x16] = 0x00;
-roomenemy1[0x19] = 0x41;roomenemy2[0x19] = 0x10;
-roomenemy1[0x1B] = 0x36;roomenemy2[0x1B] = 0x46;
-roomenemy1[0x1C] = 0x52;roomenemy2[0x1C] = 0x52;
-roomenemy1[0x1E] = 0x00;roomenemy2[0x1E] = 0x10;
-roomenemy1[0x20] = 0x50;roomenemy2[0x20] = 0x50;
-roomenemy1[0x21] = 0x00;roomenemy2[0x21] = 0x10;
-roomenemy1[0x26] = 0x31;roomenemy2[0x26] = 0x41;
-roomenemy1[0x28] = 0x00;roomenemy2[0x28] = 0x00;
-roomenemy1[0x29] = 0x0F;roomenemy2[0x29] = 0x0F;
-
-const spikes = [0x07, 0x13, 0x1c, 0x20]
-const spikeInfo = []
-spikeInfo[0x07] = [0, 0x51, 0x51, 0x51]
-// spikeInfo[0x08] = [0, 0x52, 0x52, 0x52]
-spikeInfo[0x13] = [0, 0x50, 0x50, 0x50]
-spikeInfo[0x1c] = [0, 0x53, 0x53, 0x53]
-spikeInfo[0x20] = [0, 0x52, 0x52, 0x52]
-//I've standardized spikes so every spike room will have spikes.  this one
-//seemed to be least interesting, so it won't appear anymore.
-//instead it'll have enemies
-//spikeInfo[0x20] = [0, 0, 0, 0x50]
-
-function generatePatchForFortress(world, difficulty, newrooms = []) {
-    
-    if (newrooms) {
-        for (var i = 0; i < newrooms.length; i++) {
-            roomokay[newrooms[i].roomIdNum] = newrooms[i].roomokay
-            dr.rooms[newrooms[i].roomIdNum] = newrooms[i];
-        }
+    //This is what we'll return for population.
+    let mapRooms = [];
+    for (var i = 0; i < 8; i++) {
+        mapRooms[i] = [];
     }
-
-    let map = generateFortress(world, difficulty);
-
-    let roomData = []
-    let enemyData = []
-    var bossRoomIndex = 0;
 
     for (var y = 0; y < 8; y++) {
         for (var x = 0; x < 8; x++) {
             var openings = 0x0;
             var roomId = 0x0;
             var previousRoom = 0x0;
+
+            let room = {
+                //Which doors are open
+                openings: 0x0,        
+        
+                //Which Room
+                roomId: 0x0,        
+                
+                //Which Enemy is in the room.  0 is no enemy, 0xf is always the boss
+                enemyId: 0x0,
+            }
+
             if (y > 0 && map[x][y-1]) {openings += 1}
             if (x < 7 && map[x+1][y]) {openings += 2}
             if (y < 7 && map[x][y+1]) {openings += 4}
@@ -151,7 +52,7 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
                 case ROOM_NORMAL:
                     while(roomId == 0x0){
                         let randRoom = Math.floor(Math.random() * 41) + 1;
-                        let roomOpenings = roomokay[randRoom]
+                        let roomOpenings = rooms[randRoom].twoWayPaths
                         if (roomOpenings != undefined && ((roomOpenings & openings) == openings) && randRoom != previousRoom){
                             previousRoom = randRoom;
                             roomId = randRoom
@@ -162,7 +63,6 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
                     roomId = 0x01;
                     break;
                 case ROOM_BOSS:
-                    bossRoomIndex = x + (y * 8)
                     if (world == 2) {
                         roomId = 0x0b;
                     } else {
@@ -185,178 +85,30 @@ function generatePatchForFortress(world, difficulty, newrooms = []) {
                     //only do this if there is no opening above
                     if(openings & 1 == 0) {
                         let i = Math.floor(Math.random() * 4);
-                        let rooms = [0x01, 0x03, 0x29, 0x16]
-                        roomId = rooms[i];
+                        let clippableRooms = [0x01, 0x03, 0x29, 0x16]
+                        roomId = clippableRooms[i];
                     }
                 }
             }
-            //Push the roomId and the openings
-            roomData.push(roomId);
-            roomData.push(openings);
-            
-            //fill enemies with "empty to start"
-            var enemy = 0x0;           
 
-            //unless there's spikes
-            if(spikes.indexOf(roomId) > -1) {
-                enemy = spikeInfo[roomId][world];
-            }
-
-            //or it's the boss
+            var enemy = 0x0;
+            //Mark the boss room
             if(map[x][y] == ROOM_BOSS) {
                 enemy = 0xf0
-            }
-
-            enemyData.push(enemy);            
-        }
-    }
-    
-    //Place centurions
-    let centurionData = [0x1a, 0x00] //start out with just this (map)
-    let numCenturions = 0;
-    while (numCenturions < centurionAmount[world]) {
-        //get random room
-        let randomX = Math.floor(Math.random()*8);
-        let randomY = Math.floor(Math.random()*8);        
-        let roomIndex = randomY*8+randomX;        
-        //check to see if it is a valid room
-        let room = map[randomX][randomY];
-        if (room == 0) {
-        } else {            
-            roomId = roomData[roomIndex*2]            
-            if (centurionValidLocations[roomId] !== undefined) {
-              centurionData.push(roomIndex);            
-              centurionData.push(centurionValidLocations[roomId][Math.floor(Math.random()*3)]);   
-              numCenturions++;
-            }                       
-        }              
-    }             
-    centurionData.push(0xff); //End of centurion table
-        
-    //Queues by difficulty to ensure we get X number of eggplant/hard flyers.  After this is empty we fill with other enemies
-    let enemyQueue = [].concat(dr.ENEMY_QUEUES_BY_WORLD_AND_DIFF[world][difficulty])    
-
-    while (enemyQueue.length > 0) {
-        let nextEnemeyMask = enemyQueue.pop();
-        var placedEnemy = false;
-        var attempts = 0;
-        while(!placedEnemy) {
-            attempts++;
-            if (attempts > 100) {
-                placedEnemy = true;
-                continue;
-            }
-            //get random room
-            let randomX = Math.floor(Math.random()*8);
-            let randomY = Math.floor(Math.random()*8);
-
-            let room = map[randomX][randomY];
-            if (room == 0) {
-                //empty room
-                continue;
-            }
-
-            //check for current enemy
-            if(enemyData[randomX + randomY * 8] != 0) {
-                continue;
-            }
-
-            //check if it supports the enemy
-            let roomId = roomData[(randomX + randomY * 8) * 2];
-            let filteredRooms = rooms.filter((room) => {return room.roomId == roomId.toString(16).toUpperCase()})            
-            let roomInfo = filteredRooms[0]
-
-            var roomSupportsEnemy = false;
-            var supportedEnemy = 0x0;
-            roomInfo.validEnemies.forEach((enemyId) => {
-                if ((enemyId & 0xf0) == nextEnemeyMask) {
-                    roomSupportsEnemy = true;
-                    supportedEnemy = enemyId;
-                }
-            })
-
-            //Explicit check to make sure eggplanters aren't in a room with a top or bottom opening
-            //they get cheap if they are
-            //commenting out for now, more thought needs to go into this.
-            // if (nextEnemeyMask == dr.EGGPLANT) {
-            //     if ((randomY > 0 && map[randomX][randomY-1] != 0) || (randomY < 7 && map[randomX][randomY + 1] != 0)){
-            //         roomSupportsEnemy = false;
-            //     }
-            // }
-
-            if (roomSupportsEnemy) {
-                placedEnemy = true;
-                enemyData[randomX + randomY * 8] = supportedEnemy;
-            }
-        }        
-    }
-
-    //now fill any rooms that don't have enemies
-    let enemyFiller = [].concat(dr.ENEMY_FILLS_BY_DIFF[difficulty])
-    for (var roomIndex = 0; roomIndex < enemyData.length; roomIndex++) {
-        let room = map[roomIndex % 8][Math.floor(roomIndex/8)]
-        if (room == 0) {
-            continue;
-        }
-
-        let currentEnemyData = enemyData[roomIndex];
-        if (currentEnemyData != 0x0) {
-            continue;
-        }
-
-        var enemyPlaced = false;
-        var attempts = 0;
-        while(!enemyPlaced){
-
+            }     
             
-            let roomId = roomData[roomIndex * 2];
-            let filteredRooms = rooms.filter((room) => {return room.roomId == roomId.toString(16).toUpperCase()})            
-            let roomInfo = filteredRooms[0]
-            if (roomInfo.validEnemies.length == 0) {
-                enemyPlaced = true;
-                continue;
-            }
+            room.roomId = roomId;
+            room.openings = openings;            
+            room.enemyId = enemy;
 
-            //try to place the next enemy filler
-            var enemyToPlace = enemyFiller.shift();
-            //put this enemy back at the back of filler
-            enemyFiller.push(enemyToPlace);
-            attempts++;
-                        
-            var supportedEnemy = 0x0;
-            let supportedEnemies = roomInfo.validEnemies.filter((enemyId) => {
-                return (enemyId & 0xf0) == enemyToPlace;
-            })
-
-            if(supportedEnemies.length > 0) {
-                enemyData[roomIndex] = supportedEnemies[Math.floor(Math.random() * supportedEnemies.length)];
-                enemyPlaced = true;                
-            } else if(attempts == enemyFiller.length) {
-                enemyData[roomIndex] = 0x0;
-                enemyPlaced = true;
-            }
-
+            mapRooms[x][y] = room;
         }
-
-
     }
-
-    return [{
-        name: "world " + world + " fortress room data", 
-        data: roomData.concat(enemyData),
-        offset: dungeonLevelOffsets[world]
-    },{
-        name: "world " + world + " fortress centurion data", 
-        data: centurionData,
-        offset: centurionOffsets[world]
-    },{
-        name: "world " + world + " boss music patch",
-        data: [bossRoomIndex],
-        offset: bossMusicOffsets[world]
-    }]
+        
+    return mapRooms;
 }
 
-function generateFortress(world, difficulty) {
+function generateMap(world, difficulty) {
     let map = [];
 
     while(map.length == 0){
@@ -367,7 +119,6 @@ function generateFortress(world, difficulty) {
                 map[i][j] = 0;
             }
         }
-
 
         //step 1: random line segments
         for (i = 0; i < 15 + world * 2; i++) {
@@ -713,17 +464,6 @@ function floodfill(map, x, y, openroomIndicator, visitedIndicator) {
     if (y > 0) {floodfill(map, x, y-1, openroomIndicator, visitedIndicator)}
     if (x < 7) {floodfill(map, x+1, y, openroomIndicator, visitedIndicator)}
     if (x > 0) {floodfill(map, x-1, y, openroomIndicator, visitedIndicator)}
-}
-
-function printMap(map) {
-
-    for (y = 0; y < 8; y++) {
-        row = ""
-        for (x = 0; x < 8; x++) {
-            row += map[x][y] + ' '
-        }
-        console.log(row)
-    }
 }
 
 module.exports = {generatePatchForFortress}
