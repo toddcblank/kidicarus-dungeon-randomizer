@@ -183,7 +183,7 @@ rooms = [
         clipPaths: [ALL, ALL, ALL, ALL],
         validEntrances:	ALL,
         validEnemies: [0x10, 0x20, 0x36, 0x46, 0x63],
-        centurionValidLocations: [0x75,0x7A,0x48],
+        centurionValidLocations: [0x75,0x7B,0x48],
         twoWayPaths: 0b1111,
     },
     {
@@ -445,7 +445,7 @@ rooms = [
         clipPaths: [NONE, NONE, NONE, NONE],
         validEntrances:	NONE,
         validEnemies: [0xF0],
-        centurionValidLocations: [0x55,0x37,0x77],
+        centurionValidLocations: [0x55,0x8E,0x77],
         twoWayPaths: 0b0000,
     },
 ]
