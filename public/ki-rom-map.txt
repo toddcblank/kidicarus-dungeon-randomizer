@@ -22,7 +22,7 @@ We'll use 1-x, 2-x, and 3-x to refer to stages that are not fortresses.
 We'll refer to fortresses as x-4.
 
 KI is broken up into four worlds, which are made up of stages.  The 
-stages are NOT stored "tile by tile."  Instead, each stage is stored as 
+stages are not stored "tile by tile."  Instead, each stage is stored as 
 a sequence of screens which can be reused.  For example, at the start of 
 2-2, the same screen is used several times in a row.  Each unique screen 
 is composed of structures.  Structures are chunks of bricks, big clouds 
@@ -119,9 +119,9 @@ Stored in this bank:
 When this bank is used: 
   Game ending (and when else?)
 
-010264-xxxxx: Text for the ending (MEDUSA WAS DESTROYED...)
-010E25-xxxxx: Text for the ending (THANK-YOU,PIT)
-010F8D-xxxxx: Text for credits (STAFF...)
+10264-xxxxx: Text for the ending (MEDUSA WAS DESTROYED...)
+10E25-xxxxx: Text for the ending (THANK-YOU,PIT)
+10F8D-xxxxx: Text for credits (STAFF...)
 
 
 ========================================================================
@@ -137,6 +137,8 @@ When this bank is used:
 15BF5-1626C: x-4 Screen data
 1626D-1631D: x-4 Structure data
 1631E-164E1: x-4 Macros
+1CBA0-1CBA2: Specifies which fortress rooms have boss music;
+             First byte is 1-4, second byte is 2-4, third byte is 3-4
 1E21B-xxxxx: Code for checking whether or not Pit has the map
 1E27B-xxxxx: Code for checking whether or not Pit has the torch
     
@@ -238,6 +240,9 @@ When this bank is used:
 ..1ED53-1ED54: Which RAM address to use in the HUD for hearts x256.
 ..1EBFC-xxxxx: Change this byte from 05 to 0D for a crazy graphics
                glitch that lets you see reaper projectiles.
+1EFB5-1EFC0: Shop prices.  Bottle, Hammer, Feather, Torch, Pencil each
+             have 3 bytes (regular price, lowered price, raised price). 
+             Followed by 1 byte each for the six black market items.
 1EFB9-xxxxx: x-x Door data
 
 
