@@ -14,6 +14,12 @@ let fortressPatchGenerator = require('./fortress-patch-generator')
 const DOOR_FULL_RANDO_NO_REQS = 1;
 const UPGRADES_AT_END = 2;
 
+const EMPTY_PATCH = {
+    data: [],
+    name: "Empty Patch",
+    offset: 0x0000
+}
+
 //This causes the password checking algorithm to just look at fake data, and error out.
 let BREAK_PASSWORDS = [
     {
@@ -46,6 +52,35 @@ const ENEMY_POSITION_DATA = [
     0xA5, 0xAA,     //Good for rooms with flat bottom
     0x35, 0x87, 
     0x78, 0x78
+]
+
+let ENDLESS_LEVEL_1_PATCH = [
+    {
+        name: "Jump for new end of level subroutine",
+        data: [0x4C, 0x00, 0xF9],
+        offset: 0x9746
+    },
+    {
+        name: "Code for looping the level",
+        data: [
+            0xA9, 0x02,           // LDA #$02                 
+            0x8D, 0xD1, 0x04,     // STA $04D1                
+            0xA9, 0xFE,           // LDA #$FE                 
+            0x8D, 0x1A, 0x00,     // STA $001A                
+            0x8D, 0xA6, 0x00,     // STA $00A6                
+            0xAD, 0xAA, 0x00,     // LDA $00AA                
+            0xAA,                 // TAX                      
+            0xE8,                 // INX                      
+            0x8E, 0xAA, 0x00,     // STX $00AA  
+            //Inc Str
+            0xAD, 0x52, 0x01,     // LDA $00AA                
+            0xAA,                 // TAX                      
+            0xE8,                 // INX                      
+            0x8E, 0x52, 0x01,     // STX $00AA 
+
+            0x60],                // RTS                      
+        offset: 0x1F910
+    }
 ]
 
 let ENEMY_POSITION_PATCH_D1 = {
@@ -101,6 +136,28 @@ function getBossHealthPatch(boss1, boss2, boss3) {
         data: [boss1, boss2, boss3],
         offset: 0x15127
     }
+}
+
+function createEndlessLevel1Rom(romname, seed=0, difficulty = 1, length = 8){
+    console.log("Randomizing for Endless level 1, with seed " + seed + ", on difficulty " + difficulty + " and length " + length)
+    let newFilename = 'ki-Arcade-' + length + "-" + seed;    
+    let newFullFileName = romPath + newFilename + ".nes";
+    
+    let patchesToApply = []
+    patchesToApply.push(ENDLESS_LEVEL_1_PATCH);
+    world1Patch = fbs.createLoopingWorld1(difficulty, length);
+    patchesToApply.push(world1Patch);
+    // patchesToApply.push(dr.REMOVE_ALL_DOORS_PATCH);
+
+    let doorPatch = dr.genearteDoorsForEndlessMode(world1Patch[0])        
+    writeHtmlSpoiler(writeVerticalWorldSpoilers([world1Patch[0], EMPTY_PATCH, EMPTY_PATCH], 1, doorPatch), romPath + newFilename + "-w1.html", false);  
+    patchesToApply.push(doorPatch);
+
+    rp.copyOriginalRom(romname, newFullFileName);
+    writePatchFiles(patchesToApply, newFullFileName + ".patches.json");
+    rp.patchRom(patchesToApply, newFullFileName)
+
+    return seed;   
 }
 
 
@@ -396,9 +453,9 @@ function writeVerticalWorldSpoilers(patches, world, doorPatch) {
         index += 4
     }
     
-    for (var index = 0; index < 3; index++) {
+    for (var index = 0; index < patches.length; index++) {
         let levelData = patches[index].data;
-
+        console.log("Gathering images for " + JSON.stringify(patches[index]))
         for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
             
             let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
@@ -479,4 +536,4 @@ function printMaze(mazePatch) {
 
 }
 
-module.exports = {createNewRandomizedRom, DOOR_FULL_RANDO_NO_REQS, UPGRADES_AT_END}
+module.exports = {createNewRandomizedRom, DOOR_FULL_RANDO_NO_REQS, UPGRADES_AT_END, createEndlessLevel1Rom}

@@ -15,6 +15,37 @@ router.get('/generate-maps-only', function(req, res, next) {
   res.render('index', { title: 'Kid Icarus Randomizer', spoilersOnly: true});
 })
 
+router.get('/endless-level', function(req, res, next) {
+   
+  let difficulty = 1
+  // var rngSeed = getRngSeed(req, false);
+  var rngSeed = 'E4CAE6D'
+
+  let rom = req.session.uploadedrom
+  // let romFullPath = './uploaded-roms/' + rom
+  let romFullPath = './uploaded-roms/kidicarus.nes'
+
+  // if (rom == undefined) {
+  //   console.log("No rom uploaded, redirecting")
+  //   res.redirect("/")
+  //   return;
+  // }
+  
+  let rng = seedrandom(rngSeed);
+  Math.random = () => {
+    return rng();
+  }
+
+  var endlessLength = 8;
+  if(req.query.endlessLength !== undefined) {
+    endlessLength = Number.parseInt(req.query.endlessLength)
+  }
+  
+  let generatedSeed = generator.createEndlessLevel1Rom(romFullPath, rngSeed, difficulty, endlessLength);
+
+  res.render('generated', { title: 'Kid Icarus Randomizer' , seed: 'Arcade-' + endlessLength + "-" + generatedSeed, spoilers: true});
+})
+
 router.post('/generate-maps-only', function(req, res, next) {
   let difficulty = req.body.difficulty
   var rngSeed = getRngSeed(req);
@@ -124,8 +155,12 @@ router.post('/upload-rom-for-patch', (req, res, next) => {
 
 })
 
-function getRngSeed(req, raceMode) {  
-    let difficulty = req.body.difficulty
+function getRngSeed(req, raceMode) { 
+
+    var difficulty = 1;
+    if (req.body.difficulty !== undefined) {
+      difficulty = req.body.difficulty
+    }
     var rngSeed = new Date().getTime().toString(16).substr(5).toUpperCase();
 
     if (req.body.seed && req.body.seed != 0 && !raceMode) {

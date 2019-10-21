@@ -10,6 +10,24 @@ const SHOP = 0x25;
 const BLACK_MARKET = 0x26;
 const EMPTY_OR_SPA = 0x27;
 
+const REMOVE_ALL_DOORS_PATCH = {
+    name: "Remove Doors Patch",
+    data: [
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
+        0xff, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff,
+
+    ],
+    offset: 0x1efd9,
+}
+
 function addUpgradeDoorsToEndOfLevels() {
     let doorPatch = {
         name: "Adds Str upgrades to end of 1-2, 2-1, 2-2, and 3-1",
@@ -75,6 +93,93 @@ function addUpgradeDoorsToEndOfLevels() {
     doorPatch.data.push(0xff);
 
     return doorPatch;
+}
+
+function genearteDoorsForEndlessMode(world1patch = []) {
+    let doorPatch = {
+        name: "Adds Shop to Screen 3, training halfway through, black market 75% through",
+        data: [],
+        offset: 0x1efd9
+    }
+
+    let loopLength = world1patch.data.length / 2;
+    let trainingRoomIndex = Math.floor(loopLength / 2);
+    let blackMarketIndex = Math.ceil(loopLength * .75);
+
+    let shopKey = (world1patch.data[3 * 2] + (world1patch.data[(3*2)+1]  << 8)).toString(16)
+    let trKey = (world1patch.data[trainingRoomIndex * 2] + (world1patch.data[(trainingRoomIndex*2)+1]  << 8)).toString(16)
+    let bmKey =  (world1patch.data[blackMarketIndex * 2] + (world1patch.data[(blackMarketIndex*2)+1]  << 8)).toString(16)
+
+    let shopScreen = sr.screensByWorldAndAddress[1][shopKey]
+    let trScreen = sr.screensByWorldAndAddress[1][trKey]
+    let bmScreen = sr.screensByWorldAndAddress[1][bmKey]
+
+
+    doorPatch.data.push(0); //stage 1-1
+    doorPatch.data.push(3); //screen 4
+    doorPatch.data.push(shopScreen.door); 
+    doorPatch.data.push(SHOP); 
+
+    var extraMissingDoors = 0;
+    if (trScreen.door != 0x0) {
+        doorPatch.data.push(0); //stage 1-1
+        doorPatch.data.push(trainingRoomIndex);
+        doorPatch.data.push(trScreen.door); 
+        doorPatch.data.push(TRAINING_ROOM);
+    }else {
+        extraMissingDoors += 1;
+    }
+
+    if (bmScreen.door != 0x0) {
+        doorPatch.data.push(0); //stage 1-1
+        doorPatch.data.push(blackMarketIndex); //screen 4
+        doorPatch.data.push(bmScreen.door); //coords, I think this works for all 3 options
+        doorPatch.data.push(BLACK_MARKET); //..upgrade room...thought that was clear.
+    } else {
+        extraMissingDoors += 1;
+    }
+
+
+
+    //10 empty doors
+    for (var i = 0; i < 10 + extraMissingDoors; i++) {
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+    }
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+    
+    //World 2
+    //23 empty doors
+    for (var i = 0; i < 23; i++) {
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+    }
+
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+
+    //World 3
+    //8 empty doors
+    for (var i = 0; i < 8; i++) {
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+        doorPatch.data.push(0xff);
+    }
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+
+    
+    doorPatch.data.push(0xff);
+    doorPatch.data.push(0xff);
+
+    return doorPatch;
+
 }
 
 //Generates doors for the full world
@@ -214,4 +319,8 @@ function generateRandomizedDoorPatchForLevels(world1patch = [], world2patch = []
     return doorPatch;
 }
 
-module.exports = {generateRandomizedDoorPatchForLevels, addUpgradeDoorsToEndOfLevels}
+module.exports = {
+    generateRandomizedDoorPatchForLevels, 
+    addUpgradeDoorsToEndOfLevels, 
+    REMOVE_ALL_DOORS_PATCH, 
+    genearteDoorsForEndlessMode}

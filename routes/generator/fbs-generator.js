@@ -35,6 +35,172 @@ const INVALID_ROOMS =   [[],[28, 29, 30, 31, 32, 33], [36, 37, 38], [13, 14, 15]
 const STAGE_1_ADDRESSES = [0, 0x1a56a, 0xbb3e, 0x1aef5, 0xfeb6]
 const PLATFORM_ADDRESS =  [0, 0x1a4b0, 0xbdc3, 0x1ae3b, 0x0]
 
+
+function createLoopingWorld1(difficulty, size=8) {
+    let patches = [];
+    let stagePlan = []
+    var screensWithPlatforms = 0;
+    var maxLength = size;  //technically could go much longer, up to ??? at least.  probably more.
+
+    var success = false;   
+    while (!success ) {
+        success = true;
+        let screenUsed = [];
+        stagePlan[0] = INITIAL_SCREENS[1][1];
+        for (var currentScreen = 1; currentScreen < maxLength; currentScreen++) {
+            var screenChoice = 0;
+            while (screenChoice == 0) {
+                screenChoice = pickScreen(1);
+                let alternateScreenChoice = pickScreen(1);  
+                //see if alternate is awesome
+                let previousScreen = stagePlan[currentScreen - 1];
+                
+                if(screenRules(previousScreen, alternateScreenChoice, 1) == SCREEN_AWESOME) {
+                    screenChoice = alternateScreenChoice;
+                }
+
+                if(screenRules(previousScreen, alternateScreenChoice, 1) == SCREEN_HARD) {
+                    screenChoice = alternateScreenChoice;
+                }
+
+                if (screens[1][screenChoice].platforms && screensWithPlatforms >= 8) {
+                    screenChoice = 0;
+                    continue;
+                }
+
+                //check the rules
+                let allowed = screenRules(previousScreen, screenChoice, 1);
+                if(!screenUsed[screenChoice]) {
+                    screenUsed[screenChoice] = 0;
+                } else if(screenUsed[screenChoice] > 0) {
+                    //If this screen has been used, make it less likely
+                    let timesUsed = screenUsed[screenChoice];
+                    for (var i = 0; i < timesUsed; i++) {
+                        if (Math.random() < .75) {
+                            allowed = SCREEN_NOT_ALLOWED;
+                        }
+                    }
+                }
+
+                if(screenChoice == (previousScreen + 1)) {
+                    if (Math.random() < .75) {
+                        allowed = SCREEN_NOT_ALLOWED;
+                    } 
+                }
+                
+                //Special for endless, the last screen has to loop to the 3rd screen
+                if (currentScreen == 3 && screens[1][screenChoice].door == 0x0) {
+                    allowed = SCREEN_NOT_ALLOWED
+                } 
+
+                if (currentScreen == maxLength - 2) {
+                    let loopDifficulty = screenRules(screenChoice, stagePlan[3], 1)
+                    if (screens[1][screenChoice].platforms) {
+                        allowed = SCREEN_NOT_ALLOWED
+                    } else if (loopDifficulty == SCREEN_NOT_ALLOWED || (loopDifficulty == SCREEN_HARD && difficulty < DIFF_HARD)) {
+                        allowed = SCREEN_NOT_ALLOWED
+                    }
+                }
+               
+                if (currentScreen == maxLength - 1) {
+                    let loopDifficulty = screenRules(screenChoice, stagePlan[currentScreen  - 1], 1)
+                    if (screens[1][screenChoice].platforms) {
+                        allowed = SCREEN_NOT_ALLOWED
+                    } else if (loopDifficulty == SCREEN_NOT_ALLOWED || (loopDifficulty == SCREEN_HARD && difficulty < DIFF_HARD)) {
+                        allowed = SCREEN_NOT_ALLOWED
+                    }
+                }
+
+                if (allowed == SCREEN_NOT_ALLOWED || allowed == SCREEN_UGLY) {
+                    screenChoice = 0;
+                } else if (allowed == SCREEN_HARD && difficulty < DIFF_HARD) {
+                    screenChoice = 0;
+                }
+
+            }
+
+            if (screens[1][screenChoice].platforms) {
+                screensWithPlatforms++;
+            }
+            stagePlan[currentScreen] = screenChoice;
+            screenUsed[screenChoice]++
+        }       
+    }
+    
+    //finished!  create the patch!        
+    let patchBytes = []    
+    for(var i = 0; i < stagePlan.length; i++) {
+        let screenToAdd = stagePlan[i];
+        patchBytes.push(screens[1][screenToAdd].address1)
+        patchBytes.push(screens[1][screenToAdd].address2)
+    }
+
+    patchBytes.push(0xFF);
+    patchBytes.push(0xFF);
+
+    patches[0] = {
+        name: "Stage 1-1-Endless",
+        data: patchBytes,
+        offset: 0x1a56a
+    }
+
+    console.log("Stage Plan: " + JSON.stringify(stagePlan))
+
+    //Enemy for current world/stage
+    let enemyTableLength = maxLength
+
+    let enemyTable1Data = []
+    let enemyTable2Data = []
+    let enemyTable3Data = []
+    let enemyTable4Data = []
+
+    //First table
+    for (var currentScreen = 0; currentScreen < enemyTableLength; currentScreen++) {
+        if (difficulty == DIFF_EASY && currentScreen == 0) {
+            enemyTable1Data.push(0x0)
+            enemyTable3Data.push(0x0)
+            continue;
+        }
+
+        let enemyChoice = ENEMY_TABLE1[1][difficulty][Math.floor(Math.random() * ENEMY_TABLE1[1][difficulty].length)]        
+        let enemy3Choice = ENEMY_TABLE3[1][difficulty][Math.floor(Math.random() * ENEMY_TABLE3[1][difficulty].length)]
+
+        enemyTable1Data.push(enemyChoice);
+        
+        enemyTable3Data.push(enemy3Choice);
+        if (enemyChoice == sr.ENEMY_REAPER) {
+            //Enemy is a reaper, table 2 holds it position (put in upper left)
+            enemyTable2Data.push((4 << 4) + Math.floor(Math.random()*8));
+        } else {
+            enemyTable2Data.push(0x00);
+        }
+        if (enemy3Choice == sr.ENEMY_REAPER) {
+            //Enemy is a reaper, table 2 holds it position (put in lower right)
+            enemyTable4Data.push((12 << 4) + Math.floor(Math.random()*8) + 7);
+        } else {
+            enemyTable4Data.push(0x00);
+        }
+        
+    }
+
+    let stagePlans = []
+
+    stagePlans[0] = []
+    stagePlans[1] = stagePlan;
+    stagePlans[2] = [2, 30];
+    stagePlans[3] = [2, 30];
+
+    patches.push({name: "Enemy Table 1 for world 1", data: enemyTable1Data, offset: ENEMY_TABLE_START_LOCATIONS[1][0]});
+    patches.push({name: "Enemy Table 2 for world 1", data: enemyTable2Data, offset: ENEMY_TABLE_START_LOCATIONS[1][1]});
+    patches.push({name: "Enemy Table 3 for world 1", data: enemyTable3Data, offset: ENEMY_TABLE_START_LOCATIONS[1][2]});
+    patches.push({name: "Enemy Table 4 for world 1", data: enemyTable4Data, offset: ENEMY_TABLE_START_LOCATIONS[1][3]});
+    
+    // patches.push(getPatchForWorld1Items(difficulty, stagePlans))
+    patches.push(radomizePlatforms(1, difficulty, stagePlans));
+
+    return patches;
+}
+
 function randomizeWorld(world, difficulty) {
 
     let stage1Address = STAGE_1_ADDRESSES[world]
@@ -315,7 +481,7 @@ function radomizePlatforms(world, difficulty, plan) {
         return {name: "world " + world + " platforms", offset: 0x0, data: []};
     }
 
-    let removalPatch = {name: "world " + world + " platforms", offset: PLATFORM_ADDRESS[world], data: []}
+    let removalPatch = {name: "world " + world + " platform removal", offset: PLATFORM_ADDRESS[world], data: []}
     for (var i = 0; i < 128; i++) {
         removalPatch.data.push(0xff);
     }
@@ -428,4 +594,4 @@ function getPatchForWorld1Items(difficulty, stagePlans) {
 }
 
 
-module.exports = {randomizeWorld, DIFF_EASY, DIFF_NORMAL, DIFF_HARD}
+module.exports = {randomizeWorld, DIFF_EASY, DIFF_NORMAL, DIFF_HARD, createLoopingWorld1}
