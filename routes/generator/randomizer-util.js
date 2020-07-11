@@ -47,6 +47,97 @@ const ENEMY_POSITION_DATA = [
     0x35, 0x87, 
     0x78, 0x78
 ]
+let FAST_TEXT_PATCH = [
+    {
+        name: "Fast Text in Shops and End of Level",
+        data: [0x01],
+        offset: 0x195F2
+    }
+]
+
+//Score we need to set so players don't lose health upgrades
+let HEALTH_UPGRADE_VALUES = [
+    [0x00, 0x00, 0x00], //0
+    [0x20, 0x4e, 0x00], //20k
+    [0x50, 0xc3, 0x00], //50k
+    [0xA0, 0x86, 0x01], //100k
+    [0x40, 0x0d, 0x03], //200k
+]
+
+let DEFAULT_STR_AND_HEALTH = [
+
+    // {
+    //     name: "Death Cleanup Additions New Jump",
+    //     data: [0x4C, 0x00, 0xF3, 0xEA, 0xEA, 0xEA, 0xEA, 0xEA, 0xEA, 0xEA, 0xEA],
+    //     offset: 0x1EAC5   
+
+    // },{
+    //     name: "Additional Cleanup",
+    //     data: [           
+    //         //Original Instructions
+    //         // 0xAD, 0x70, 0x01,  // LDA $0170                
+    //         // 0x85, 0xAA,        // STA $AA                  
+    //         // 0xAD, 0x71, 0x01,  // LDA $0171                
+    //         // 0x85, 0xA6,        // STA $A6 
+    //         // Set health to 5 full bars   
+    //         0xA9, 0x05,
+    //         0x8D, 0x70, 0x01,     
+    //         0xA9, 0x05,          
+    //         0x8D, 0x6B, 0x01,   //full ammo
+    //         0xA9, 0x27,
+    //         0x8D, 0xA6, 0x00,              
+    //         0x60               //RTS
+    //     ],
+    //     offset: 0x1F310
+    // },
+    {
+        name: "Initialization Additions New Jump",
+        data: [0x4C, 0x00, 0xF5, 0xEA],
+        offset: 0x6173
+    },
+    {
+        name: "Additional Initialization",
+        data: [
+            //0 - 18
+            // Set health to 5 full bars   
+            0xA9, 0x05,
+            0x8D, 0x70, 0x01,            
+            0x8D, 0xAA, 0x00,   
+            0x8D, 0x6B, 0x01,   
+            0x8D, 0x52, 0x01,  
+
+            0xA9, 0x27,
+            0x8D, 0xA6, 0x00,    
+
+            //19 - 26
+            //score byte 1
+            0xA9, 0x20, 
+            0x8D, 0x44, 0x01,
+            0x8D, 0x5d, 0x01,
+
+            //27 - 34
+            //score byte 2
+            0xA9, 0x4e, 
+            0x8D, 0x45, 0x01,
+            0x8D, 0x5e, 0x01,
+
+            //35 - 42
+            //score byte 1
+            0xA9, 0x00, 
+            0x8D, 0x46, 0x01,
+            0x8D, 0x5f, 0x01,
+
+            //Give them 2 feathers too
+            0xA9, 0x02,
+            0x8D, 0x50, 0x01,
+            0x8D, 0x69, 0x01,
+
+            0xA9, 0x00, 0x85, 0x38, // LDA $#00, STA $38; Original instruction
+            0x4C, 0x67, 0xA1, // JMP 0xA167 Back where I was 
+        ],
+        offset: 0x1F510
+    },
+]
 
 let ENEMY_POSITION_PATCH_D1 = {
     name: "Fortress 1 Enemy Position",
@@ -95,6 +186,17 @@ let ADD_FORTRESS_ITEMS = [
 dungeonLevelOffsets = [0, 0x1b1b8, 0x1b4ac, 0x1b780]
 
 
+function getDefaultHealthAndStrPatch(extraHealthBars, str) {
+    let basePatch = DEFAULT_STR_AND_HEALTH;
+
+    basePatch[1].data[1] = extraHealthBars
+    basePatch[1].data[20] = HEALTH_UPGRADE_VALUES[extraHealthBars][0]    
+    basePatch[1].data[28] = HEALTH_UPGRADE_VALUES[extraHealthBars][1]
+    basePatch[1].data[36] = HEALTH_UPGRADE_VALUES[extraHealthBars][2]
+
+    return basePatch;
+}
+
 function getBossHealthPatch(boss1, boss2, boss3) {
     return {
         name: "adjusts boss health",
@@ -102,7 +204,6 @@ function getBossHealthPatch(boss1, boss2, boss3) {
         offset: 0x15127
     }
 }
-
 
 function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRandomized = [1,2,3,4], fortressesToRandomize = [1,2,3], difficulty = 1, useFbsLogic=[], spoilersOnly = false, doors=DOOR_FULL_RANDO_NO_REQS, useNewRooms = false) {
 
@@ -201,6 +302,12 @@ function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRando
         patchesToApply.push(world3Patches);
     }
     
+    if (difficulty == 1) {
+        patchesToApply.push(getDefaultHealthAndStrPatch(1,1))
+    }
+
+    patchesToApply.push(FAST_TEXT_PATCH)
+
     
     if (doors == DOOR_FULL_RANDO_NO_REQS){
         let doorPatch = dr.generateRandomizedDoorPatchForLevels(world1Patches, world2Patches, world3Patches)
@@ -401,6 +508,12 @@ function writeVerticalWorldSpoilers(patches, world, doorPatch) {
 
         for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
             
+            let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
+            worldImages[index][Math.floor(screenIndex/2)] = screen;
+        }
+
+        console.log("Gathering images for " + JSON.stringify(patches[index]))
+        for (var screenIndex = 0; screenIndex < levelData.length; screenIndex = screenIndex + 2) {
             let screen = levelData[screenIndex].toString(16).padStart(2, '0') + "-" + levelData[screenIndex + 1].toString(16).padStart(2, '0') + ".png"
             worldImages[index][Math.floor(screenIndex/2)] = screen;
         }
