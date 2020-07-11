@@ -55,6 +55,14 @@ let FAST_TEXT_PATCH = [
     }
 ]
 
+let FAST_4_1_COOLDOWN = [
+    {
+        name: "16f cooldown in 4-1 instead of 32",
+        data: [0x00],
+        offset: 0x1Cf72
+    }
+]
+
 //Score we need to set so players don't lose health upgrades
 let HEALTH_UPGRADE_VALUES = [
     [0x00, 0x00, 0x00], //0
@@ -341,6 +349,7 @@ function createNewRandomizedRom(raceMode=false, romname, seed = 0, levelsToRando
     patchesToApply.push(ENEMY_POSITION_PATCH_D1);
     patchesToApply.push(ENEMY_POSITION_PATCH_D2);
     patchesToApply.push(ENEMY_POSITION_PATCH_D3);
+    patchesToApply.push(FAST_4_1_COOLDOWN);
     if (useNewRooms){
         patchesToApply.push(newrooms.getRoomPatches())
     }
