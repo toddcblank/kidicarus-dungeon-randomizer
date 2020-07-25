@@ -264,7 +264,7 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [],
-        centurionValidLocations: [0xAE,0xA1,0x81],
+        centurionValidLocations: [],
         twoWayPaths: 0b1110,
     },
     {
@@ -273,7 +273,7 @@ rooms = [
         clipPaths: [(RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT), (RIGHT | DOWN | LEFT)],
         validEntrances:	ALL,
         validEnemies: [],
-        centurionValidLocations: [0x8D,0x82,0xAD],
+        centurionValidLocations: [],
         twoWayPaths: 0b1110,
     },
     {
@@ -445,7 +445,7 @@ rooms = [
         clipPaths: [NONE, NONE, NONE, NONE],
         validEntrances:	NONE,
         validEnemies: [0xF0],
-        centurionValidLocations: [0x55,0x8E,0x77],
+        centurionValidLocations: [],
         twoWayPaths: 0b0000,
     },
 ]
