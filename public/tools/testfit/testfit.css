@@ -4,7 +4,8 @@
 }
 
 .screencomparer.horizontal {
-    grid-template-columns: 256px 256px
+    grid-template-columns: 256px 256px;
+    grid-template-rows: 1fr 1fr;
 }
 
 .controls {

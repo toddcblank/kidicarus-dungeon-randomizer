@@ -1,6 +1,7 @@
 <html>
     <head>
         <link  rel="stylesheet" type="text/css" href="testfit.css"></script>
+        <script src="/javascripts/screenRuleCopy.js"></script>
         <script>
             const maxScreens = [38, 41, 19]
             function changeImage(id, increment, display) {
@@ -22,6 +23,25 @@
                 }
                 element.src = imgPrefix + imageIndex.toString().padStart(2, "0") + ".bmp"
                 document.getElementById(display).innerHTML = imageIndex.toString().padStart(2, "0")
+
+                //Update difficulty for current combo
+                let fromId = parseInt(document.getElementById('screenIdBot').innerText)
+                let toId = parseInt(document.getElementById('screenIdTop').innerText)
+                let worldId = parseInt(selectedWorld)
+
+                let difficulty = worldId == 2 ?
+                    screenRule[worldId][toId][fromId] == -1 ? 0 : screenRule[worldId][toId][fromId] :
+                    screenRule[worldId][fromId][toId] == -1 ? 0 : screenRule[worldId][fromId][toId]
+
+                let difficultyStrs = [
+                    "Not Allowed",
+                    "Okay",
+                    "Awesome",
+                    "Ugly",
+                    "Hard Only"
+                ]
+
+                document.getElementById("difficultyInfo").innerText = difficultyStrs[difficulty]
             }
 
             function toggleShowGrid(value) {
@@ -100,6 +120,9 @@
                         <div id="screenIdBot">01</div>
 
                 </div>
+                <div class="difficulty" id="difficultyInfo">
+            </div>
+                
             </div>
             <div class="screenList" id="world1images">
                 <div class="screenIndex">1</div><div><img class="worldlistImage" src="./w1/01.bmp" /></div>
