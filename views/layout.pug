@@ -1,6 +1,13 @@
 doctype html
 html
   head
+    //- Google tag manager tracking  
+    script(async, src="https://www.googletagmanager.com/gtag/js?id=UA-162515872-2")
+    script
+      != "window.dataLayer = window.dataLayer || [];"
+      != "function gtag(){dataLayer.push(arguments);}"
+      != "gtag('js', new Date());"
+      != "gtag('config', 'UA-162515872-2');"
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel="stylesheet" type="text/css" href="../stylesheets/dungeon.css")
