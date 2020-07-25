@@ -271,8 +271,8 @@ screens = [
         {id:11, address1: 0xb7, address2: 0x70, door: 0xbe, item: 0xAD},
         {id:12, address1: 0x79, address2: 0x72, door: 0x5f, item: 0x86},
         {id:13, address1: 0x00, address2: 0x70, door: 0x9a, item: 0xA7},
-        {id:14, address1: 0x2d, address2: 0x70, door: 0xc0, item: 0xB2},
-        {id:15, address1: 0x66, address2: 0x70, door: 0xb2, item: 0xA4},        
+        {id:14, address1: 0x2d, address2: 0x70, door: 0x9a, item: 0xB2},
+        {id:15, address1: 0x66, address2: 0x70, door: 0xaa, item: 0xA4},        
 
         {id:16, address1: 0x2f, address2: 0x71, door: 0x0, item: 0x85, platforms: [
             {location: 0xb7, offset: 0}]},        
